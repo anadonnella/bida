@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BIDA Global · Evaluador de Capacidad Crediticia</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#030712;color:#fff;font-family:system-ui,-apple-system,sans-serif;min-height:100vh}
+input[type=text],input[type=date],select{background:#1f2937;border:1px solid #4b5563;border-radius:8px;padding:8px 12px;color:#fff;font-size:14px;width:100%;outline:none}
+input[type=text]:focus,input[type=date]:focus,select:focus{border-color:#60a5fa;box-shadow:0 0 0 1px #60a5fa}
+input[type=text]{text-align:right}
+button{cursor:pointer;border:none;font-family:inherit}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:#111827}
+::-webkit-scrollbar-thumb{background:#374151;border-radius:2px}
+a{color:inherit;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useMemo}=React;
+const LOGO="https://cdn.phototourl.com/member/2026-04-10-39b01671-098b-477b-8812-7f25ee321705.png";
+const toN=v=>parseFloat(String(v).replace(/[^0-9.-]/g,""))||0;
+const fmt=(n,d=2)=>isNaN(n)||!isFinite(n)?"—":n.toLocaleString("es-VE",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct=n=>isNaN(n)||!isFinite(n)?"—":(n*100).toFixed(1)+"%";
+const fmtI=v=>{if(v===""||v===null||v===undefined)return"";const r=String(v).replace(/[^0-9.]/g,"");const p=r.split(".");p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,".");return p.length>1?p[0]+","+p[1]:p[0];};
+const TABS=["💳 Crédito","📊 Estado de Resultados","🏛 Situación Financiera","🎯 Evaluación"];
+const lCls={display:"block",fontSize:"11px",color:"#9ca3af",marginBottom:"4px",fontWeight:500,textTransform:"uppercase",letterSpacing:"0.05em"};
+const cardS={background:"rgba(31,41,55,0.6)",borderRadius:"12px",border:"1px solid rgba(96,165,250,0.3)",padding:"16px",marginBottom:"16px"};
+const cardTitle={fontSize:"12px",fontWeight:600,color:"#60a5fa",textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:"12px"};
+
+function TI({value,onChange}){
+  const[d,setD]=useState(value!==""&&value!==undefined?fmtI(String(value)):"");
+  const h=e=>{const r=e.target.value.replace(/\./g,"").replace(",",".");const n=parseFloat(r);const di=isNaN(n)?"":fmtI(r);setD(di);onChange(isNaN(n)?"":n);};
+  return <input type="text" inputMode="decimal" value={d} onChange={h} placeholder="0,00" style={{background:"#1f2937",border:"1px solid #4b5563",borderRadius:"6px",padding:"4px 8px",color:"#fff",fontSize:"12px",width:"100%",textAlign:"right",outline:"none"}}/>;
+}
+
+function NI({label,value,onChange,prefix}){
+  const[d,setD]=useState(value!==""&&value!==0?fmtI(String(value)):"");
+  const h=e=>{const r=e.target.value.replace(/\./g,"").replace(",",".");const n=parseFloat(r);const di=isNaN(n)?"":fmtI(r);setD(di);onChange(isNaN(n)?"":n);};
+  return <div><label style={lCls}>{label}</label><div style={{display:"flex",alignItems:"center",gap:"8px"}}>{prefix&&<span style={{color:"#9ca3af",fontSize:"13px",whiteSpace:"nowrap"}}>{prefix}</span>}<input type="text" inputMode="decimal" value={d} onChange={h} placeholder="0,00" style={{background:"#1f2937",border:"1px solid #4b5563",borderRadius:"8px",padding:"8px 12px",color:"#fff",fontSize:"14px",flex:1,textAlign:"right",outline:"none"}}/></div></div>;
+}
+
+function Pill({label,val,sub,color}){
+  const cols={blue:{color:"#93c5fd",background:"rgba(30,58,138,0.4)",border:"1px solid rgba(96,165,250,0.3)"},green:{color:"#86efac",background:"rgba(20,83,45,0.4)",border:"1px solid rgba(134,239,172,0.3)"},yellow:{color:"#fde047",background:"rgba(113,63,18,0.4)",border:"1px solid rgba(253,224,71,0.3)"},red:{color:"#fca5a5",background:"rgba(127,29,29,0.4)",border:"1px solid rgba(252,165,165,0.3)"},purple:{color:"#d8b4fe",background:"rgba(88,28,135,0.4)",border:"1px solid rgba(216,180,254,0.3)"},cyan:{color:"#67e8f9",background:"rgba(21,94,117,0.4)",border:"1px solid rgba(103,232,249,0.3)"}};
+  const s=cols[color]||cols.blue;
+  return <div style={{...s,borderRadius:"8px",padding:"12px"}}><div style={{fontSize:"11px",opacity:.7,marginBottom:"4px"}}>{label}</div><div style={{fontSize:"16px",fontWeight:700}}>{val}</div>{sub&&<div style={{fontSize:"11px",opacity:.6,marginTop:"4px"}}>{sub}</div>}</div>;
+}
+
+const emptyV=()=>[{cat:"Categoría 1",p1:"",p2:""},{cat:"Categoría 2",p1:"",p2:""},{cat:"Categoría 3",p1:"",p2:""},{cat:"Categoría 4",p1:"",p2:""}];
+const emptyK=ks=>Object.fromEntries(ks.map(k=>[k,{p1:"",p2:""}]));
+const initS=()=>({moneda:"USD",tab:0,monto:"",tasa:"",cuotas:"",comFlat:"",cupoCredito:"",fechaInicio:"",ventas:emptyV(),costos:emptyK(["servicios","compras","otros"]),gastos:emptyK(["admin","personal","servicios","tributarios","financieros","otros"]),depreciacion:{p1:"",p2:""},activos:emptyK(["disponible","inventarios","cxc","impCorriente","prepagados","fijos","otrosNC"]),pasivos:emptyK(["proveedores","cxp","impPasivo","noCorrente","contribuciones"]),patrimonio:emptyK(["capital","acumulados","revalorizacion","reserva","resultado"])});
+
+function App(){
+  const[s,setS]=useState(initS());
+  const set=(k,v)=>setS(p=>({...p,[k]:v}));
+
+  const TV={p1:s.ventas.reduce((a,v)=>a+toN(v.p1),0),p2:s.ventas.reduce((a,v)=>a+toN(v.p2),0)};
+  const TC={p1:toN(s.costos.servicios.p1)+toN(s.costos.compras.p1)+toN(s.costos.otros.p1),p2:toN(s.costos.servicios.p2)+toN(s.costos.compras.p2)+toN(s.costos.otros.p2)};
+  const UB={p1:TV.p1-TC.p1,p2:TV.p2-TC.p2};
+  const TG={p1:Object.values(s.gastos).reduce((a,v)=>a+toN(v.p1),0),p2:Object.values(s.gastos).reduce((a,v)=>a+toN(v.p2),0)};
+  const UN={p1:UB.p1-TG.p1,p2:UB.p2-TG.p2};
+  const EBITDA={p1:UN.p1+toN(s.gastos.financieros?.p1||0)+toN(s.depreciacion.p1),p2:UN.p2+toN(s.gastos.financieros?.p2||0)+toN(s.depreciacion.p2)};
+  const TA={p1:Object.values(s.activos).reduce((a,v)=>a+toN(v.p1),0),p2:Object.values(s.activos).reduce((a,v)=>a+toN(v.p2),0)};
+  const TP={p1:Object.values(s.pasivos).reduce((a,v)=>a+toN(v.p1),0),p2:Object.values(s.pasivos).reduce((a,v)=>a+toN(v.p2),0)};
+  const TPAT={p1:Object.values(s.patrimonio).reduce((a,v)=>a+toN(v.p1),0),p2:Object.values(s.patrimonio).reduce((a,v)=>a+toN(v.p2),0)};
+  const EQ={p1:TA.p1-TP.p1-TPAT.p1,p2:TA.p2-TP.p2-TPAT.p2};
+  const LIQ={p1:TP.p1>0?TA.p1/TP.p1:0,p2:TP.p2>0?TA.p2/TP.p2:0};
+  const PA={p1:TP.p1>0?toN(s.activos.disponible.p1)/TP.p1:0,p2:TP.p2>0?toN(s.activos.disponible.p2)/TP.p2:0};
+  const END={p1:TA.p1>0?TP.p1/TA.p1:0,p2:TA.p2>0?TP.p2/TA.p2:0};
+  const CT={p1:TA.p1-TP.p1,p2:TA.p2-TP.p2};
+  const RCXP={p1:toN(s.pasivos.proveedores.p1)>0?toN(s.costos.compras.p1)/toN(s.pasivos.proveedores.p1):0,p2:toN(s.pasivos.proveedores.p2)>0?toN(s.costos.compras.p2)/toN(s.pasivos.proveedores.p2):0};
+  const CXPM={p1:RCXP.p1>0?12/RCXP.p1:0,p2:RCXP.p2>0?12/RCXP.p2:0};
+  const ROE={p1:TPAT.p1>0?UN.p1/TPAT.p1:0,p2:TPAT.p2>0?UN.p2/TPAT.p2:0};
+  const ROA={p1:TA.p1>0?UN.p1/TA.p1:0,p2:TA.p2>0?UN.p2/TA.p2:0};
+  const MEBITDA={p1:TV.p1>0?EBITDA.p1/TV.p1:0,p2:TV.p2>0?EBITDA.p2/TV.p2:0};
+
+  const amort=useMemo(()=>{
+    const m=toN(s.monto),t=toN(s.tasa)/100/12,n=Math.round(toN(s.cuotas));
+    const cf=toN(s.comFlat)/100*m;
+    if(m<=0||n<=0)return{cuota:0,total:0,filas:[],saldoInicial:0,cf:0};
+    const cm=t>0?m*t*Math.pow(1+t,n)/(Math.pow(1+t,n)-1):m/n;
+    const filas=[];let saldo=m;
+    let fecha=s.fechaInicio?new Date(s.fechaInicio+"T00:00:00"):new Date();
+    for(let i=1;i<=n;i++){const int=saldo*t,ac=cm-int;saldo-=ac;filas.push({i,fecha:fecha.toLocaleDateString("es-VE"),ac,int,cm,saldo:Math.max(0,saldo)});fecha=new Date(fecha);fecha.setMonth(fecha.getMonth()+1);}
+    return{cuota:cm,total:cm*n+cf,filas,saldoInicial:m+cf,cf};
+  },[s.monto,s.tasa,s.cuotas,s.comFlat,s.fechaInicio]);
+
+  const EL={p2:UN.p2*0.3};
+  const CEMAX=EL.p2/12;
+  const CAP=CEMAX-amort.cuota;
+  const PCRED=UN.p2>0?amort.cuota*12/UN.p2:0;
+
+  const score=useMemo(()=>{
+    let pts=0,max=0,issues=[],fortalezas=[];
+    max+=20;if(UN.p2>0){pts+=10;fortalezas.push("Empresa rentable en Período 2");}else issues.push("Utilidad neta negativa en Período 2");
+    if(UN.p2>UN.p1){pts+=10;fortalezas.push("Tendencia creciente en utilidad");}else issues.push("Utilidad no mejoró entre períodos");
+    max+=20;if(LIQ.p2>=1.5){pts+=20;fortalezas.push("Liquidez excelente (>1.5)");}else if(LIQ.p2>=1){pts+=10;fortalezas.push("Liquidez aceptable");}else issues.push("Liquidez por debajo de 1");
+    max+=20;if(END.p2<=0.3){pts+=20;fortalezas.push("Bajo endeudamiento (<30%)");}else if(END.p2<=0.6){pts+=10;}else issues.push("Endeudamiento elevado (>60%)");
+    max+=25;if(CAP>=0){pts+=25;fortalezas.push("Cuota cubierta por la utilidad");}else if(CAP>=-amort.cuota*0.5){pts+=10;issues.push("Cuota parcialmente cubierta");}else issues.push("Cuota supera la capacidad de pago");
+    max+=15;if(EBITDA.p2>amort.cuota*12){pts+=15;fortalezas.push("EBITDA cubre el servicio anual de deuda");}else issues.push("EBITDA insuficiente para el servicio anual");
+    const p=pts/max;let nivel,color,emoji;
+    if(p>=0.8){nivel="APROBADO";color="green";emoji="✅";}else if(p>=0.55){nivel="CONDICIONADO";color="yellow";emoji="⚠️";}else{nivel="OBSERVADO";color="red";emoji="❌";}
+    return{pts,max,pct:p,nivel,color,emoji,issues,fortalezas};
+  },[UN,LIQ,END,CAP,EBITDA,amort]);
+
+  const tab=s.tab;
+  const semC={green:"#22c55e",yellow:"#eab308",red:"#ef4444"};
+  const semBg={green:"rgba(20,83,45,0.3)",yellow:"rgba(113,63,18,0.3)",red:"rgba(127,29,29,0.3)"};
+  const semBor={green:"rgba(134,239,172,0.4)",yellow:"rgba(253,224,71,0.4)",red:"rgba(252,165,165,0.4)"};
+  const semTxt={green:"#86efac",yellow:"#fde047",red:"#fca5a5"};
+
+  const thS={textAlign:"left",color:"#9ca3af",paddingBottom:"8px",fontWeight:500,fontSize:"12px"};
+  const trS={borderBottom:"1px solid rgba(55,65,81,0.5)"};
+  const tdS={padding:"6px 4px",fontSize:"12px",color:"#d1d5db"};
+
+  return (
+    <div style={{minHeight:"100vh",background:"#030712",color:"#fff",fontFamily:"system-ui,sans-serif"}}>
+      {/* HEADER */}
+      <div style={{background:"#111827",borderBottom:"1px solid rgba(96,165,250,0.2)",padding:"12px 16px"}}>
+        <div style={{maxWidth:"900px",margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
+            <img src={LOGO} alt="Bida Global" style={{height:"32px",objectFit:"contain"}}/>
+            <div style={{borderLeft:"1px solid #374151",paddingLeft:"12px"}}>
+              <div style={{fontSize:"12px",color:"#e5e7eb",fontWeight:600}}>Evaluador de Capacidad Crediticia</div>
+              <div style={{fontSize:"11px",color:"rgba(96,165,250,0.8)"}}>Herramienta Profesional · Bida Global</div>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:"8px",alignItems:"center"}}>
+            <select value={s.moneda} onChange={e=>set("moneda",e.target.value)} style={{width:"auto",padding:"6px 8px",fontSize:"13px"}}>
+              <option>USD</option><option>Bs</option><option>COP</option>
+            </select>
+            <button onClick={()=>setS(initS())} style={{background:"rgba(127,29,29,0.5)",border:"1px solid rgba(252,165,165,0.4)",color:"#fca5a5",borderRadius:"8px",padding:"6px 12px",fontSize:"12px",fontWeight:600}}>
+              🗑 Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* TABS */}
+      <div style={{borderBottom:"1px solid #1f2937",background:"rgba(17,24,39,0.5)",position:"sticky",top:0,zIndex:10}}>
+        <div style={{maxWidth:"900px",margin:"0 auto",display:"flex",overflowX:"auto"}}>
+          {TABS.map((t,i)=>(
+            <button key={i} onClick={()=>set("tab",i)} style={{padding:"12px 16px",fontSize:"13px",fontWeight:500,whiteSpace:"nowrap",borderBottom:tab===i?"2px solid #60a5fa":"2px solid transparent",color:tab===i?"#60a5fa":"#9ca3af",background:"transparent"}}>
+              {t}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{maxWidth:"900px",margin:"0 auto",padding:"24px 16px"}}>
+
+        {/* TAB 0 CREDITO */}
+        {tab===0&&<div>
+          <h2 style={{fontSize:"18px",fontWeight:700,marginBottom:"4px"}}>Parámetros del Crédito</h2>
+          <p style={{fontSize:"13px",color:"#9ca3af",marginBottom:"16px"}}>Ingresa las condiciones del crédito a evaluar.</p>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px",marginBottom:"16px"}}>
+            <NI label="Monto del Crédito" value={s.monto} onChange={v=>set("monto",v)} prefix={s.moneda}/>
+            <NI label="Tasa Anual (%)" value={s.tasa} onChange={v=>set("tasa",v)} prefix="%"/>
+            <NI label="Número de Cuotas" value={s.cuotas} onChange={v=>set("cuotas",v)} prefix="#"/>
+            <NI label="Comisión Flat (%)" value={s.comFlat} onChange={v=>set("comFlat",v)} prefix="%"/>
+            <NI label="Cupo de Crédito (gasto adicional)" value={s.cupoCredito} onChange={v=>set("cupoCredito",v)} prefix={s.moneda}/>
+            <div><label style={lCls}>Fecha Primera Cuota</label><input type="date" value={s.fechaInicio} onChange={e=>set("fechaInicio",e.target.value)}/></div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"12px",marginBottom:"24px"}}>
+            <Pill label="Cuota Mensual" val={amort.cuota>0?`${s.moneda} ${fmt(amort.cuota)}`:"—"} color="blue"/>
+            <Pill label="Comisión Flat" val={amort.cf>0?`${s.moneda} ${fmt(amort.cf)}`:"—"} color="purple"/>
+            <Pill label="Total a Pagar" val={amort.total>0?`${s.moneda} ${fmt(amort.total)}`:"—"} color="yellow"/>
+          </div>
+          {amort.filas.length>0&&<div style={cardS}>
+            <div style={cardTitle}>Tabla de Amortización</div>
+            <div style={{overflowX:"auto"}}>
+              <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <thead><tr>{["#","Fecha","Amort. Capital","Intereses","Cuota","Saldo"].map(h=><th key={h} style={{...thS,paddingRight:"12px"}}>{h}</th>)}</tr></thead>
+                <tbody>
+                  <tr style={{borderBottom:"1px solid #374151"}}><td colSpan={5} style={{...tdS,color:"#6b7280",fontStyle:"italic"}}>Saldo inicial (incl. comisión flat)</td><td style={{...tdS,color:"#93c5fd",fontWeight:600}}>{fmt(amort.saldoInicial)}</td></tr>
+                  {amort.filas.map(f=>(
+                    <tr key={f.i} style={trS}>
+                      <td style={{...tdS,color:"#6b7280"}}>{f.i}</td>
+                      <td style={tdS}>{f.fecha}</td>
+                      <td style={{...tdS,color:"#86efac"}}>{fmt(f.ac)}</td>
+                      <td style={{...tdS,color:"#fca5a5"}}>{fmt(f.int)}</td>
+                      <td style={{...tdS,color:"#93c5fd",fontWeight:600}}>{fmt(f.cm)}</td>
+                      <td style={tdS}>{fmt(f.saldo)}</td>
+                    </tr>
+                  ))}
+                  <tr style={{borderTop:"2px solid #4b5563",fontWeight:700}}>
+                    <td colSpan={2} style={{...tdS,paddingTop:"8px",color:"#e5e7eb"}}>TOTALES</td>
+                    <td style={{...tdS,paddingTop:"8px",color:"#86efac"}}>{fmt(amort.filas.reduce((a,f)=>a+f.ac,0))}</td>
+                    <td style={{...tdS,paddingTop:"8px",color:"#fca5a5"}}>{fmt(amort.filas.reduce((a,f)=>a+f.int,0))}</td>
+                    <td style={{...tdS,paddingTop:"8px",color:"#93c5fd"}}>{fmt(amort.filas.reduce((a,f)=>a+f.cm,0))}</td>
+                    <td style={{...tdS,paddingTop:"8px",color:"#6b7280"}}>0,00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>}
+        </div>}
+
+        {/* TAB 1 RESULTADOS */}
+        {tab===1&&<div>
+          <h2 style={{fontSize:"18px",fontWeight:700,marginBottom:"4px"}}>Estado de Resultados</h2>
+          <p style={{fontSize:"13px",color:"#9ca3af",marginBottom:"16px"}}>Ingresa los datos de dos períodos anuales.</p>
+          <div style={cardS}>
+            <div style={cardTitle}>Ventas</div>
+            <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <thead><tr><th style={{...thS,textAlign:"left"}}>Categoría</th><th style={{...thS,textAlign:"right"}}>Período 1</th><th style={{...thS,textAlign:"right"}}>Período 2</th><th style={{...thS,textAlign:"right"}}>Var.</th></tr></thead>
+              <tbody>
+                {s.ventas.map((v,i)=>(
+                  <tr key={i} style={trS}>
+                    <td style={{...tdS,paddingRight:"8px"}}><input type="text" value={v.cat} onChange={e=>{const n=[...s.ventas];n[i]={...n[i],cat:e.target.value};set("ventas",n);}} style={{background:"#1f2937",border:"1px solid #4b5563",borderRadius:"6px",padding:"4px 8px",color:"#fff",fontSize:"12px",width:"100%",textAlign:"left",outline:"none"}}/></td>
+                    <td style={{...tdS,paddingLeft:"4px"}}><TI value={v.p1} onChange={val=>{const n=[...s.ventas];n[i]={...n[i],p1:val};set("ventas",n);}}/></td>
+                    <td style={{...tdS,paddingLeft:"4px"}}><TI value={v.p2} onChange={val=>{const n=[...s.ventas];n[i]={...n[i],p2:val};set("ventas",n);}}/></td>
+                    <td style={{...tdS,textAlign:"right",fontSize:"11px",color:toN(v.p2)>=toN(v.p1)?"#4ade80":"#f87171"}}>{toN(v.p1)>0?((toN(v.p2)/toN(v.p1)-1)*100).toFixed(0)+"%":"—"}</td>
+                  </tr>
+                ))}
+                <tr style={{borderTop:"2px solid #4b5563",fontWeight:700}}>
+                  <td style={{...tdS,color:"#93c5fd",paddingTop:"8px"}}>TOTAL VENTAS</td>
+                  <td style={{...tdS,textAlign:"right",color:"#93c5fd",paddingTop:"8px"}}>{fmt(TV.p1)}</td>
+                  <td style={{...tdS,textAlign:"right",color:"#93c5fd",paddingTop:"8px"}}>{fmt(TV.p2)}</td>
+                  <td style={{...tdS,textAlign:"right",fontSize:"11px",paddingTop:"8px",color:TV.p2>=TV.p1?"#4ade80":"#f87171"}}>{TV.p1>0?((TV.p2/TV.p1-1)*100).toFixed(0)+"%":"—"}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {[
+            {title:"Costos de Servicios",fields:[{k:"servicios",l:"Costo de Servicios"},{k:"compras",l:"Compras"},{k:"otros",l:"Otros Costos"}],obj:s.costos,setObj:v=>set("costos",v),total:TC},
+            {title:"Gastos Operativos",fields:[{k:"admin",l:"Gastos de Administración"},{k:"personal",l:"Gastos de Personal"},{k:"servicios",l:"Servicios Contratados"},{k:"tributarios",l:"Gastos Tributarios"},{k:"financieros",l:"Gastos Financieros"},{k:"otros",l:"Otros Gastos/Ingresos"}],obj:s.gastos,setObj:v=>set("gastos",v),total:TG}
+          ].map(({title,fields,obj,setObj,total})=>(
+            <div key={title} style={cardS}>
+              <div style={cardTitle}>{title}</div>
+              <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <thead><tr><th style={{...thS,textAlign:"left"}}>Concepto</th><th style={{...thS,textAlign:"right"}}>Período 1</th><th style={{...thS,textAlign:"right"}}>Período 2</th></tr></thead>
+                <tbody>
+                  {fields.map(({k,l})=>(
+                    <tr key={k} style={trS}>
+                      <td style={{...tdS,fontSize:"11px"}}>{l}</td>
+                      <td style={{...tdS,paddingLeft:"4px"}}><TI value={obj[k].p1} onChange={val=>setObj({...obj,[k]:{...obj[k],p1:val}})}/></td>
+                      <td style={{...tdS,paddingLeft:"4px"}}><TI value={obj[k].p2} onChange={val=>setObj({...obj,[k]:{...obj[k],p2:val}})}/></td>
+                    </tr>
+                  ))}
+                  <tr style={{borderTop:"2px solid #4b5563",fontWeight:700}}>
+                    <td style={{...tdS,color:"#93c5fd",paddingTop:"8px"}}>TOTAL</td>
+                    <td style={{...tdS,textAlign:"right",color:"#93c5fd",paddingTop:"8px"}}>{fmt(total.p1)}</td>
+                    <td style={{...tdS,textAlign:"right",color:"#93c5fd",paddingTop:"8px"}}>{fmt(total.p2)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ))}
+
+          <div style={cardS}>
+            <div style={cardTitle}>Depreciación y Amortización (para EBITDA)</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
+              <NI label="Depreciación Período 1" value={s.depreciacion.p1} onChange={v=>set("depreciacion",{...s.depreciacion,p1:v})} prefix={s.moneda}/>
+              <NI label="Depreciación Período 2" value={s.depreciacion.p2} onChange={v=>set("depreciacion",{...s.depreciacion,p2:v})} prefix={s.moneda}/>
+            </div>
+          </div>
+
+          <div style={cardS}>
+            <div style={cardTitle}>Resumen de Resultados</div>
+            <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <thead><tr><th style={{...thS,textAlign:"left"}}>Indicador</th><th style={{...thS,textAlign:"right"}}>P1</th><th style={{...thS,textAlign:"right"}}>P2</th><th style={{...thS,textAlign:"right"}}>Var.</th></tr></thead>
+              <tbody>
+                {[["Ventas",TV.p1,TV.p2,true],["Costos",TC.p1,TC.p2,true],["Utilidad Bruta",UB.p1,UB.p2,true],["Rent. Bruta",TV.p1>0?UB.p1/TV.p1:0,TV.p2>0?UB.p2/TV.p2:0,false],["Gastos",TG.p1,TG.p2,true],["Utilidad Neta",UN.p1,UN.p2,true],["Rent. Neta",TV.p1>0?UN.p1/TV.p1:0,TV.p2>0?UN.p2/TV.p2:0,false],["EBITDA",EBITDA.p1,EBITDA.p2,true],["Margen EBITDA",MEBITDA.p1,MEBITDA.p2,false]].map(([l,v1,v2,abs])=>{
+                  const vr=v1!==0?(v2/v1-1)*100:null;
+                  return(
+                    <tr key={l} style={trS}>
+                      <td style={{...tdS,fontSize:"11px"}}>{l}</td>
+                      <td style={{...tdS,textAlign:"right"}}>{abs?fmt(v1):pct(v1)}</td>
+                      <td style={{...tdS,textAlign:"right",fontWeight:600,color:(l.includes("Utilidad")||l==="EBITDA")&&v2<0?"#fca5a5":"#93c5fd"}}>{abs?fmt(v2):pct(v2)}</td>
+                      <td style={{...tdS,textAlign:"right",fontSize:"11px",color:vr>0?"#4ade80":"#f87171"}}>{vr!==null?vr.toFixed(0)+"%":"—"}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>}
+
+        {/* TAB 2 SITUACION FINANCIERA */}
+        {tab===2&&<div>
+          <h2 style={{fontSize:"18px",fontWeight:700,marginBottom:"4px"}}>Estado de Situación Financiera</h2>
+          <p style={{fontSize:"13px",color:"#9ca3af",marginBottom:"16px"}}>Ingresa el balance de dos períodos anuales.</p>
+          {[
+            {title:"Activos",obj:s.activos,setObj:v=>set("activos",v),fields:[{k:"disponible",l:"Disponible"},{k:"inventarios",l:"Inventarios"},{k:"cxc",l:"Cuentas por Cobrar"},{k:"impCorriente",l:"Activo por Impuesto Corriente"},{k:"prepagados",l:"Gastos Prepagados"},{k:"fijos",l:"Activos Fijos"},{k:"otrosNC",l:"Otros Activos No Corrientes"}],total:TA},
+            {title:"Pasivos",obj:s.pasivos,setObj:v=>set("pasivos",v),fields:[{k:"proveedores",l:"Cuentas x Pagar Proveedores"},{k:"cxp",l:"Cuentas por Pagar"},{k:"impPasivo",l:"Pasivo por Impuesto Corriente"},{k:"noCorrente",l:"Pasivos No Corrientes"},{k:"contribuciones",l:"Contribuciones y Retenciones"}],total:TP},
+            {title:"Patrimonio",obj:s.patrimonio,setObj:v=>set("patrimonio",v),fields:[{k:"capital",l:"Capital Social"},{k:"acumulados",l:"Resultados Acumulados"},{k:"revalorizacion",l:"Revalorización de Activos"},{k:"reserva",l:"Reserva Legal"},{k:"resultado",l:"Resultado del Período"}],total:TPAT}
+          ].map(({title,obj,setObj,fields,total})=>(
+            <div key={title} style={cardS}>
+              <div style={cardTitle}>{title}</div>
+              <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <thead><tr><th style={{...thS,textAlign:"left"}}>Concepto</th><th style={{...thS,textAlign:"right"}}>Período 1</th><th style={{...thS,textAlign:"right"}}>Período 2</th><th style={{...thS,textAlign:"right"}}>Var%</th></tr></thead>
+                <tbody>
+                  {fields.map(({k,l})=>{
+                    const v1=toN(obj[k].p1),v2=toN(obj[k].p2);
+                    return(
+                      <tr key={k} style={trS}>
+                        <td style={{...tdS,fontSize:"11px"}}>{l}</td>
+                        <td style={{...tdS,paddingLeft:"4px"}}><TI value={obj[k].p1} onChange={val=>setObj({...obj,[k]:{...obj[k],p1:val}})}/></td>
+                        <td style={{...tdS,paddingLeft:"4px"}}><TI value={obj[k].p2} onChange={val=>setObj({...obj,[k]:{...obj[k],p2:val}})}/></td>
+                        <td style={{...tdS,textAlign:"right",fontSize:"11px",color:v2>=v1?"#4ade80":"#f87171"}}>{v1!==0?((v2/v1-1)*100).toFixed(0)+"%":"—"}</td>
+                      </tr>
+                    );
+                  })}
+                  <tr style={{borderTop:"2px solid #4b5563",fontWeight:700}}>
+                    <td style={{...tdS,color:"#93c5fd",paddingTop:"8px"}}>TOTAL</td>
+                    <td style={{...tdS,textAlign:"right",color:"#93c5fd",paddingTop:"8px"}}>{fmt(total.p1)}</td>
+                    <td style={{...tdS,textAlign:"right",color:"#93c5fd",paddingTop:"8px"}}>{fmt(total.p2)}</td>
+                    <td style={{...tdS,textAlign:"right",fontSize:"11px",paddingTop:"8px",color:total.p2>=total.p1?"#4ade80":"#f87171"}}>{total.p1>0?((total.p2/total.p1-1)*100).toFixed(0)+"%":"—"}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ))}
+          <div style={{borderRadius:"8px",padding:"12px",textAlign:"center",fontSize:"13px",fontWeight:600,...(Math.abs(EQ.p2)<1?{background:"rgba(20,83,45,0.4)",border:"1px solid rgba(134,239,172,0.3)",color:"#86efac"}:{background:"rgba(127,29,29,0.4)",border:"1px solid rgba(252,165,165,0.3)",color:"#fca5a5"})}}>
+            Equilibrio (A − P − Pat): {fmt(EQ.p1)} | {fmt(EQ.p2)} {Math.abs(EQ.p2)<1?" ✅ Cuadrado":" ⚠️ Revisar cifras"}
+          </div>
+        </div>}
+
+        {/* TAB 3 EVALUACION */}
+        {tab===3&&<div>
+          <h2 style={{fontSize:"18px",fontWeight:700,marginBottom:"4px"}}>Evaluación Crediticia</h2>
+          <p style={{fontSize:"13px",color:"#9ca3af",marginBottom:"16px"}}>Resultado integral basado en los datos ingresados.</p>
+
+          <div style={{borderRadius:"12px",padding:"20px",marginBottom:"24px",textAlign:"center",background:semBg[score.color],border:`1px solid ${semBor[score.color]}`}}>
+            <div style={{fontSize:"40px",marginBottom:"8px"}}>{score.emoji}</div>
+            <div style={{fontSize:"24px",fontWeight:900,letterSpacing:"0.05em",color:semTxt[score.color]}}>{score.nivel}</div>
+            <div style={{fontSize:"13px",color:"#d1d5db",marginTop:"4px"}}>Puntaje: {score.pts}/{score.max} · {(score.pct*100).toFixed(0)}%</div>
+            <div style={{width:"100%",background:"#374151",borderRadius:"9999px",height:"8px",marginTop:"12px"}}>
+              <div style={{height:"8px",borderRadius:"9999px",background:semC[score.color],width:`${score.pct*100}%`}}/>
+            </div>
+          </div>
+
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px",marginBottom:"16px"}}>
+            <Pill label="Liquidez General (P2)" val={fmt(LIQ.p2)} sub={LIQ.p2>=1.5?"✅ Excelente":LIQ.p2>=1?"⚠️ Aceptable":"❌ Riesgo"} color={LIQ.p2>=1.5?"green":LIQ.p2>=1?"yellow":"red"}/>
+            <Pill label="Prueba Ácida (P2)" val={fmt(PA.p2,3)} sub={PA.p2>=0.5?"✅ OK":"⚠️ Ajustada"} color={PA.p2>=0.5?"green":"yellow"}/>
+            <Pill label="Endeudamiento / Activos" val={pct(END.p2)} sub={END.p2<=0.3?"✅ Bajo":END.p2<=0.6?"⚠️ Moderado":"❌ Alto"} color={END.p2<=0.3?"green":END.p2<=0.6?"yellow":"red"}/>
+            <Pill label="Rentabilidad Neta (P2)" val={pct(TV.p2>0?UN.p2/TV.p2:0)} sub={UN.p2>0?"✅ Rentable":"❌ Pérdida"} color={UN.p2>0?"green":"red"}/>
+            <Pill label="EBITDA (P2)" val={EBITDA.p2>0?`${s.moneda} ${fmt(EBITDA.p2)}`:"—"} sub={`Margen: ${pct(MEBITDA.p2)}`} color="cyan"/>
+            <Pill label="Capital de Trabajo (P2)" val={CT.p2!==0?`${s.moneda} ${fmt(CT.p2)}`:"—"} sub={CT.p2>0?"✅ Positivo":CT.p2<0?"❌ Negativo":"—"} color={CT.p2>0?"green":CT.p2<0?"red":"blue"}/>
+            <Pill label="ROE (P2)" val={pct(ROE.p2)} sub="Retorno sobre patrimonio" color="purple"/>
+            <Pill label="ROA (P2)" val={pct(ROA.p2)} sub="Retorno sobre activos" color="purple"/>
+            <Pill label="Rot. CxP (P2)" val={RCXP.p2>0?`${fmt(RCXP.p2,2)}x`:"—"} sub={CXPM.p2>0?`${fmt(CXPM.p2,1)} meses pago prov.`:"—"} color="cyan"/>
+            <Pill label="Margen EBITDA" val={pct(MEBITDA.p2)} sub={MEBITDA.p2>=0.1?"✅ Saludable":"⚠️ Bajo"} color={MEBITDA.p2>=0.1?"green":"yellow"}/>
+          </div>
+
+          <div style={cardS}>
+            <div style={cardTitle}>Capacidad Crediticia</div>
+            <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <tbody>
+                {[
+                  ["Cuota del Crédito",amort.cuota>0?`${s.moneda} ${fmt(amort.cuota)}`:"—","Cuota mensual calculada"],
+                  ["Endeudamiento Liq. (30% utilidad)",EL.p2!==0?`${s.moneda} ${fmt(EL.p2)}`:"—","30% de la utilidad neta P2"],
+                  ["Cuota Estimada Máxima",CEMAX!==0?`${s.moneda} ${fmt(CEMAX)}`:"—","Endeudamiento liq. ÷ 12 meses"],
+                  ["Capacidad Remanente",amort.cuota>0?`${s.moneda} ${fmt(CAP)}`:"—",CAP>=0?"✅ Crédito viable":"❌ Excede capacidad"],
+                  ["% Crédito / Utilidad Anual",amort.cuota>0?pct(PCRED):"—",PCRED>0&&PCRED<=1?"✅ Dentro del rango":PCRED>1?"⚠️ Supera la utilidad anual":"—"],
+                ].map(([l,v,d])=>(
+                  <tr key={l} style={trS}>
+                    <td style={tdS}>{l}</td>
+                    <td style={{...tdS,textAlign:"right",fontWeight:700,color:"#93c5fd"}}>{v}</td>
+                    <td style={{...tdS,fontSize:"11px",color:"#6b7280",paddingLeft:"12px"}}>{d}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {score.fortalezas.length>0&&<div style={{background:"rgba(20,83,45,0.2)",border:"1px solid rgba(134,239,172,0.3)",borderRadius:"12px",padding:"16px",marginBottom:"12px"}}>
+            <div style={{color:"#86efac",fontWeight:600,fontSize:"13px",marginBottom:"8px"}}>✅ Fortalezas identificadas</div>
+            {score.fortalezas.map((f,i)=><div key={i} style={{fontSize:"13px",color:"#bbf7d0",marginBottom:"4px"}}>· {f}</div>)}
+          </div>}
+          {score.issues.length>0&&<div style={{background:"rgba(127,29,29,0.2)",border:"1px solid rgba(252,165,165,0.3)",borderRadius:"12px",padding:"16px",marginBottom:"16px"}}>
+            <div style={{color:"#fca5a5",fontWeight:600,fontSize:"13px",marginBottom:"8px"}}>⚠️ Aspectos a mejorar</div>
+            {score.issues.map((f,i)=><div key={i} style={{fontSize:"13px",color:"#fecaca",marginBottom:"4px"}}>· {f}</div>)}
+          </div>}
+
+          <div style={{background:"rgba(31,41,55,0.8)",border:"1px solid rgba(96,165,250,0.2)",borderRadius:"12px",padding:"20px",textAlign:"center"}}>
+            <img src={LOGO} alt="Bida Global" style={{height:"36px",objectFit:"contain",marginBottom:"12px"}}/>
+            <p style={{color:"#d1d5db",fontSize:"13px",marginBottom:"16px"}}>¿Necesitas asesoría financiera profesional? En <strong style={{color:"#93c5fd"}}>Bida Global</strong> te ayudamos a optimizar tu estructura financiera y preparar tu empresa para acceder al crédito.</p>
+            <a href="https://bidaglobal.com" target="_blank" style={{display:"inline-block",background:"#2563eb",color:"#fff",fontWeight:700,padding:"12px 32px",borderRadius:"8px",fontSize:"14px",textDecoration:"none"}}>
+              Contáctanos → bidaglobal.com
+            </a>
+          </div>
+        </div>}
+      </div>
+
+      {/* NAV BOTTOM */}
+      <div style={{position:"sticky",bottom:0,background:"rgba(17,24,39,0.97)",borderTop:"1px solid #1f2937",padding:"12px 16px"}}>
+        <div style={{maxWidth:"900px",margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <button onClick={()=>set("tab",Math.max(0,tab-1))} disabled={tab===0} style={{background:tab===0?"#1f2937":"#374151",color:tab===0?"#4b5563":"#fff",border:"none",borderRadius:"8px",padding:"8px 16px",fontSize:"13px",opacity:tab===0?0.4:1}}>← Anterior</button>
+          <div style={{display:"flex",gap:"8px"}}>
+            {TABS.map((_,i)=><div key={i} onClick={()=>set("tab",i)} style={{height:"8px",borderRadius:"9999px",cursor:"pointer",background:tab===i?"#60a5fa":"#4b5563",width:tab===i?"24px":"8px",transition:"all 0.2s"}}/>)}
+          </div>
+          <button onClick={()=>set("tab",Math.min(3,tab+1))} disabled={tab===3} style={{background:tab===3?"#1e3a5f":"#2563eb",color:"#fff",border:"none",borderRadius:"8px",padding:"8px 16px",fontSize:"13px",opacity:tab===3?0.4:1}}>Siguiente →</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
