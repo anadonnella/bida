@@ -277,15 +277,15 @@ section.light-zone .fiscal-card.especial {
   background: linear-gradient(145deg,#fef9ec,#faf0d0);
   border-color: rgba(212,175,55,.35);
 }
-section.light-zone .fiscal-label { color: #4a6080; }
-section.light-zone .fiscal-card.ordinario .fiscal-val { color: #1a7a6e; }
-section.light-zone .fiscal-card.especial .fiscal-val { color: #7a5a00; }
-section.light-zone .fiscal-card.ordinario h3 { color: #1a7a6e; }
-section.light-zone .fiscal-card.especial h3 { color: #7a5a00; }
-section.light-zone .fiscal-row { border-bottom-color: rgba(10,22,40,.07); }
-section.light-zone .fiscal-card.ordinario .total-row { background: rgba(45,212,191,.15); color: #1a7a6e; }
-section.light-zone .fiscal-card.especial .total-row { background: rgba(212,175,55,.18); color: #7a5a00; }
-section.light-zone .disclaimer-fiscal { color: #4a6080; }
+
+
+
+
+
+
+
+
+
 
 
 /* ── EFECTOS VISUALES INSPIRADOS EN PORTADA DEL LIBRO ── */
@@ -503,6 +503,20 @@ section.light-zone .disclaimer-fiscal { color: #4a6080; }
     radial-gradient(ellipse at 78% 28%, rgba(212,175,55,.09) 0%, transparent 45%),
     linear-gradient(135deg,rgba(45,212,191,.06),rgba(212,175,55,.04)) !important;
 }
+
+
+#cargas {
+  background:
+    radial-gradient(ellipse at 85% 20%, rgba(45,212,191,.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 15% 80%, rgba(212,175,55,.07) 0%, transparent 40%),
+    repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(45,212,191,.018) 80px),
+    #0a1628;
+  color: var(--white);
+}
+#cargas h3 { color: var(--white); }
+#cargas table thead tr { background: rgba(45,212,191,.12); }
+#cargas table tbody td { color: #e2e8f0; }
+#cargas .fiscal-subtitle { color: #94a3b8; }
 
 </style>
 </head>
@@ -824,15 +838,14 @@ section.light-zone .disclaimer-fiscal { color: #4a6080; }
 <hr class="section-divider">
 
 <!-- ═══ CARGA FISCAL EN UT ═══ -->
-<section id="cargas" class="light-zone">
-<div class="section-inner">
+<section id="cargas">
   <div class="section-header">
     <div class="section-icon">💰</div>
     <h2><span>Estimación · Carga Tributaria en UT</span>¿Cuánto pagaré en tributos?</h2>
   </div>
-  <p style="color:var(--gray);margin-bottom:22px;max-width:720px;font-size:.95rem;">La <strong style="color:var(--gold)">Unidad Tributaria (UT)</strong> es la regla maestra del sistema fiscal venezolano: mide multas, tramos del ISLR, umbrales y exenciones. Actualizar la UT es como ajustar la escala del termómetro sin cambiar la temperatura real.</p>
+  
 
-  <div style="background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,.2);border-radius:14px;padding:20px 24px;margin-bottom:30px;display:flex;flex-wrap:wrap;gap:24px;">
+  <div style="background:rgba(212,175,55,.09);border:1px solid rgba(212,175,55,.25);border-radius:14px;padding:20px 24px;margin-bottom:30px;display:flex;flex-wrap:wrap;gap:24px;">
     <div style="flex:1;min-width:200px;"><div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">Valor UT vigente 2025</div><div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;">Bs. 1.080,00</div><div style="font-size:.75rem;color:var(--gray);margin-top:4px;">Gaceta Oficial N° 42.875 · Actualización anual por inflación</div></div>
     <div style="flex:1;min-width:200px;"><div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;">¿Para qué sirve la UT?</div><ul style="list-style:none;padding:0;font-size:.82rem;color:#cbd5e1;display:flex;flex-direction:column;gap:4px;"><li>✦ Tramos del ISLR persona jurídica</li><li>✦ Base para multas e ilícitos tributarios</li><li>✦ Umbral exención ISLR persona natural</li><li>✦ Umbrales parafiscales (FONACIT, Deporte)</li></ul></div>
     <div style="flex:1;min-width:200px;"><div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:6px;">Equivalencias orientativas</div><div style="font-size:.82rem;color:#cbd5e1;line-height:1.9;">100 UT = Bs. 108.000<br>500 UT = Bs. 540.000<br>1.000 UT = Bs. 1.080.000<br><span style="font-size:.7rem;color:var(--gray);">Verificar tipo de cambio BCV para USD</span></div></div>
@@ -847,9 +860,9 @@ section.light-zone .disclaimer-fiscal { color: #4a6080; }
         <th style="padding:12px 16px;text-align:center;font-weight:700;border-bottom:1px solid rgba(45,212,191,.2);">Sustraendo (UT)</th>
       </tr></thead>
       <tbody>
-        <tr style="border-bottom:1px solid rgba(255,255,255,.04);"><td style="padding:11px 16px;color:#cbd5e1;">Hasta 2.000 UT</td><td style="padding:11px 16px;text-align:center;color:var(--teal);font-weight:700;">15%</td><td style="padding:11px 16px;text-align:center;color:var(--gray);">0</td></tr>
-        <tr style="border-bottom:1px solid rgba(255,255,255,.04);background:rgba(255,255,255,.02);"><td style="padding:11px 16px;color:#cbd5e1;">De 2.001 a 3.000 UT</td><td style="padding:11px 16px;text-align:center;color:var(--teal);font-weight:700;">22%</td><td style="padding:11px 16px;text-align:center;color:var(--gray);">140 UT</td></tr>
-        <tr><td style="padding:11px 16px;color:#cbd5e1;">Más de 3.000 UT</td><td style="padding:11px 16px;text-align:center;color:var(--gold);font-weight:700;">34%</td><td style="padding:11px 16px;text-align:center;color:var(--gray);">500 UT</td></tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.1);"><td style="padding:11px 16px;color:#e2e8f0;">Hasta 2.000 UT</td><td style="padding:11px 16px;text-align:center;color:var(--teal);font-weight:700;">15%</td><td style="padding:11px 16px;text-align:center;color:var(--gray);">0</td></tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04);background:rgba(255,255,255,.02);"><td style="padding:11px 16px;color:#e2e8f0;">De 2.001 a 3.000 UT</td><td style="padding:11px 16px;text-align:center;color:var(--teal);font-weight:700;">22%</td><td style="padding:11px 16px;text-align:center;color:var(--gray);">140 UT</td></tr>
+        <tr><td style="padding:11px 16px;color:#e2e8f0;">Más de 3.000 UT</td><td style="padding:11px 16px;text-align:center;color:var(--gold);font-weight:700;">34%</td><td style="padding:11px 16px;text-align:center;color:var(--gray);">500 UT</td></tr>
       </tbody>
     </table>
   </div>
