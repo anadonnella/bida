@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Resiliencia y Gestión del Cambio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f6fa;min-height:100vh;padding:2rem 1rem}
+.wrap{max-width:680px;margin:0 auto}
+.header{background:#1a1a2e;color:#fff;border-radius:12px;padding:2rem;margin-bottom:1.5rem;text-align:center}
+.header h1{font-size:1.4rem;font-weight:600;margin-bottom:.4rem}
+.header p{font-size:.9rem;opacity:.75}
+.badge{display:inline-block;background:#e8b14a;color:#1a1a2e;font-size:.75rem;font-weight:700;padding:.25rem .75rem;border-radius:20px;margin-bottom:.75rem;letter-spacing:.05em}
+.card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:1.5rem;margin-bottom:1rem}
+.card h2{font-size:1rem;font-weight:600;color:#1a1a2e;margin-bottom:1rem}
+.name-row{display:flex;gap:.75rem}
+.name-row input{flex:1;padding:.6rem .85rem;border:1px solid #d1d5db;border-radius:8px;font-size:.95rem;font-family:inherit}
+.name-row input:focus{outline:none;border-color:#4f46e5;box-shadow:0 0 0 2px rgba(79,70,229,.15)}
+.q-num{font-size:.75rem;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
+.q-text{font-size:.95rem;color:#1f2937;margin-bottom:.9rem;line-height:1.5}
+.options{display:flex;flex-direction:column;gap:.5rem}
+.opt{display:flex;align-items:center;gap:.7rem;padding:.6rem .85rem;border:1.5px solid #e5e7eb;border-radius:8px;cursor:pointer;transition:all .15s}
+.opt:hover{border-color:#a5b4fc;background:#f5f3ff}
+.opt input[type=radio]{accent-color:#4f46e5;width:16px;height:16px;flex-shrink:0}
+.opt label{font-size:.9rem;color:#374151;cursor:pointer;line-height:1.4}
+.opt.selected{border-color:#4f46e5;background:#ede9fe}
+.opt.correct{border-color:#059669;background:#ecfdf5}
+.opt.correct label{color:#065f46}
+.opt.wrong{border-color:#dc2626;background:#fef2f2}
+.opt.wrong label{color:#991b1b}
+.feedback{font-size:.82rem;margin-top:.7rem;padding:.6rem .85rem;border-radius:8px;line-height:1.5}
+.feedback.ok{background:#ecfdf5;color:#065f46}
+.feedback.ko{background:#fef2f2;color:#991b1b}
+.btn{width:100%;padding:.85rem;background:#4f46e5;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:.02em;transition:background .15s;margin-top:.5rem}
+.btn:hover{background:#4338ca}
+.btn:disabled{background:#a5b4fc;cursor:not-allowed}
+.result-card{background:#1a1a2e;color:#fff;border-radius:12px;padding:2rem;margin-bottom:1.5rem;text-align:center;display:none}
+.score-big{font-size:3.5rem;font-weight:700;color:#e8b14a;line-height:1}
+.score-label{font-size:.9rem;opacity:.7;margin-top:.3rem}
+.result-msg{margin-top:1rem;font-size:1rem;opacity:.9;line-height:1.5}
+.sending{font-size:.85rem;color:#6366f1;text-align:center;margin-top:.75rem}
+.answer-summary{margin-top:1rem}
+.answer-summary h3{font-size:.85rem;font-weight:600;color:#9ca3af;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em}
+.ans-row{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.ans-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:2px;font-size:.7rem;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+.ans-dot.ok{background:#059669}
+.ans-dot.ko{background:#dc2626}
+.ans-text{font-size:.82rem;color:#d1d5db;line-height:1.5;text-align:left}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="badge">BIDA GLOBAL</div>
+    <h1>Resiliencia y Gestión del Cambio</h1>
+    <p>Quiz de evaluación · 5 preguntas · 10 pts cada una</p>
+  </div>
+
+  <div id="quiz-form">
+    <div class="card">
+      <h2>¿Quién eres?</h2>
+      <div class="name-row">
+        <input id="nombre" type="text" placeholder="Nombre" autocomplete="given-name">
+        <input id="apellido" type="text" placeholder="Apellido" autocomplete="family-name">
+      </div>
+    </div>
+    <div id="questions"></div>
+    <button class="btn" id="submit-btn" onclick="submitQuiz()">Ver mis resultados</button>
+  </div>
+
+  <div class="result-card" id="result-card">
+    <div class="score-big" id="score-display">0</div>
+    <div class="score-label">puntos de 50</div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="answer-summary" id="answer-summary"></div>
+  </div>
+</div>
+
+<script>
+// ★ REEMPLAZA ESTA URL con la de tu nuevo Apps Script
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbymWOkSI4rB9dFyISt489s9rGp1jlX6n2u4oJzOcjN4BhllEZdrZUIpSCUmP3sTBYul/exec';
+
+const preguntas = [
+  {
+    id:1, tipo:'mc',
+    texto:'Un líder anuncia un cambio sin explicar el porqué y espera adopción inmediata. Según el modelo de Lewin, ¿qué fase está omitiendo?',
+    opciones:['A) Descongelamiento (Fase 1)','B) Transición (Fase 2)','C) Consolidación (Fase 3)','D) Implementación'],
+    correcta:0,
+    feedback_ok:'✓ Correcto. El Descongelamiento es donde se construye el POR QUÉ del cambio. Saltarla es la causa principal del 70% de fracasos según McKinsey.',
+    feedback_ko:'✗ La respuesta correcta es A) Descongelamiento (Fase 1). Anunciar el QUÉ antes de construir el POR QUÉ es el error más común y el que más explica el 70% de fracasos.'
+  },
+  {
+    id:2, tipo:'mc',
+    texto:'En el modelo SCARF, un colaborador que pregunta "¿seguiré siendo importante después de la reestructuración?" está activando la dimensión:',
+    opciones:['A) Status','B) Certainty','C) Autonomy','D) Fairness'],
+    correcta:0,
+    feedback_ok:'✓ Correcto. Status — la percepción de importancia relativa dentro del grupo. "¿Seré menos importante en la nueva estructura?" es la pregunta típica de esta dimensión.',
+    feedback_ko:'✗ La respuesta correcta es A) Status. Cuando el colaborador cuestiona su importancia o relevancia en la nueva estructura, es la dimensión de Status la que está amenazada.'
+  },
+  {
+    id:3, tipo:'vf',
+    texto:'Si la productividad NO cae durante la Fase 2 (Transición) de un proceso de cambio, eso indica que el equipo está adoptando el cambio exitosamente.',
+    opciones:['A) Verdadero','B) Falso'],
+    correcta:1,
+    feedback_ok:'✓ Correcto. Falso. Si la productividad no cae durante la transición, el equipo probablemente no está cambiando de verdad — está aparentando. La caída temporal es señal de cambio real.',
+    feedback_ko:'✗ Falso. Si la productividad no cae en la Fase 2, el equipo no está cambiando de verdad — está aparentando. La caída temporal antes de mejorar es la señal más clara de cambio genuino.'
+  },
+  {
+    id:4, tipo:'mc',
+    texto:'Según Gartner 2024, ¿qué porcentaje de gerentes NO está equipado para liderar el cambio en sus organizaciones?',
+    opciones:['A) 54%','B) 63%','C) 74%','D) 85%'],
+    correcta:2,
+    feedback_ok:'✓ Correcto. El 74% de gerentes no está equipado para liderar el cambio — Gartner 2024. Por eso esta formación existe.',
+    feedback_ko:'✗ La respuesta correcta es C) 74%. Según Gartner 2024, casi 3 de cada 4 gerentes carecen de las herramientas necesarias para liderar procesos de cambio.'
+  },
+  {
+    id:5, tipo:'mc',
+    texto:'Según McKinsey, ¿cuántas veces más probable es el éxito de una transformación cuando los líderes comunican claramente el propósito del cambio?',
+    opciones:['A) 3 veces más probable','B) 8 veces más probable','C) 5 veces más probable','D) 12 veces más probable'],
+    correcta:1,
+    feedback_ok:'✓ Correcto. 8 veces más probable. Por eso la primera palanca del líder resiliente es: "Comunica el porqué 3 veces antes del qué." — McKinsey Transformation Practice.',
+    feedback_ko:'✗ La respuesta correcta es B) 8 veces más probable. Organizaciones que comunican claramente el propósito del cambio son 8x más probables de tener éxito — McKinsey.'
+  }
+];
+
+function buildQuestions(){
+  const cont=document.getElementById('questions');
+  cont.innerHTML=preguntas.map((p,i)=>`
+    <div class="card" id="q-${i}">
+      <div class="q-num">${p.tipo==='vf'?'Verdadero / Falso':'Selección múltiple'} · Pregunta ${p.id}</div>
+      <div class="q-text">${p.texto}</div>
+      <div class="options" id="opts-${i}">
+        ${p.opciones.map((op,j)=>`
+          <div class="opt" id="opt-${i}-${j}" onclick="selectOpt(${i},${j})">
+            <input type="radio" name="q${i}" id="r-${i}-${j}" value="${j}">
+            <label for="r-${i}-${j}">${op}</label>
+          </div>`).join('')}
+      </div>
+      <div class="feedback" id="fb-${i}" style="display:none"></div>
+    </div>`).join('');
+}
+
+function selectOpt(qi,oi){
+  document.querySelectorAll(`#opts-${qi} .opt`).forEach(el=>el.classList.remove('selected'));
+  document.getElementById(`opt-${qi}-${oi}`).classList.add('selected');
+  document.getElementById(`r-${qi}-${oi}`).checked=true;
+}
+
+async function submitQuiz(){
+  const nombre=document.getElementById('nombre').value.trim();
+  const apellido=document.getElementById('apellido').value.trim();
+  if(!nombre||!apellido){alert('Por favor ingresa tu nombre y apellido.');return;}
+
+  let score=0,allAnswered=true;
+  const respuestas=[];
+
+  preguntas.forEach((p,i)=>{
+    const sel=document.querySelector(`input[name="q${i}"]:checked`);
+    if(!sel){allAnswered=false;return;}
+    const chosen=parseInt(sel.value);
+    const ok=chosen===p.correcta;
+    if(ok) score+=10;
+    respuestas.push({pregunta:p.id,elegida:p.opciones[chosen],correcta:p.opciones[p.correcta],ok});
+
+    document.querySelectorAll(`#opts-${i} .opt`).forEach((el,j)=>{
+      el.style.pointerEvents='none';
+      if(j===p.correcta) el.classList.add('correct');
+      else if(j===chosen&&!ok) el.classList.add('wrong');
+    });
+    const fb=document.getElementById(`fb-${i}`);
+    fb.textContent=ok?p.feedback_ok:p.feedback_ko;
+    fb.className=`feedback ${ok?'ok':'ko'}`;
+    fb.style.display='block';
+  });
+
+  if(!allAnswered){alert('Responde todas las preguntas antes de enviar.');return;}
+
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;
+  btn.textContent='Enviando...';
+
+  try{
+    await fetch(SCRIPT_URL,{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({nombre,apellido,score,respuestas})
+    });
+  }catch(e){}
+
+  btn.textContent='✓ Respuestas enviadas';
+
+  const msgs=[
+    [50,'¡Perfecto! Dominas los marcos de resiliencia y gestión del cambio. Eres el líder que el 70% necesita.'],
+    [40,'Muy bien. Sólido manejo del contenido. Revisa las preguntas que fallaste para consolidar.'],
+    [30,'En desarrollo. Los modelos SCARF y Lewin merecen repaso antes de aplicarlos con tu equipo.'],
+    [0,'Momento para consolidar. Revisa las 3 fases, el modelo SCARF y las 5 palancas.']
+  ];
+  const msg=msgs.find(m=>score>=m[0])[1];
+
+  const rc=document.getElementById('result-card');
+  document.getElementById('score-display').textContent=score;
+  document.getElementById('result-msg').textContent=msg;
+
+  const sumHtml=`<h3>Detalle de respuestas</h3>`+respuestas.map(r=>`
+    <div class="ans-row">
+      <div class="ans-dot ${r.ok?'ok':'ko'}">${r.ok?'✓':'✗'}</div>
+      <div class="ans-text"><strong>P${r.pregunta}:</strong> ${r.ok?r.elegida:`Tu respuesta: ${r.elegida} · Correcta: ${r.correcta}`}</div>
+    </div>`).join('');
+  document.getElementById('answer-summary').innerHTML=sumHtml;
+  rc.style.display='block';
+  rc.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+buildQuestions();
+</script>
+</body>
+</html>
