@@ -181,11 +181,14 @@ async function submitQuiz(){
   btn.textContent='Enviando...';
 
   try{
-    await fetch(SCRIPT_URL,{
-      method:'POST',mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({nombre,apellido,score,respuestas})
+    const params=new URLSearchParams({
+      action:'submit',
+      nombre,
+      apellido,
+      score,
+      respuestas:JSON.stringify(respuestas)
     });
+    await fetch(SCRIPT_URL+'?'+params.toString(),{mode:'no-cors'});
   }catch(e){}
 
   btn.textContent='✓ Respuestas enviadas';
