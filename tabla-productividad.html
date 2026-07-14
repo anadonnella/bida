@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabla de Posiciones — Productividad Digital</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f0f1a;min-height:100vh;padding:2rem 1rem;color:#fff}
+.wrap{max-width:760px;margin:0 auto}
+.header{text-align:center;margin-bottom:2rem}
+.badge{display:inline-block;background:#e8b14a;color:#1a1a2e;font-size:.75rem;font-weight:700;padding:.25rem .9rem;border-radius:20px;margin-bottom:.75rem;letter-spacing:.06em}
+h1{font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:.3rem}
+.subtitle{font-size:.9rem;color:#9ca3af}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+.stat{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:12px;padding:1.25rem;text-align:center}
+.stat-num{font-size:2rem;font-weight:700;color:#e8b14a;line-height:1}
+.stat-label{font-size:.78rem;color:#9ca3af;margin-top:.3rem}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:1rem;margin-bottom:2rem;min-height:180px}
+.podium-col{display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.podium-name{font-size:.85rem;font-weight:600;color:#fff;text-align:center;max-width:120px;word-break:break-word}
+.podium-score{font-size:.8rem;color:#9ca3af}
+.podium-block{width:100px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+.p1-block{height:130px;background:linear-gradient(180deg,#e8b14a,#c98d1e)}
+.p2-block{height:95px;background:linear-gradient(180deg,#9ca3af,#6b7280)}
+.p3-block{height:70px;background:linear-gradient(180deg,#cd8a6a,#a06348)}
+.list-section{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.list-header{display:grid;grid-template-columns:48px 1fr 80px;padding:.75rem 1.25rem;background:#12122a;font-size:.75rem;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.06em}
+.list-row{display:grid;grid-template-columns:48px 1fr 80px;padding:.85rem 1.25rem;border-top:1px solid #2d2d4e;align-items:center;transition:background .2s}
+.list-row:hover{background:#12122a}
+.list-row.top1{background:rgba(232,177,74,.08)}
+.list-row.top2{background:rgba(156,163,175,.05)}
+.list-row.top3{background:rgba(205,138,106,.05)}
+.pos{font-size:.95rem;font-weight:700;color:#6b7280;text-align:center}
+.pos.gold{color:#e8b14a}
+.pos.silver{color:#9ca3af}
+.pos.bronze{color:#cd8a6a}
+.pname{font-size:.95rem;color:#f3f4f6;font-weight:500}
+.pscore{font-size:.95rem;font-weight:700;color:#6366f1;text-align:right}
+.bar-wrap{height:4px;background:#2d2d4e;border-radius:2px;margin-top:4px}
+.bar{height:4px;background:#6366f1;border-radius:2px;transition:width .5s}
+.controls{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.ctrl-btn{padding:.6rem 1.4rem;border-radius:8px;border:1px solid #2d2d4e;background:#1a1a2e;color:#d1d5db;font-size:.85rem;cursor:pointer;transition:all .15s;font-family:inherit}
+.ctrl-btn:hover{background:#2d2d4e;color:#fff}
+.ctrl-btn.danger{border-color:#dc2626;color:#f87171}
+.ctrl-btn.danger:hover{background:#dc2626;color:#fff}
+.pulse{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.status{font-size:.78rem;color:#6b7280;text-align:center;margin-top:.5rem}
+.empty{text-align:center;padding:3rem;color:#6b7280;font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="badge">BIDA GLOBAL</div>
+    <h1>🏆 Tabla de Posiciones</h1>
+    <p class="subtitle">Productividad Digital y Gestión del Tiempo</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num" id="total-part">0</div>
+      <div class="stat-label">Participantes</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="avg-score">0</div>
+      <div class="stat-label">Promedio pts</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="perfect-count">0</div>
+      <div class="stat-label">Puntaje perfecto</div>
+    </div>
+  </div>
+
+  <div class="podium" id="podium"></div>
+
+  <div class="list-section">
+    <div class="list-header">
+      <div>#</div><div>Participante</div><div style="text-align:right">Puntos</div>
+    </div>
+    <div id="list-body"><div class="empty">Esperando respuestas...</div></div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" onclick="fetchScores()">↻ Actualizar ahora</button>
+    <button class="ctrl-btn danger" onclick="resetQuiz()">⚠ Reiniciar quiz</button>
+  </div>
+  <div class="status"><span class="pulse"></span><span id="status-txt">Actualizando cada 10 segundos</span></div>
+</div>
+
+<script>
+const SHEET_ID = '1ou2IXUuP1nMEWIDtuDPQVs6l_A54qF5xYzfiOdnTyjU';
+const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhNA2_zhn4Nee5wkXCYwm7QdCFP5GhJaEwX34uFunH_qGy4Ymb2IPsB6aVQgwIAgbZpw/exec';
+
+async function fetchScores() {
+  document.getElementById('status-txt').textContent = 'Actualizando...';
+  try {
+    const res = await fetch(GVIZ_URL);
+    const text = await res.text();
+    const jsonStr = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
+    if (!jsonStr) { throw new Error('No data'); }
+    const json = JSON.parse(jsonStr[1]);
+    const rows = json.table.rows;
+    const scores = [];
+    rows.forEach(r => {
+      const nombre = r.c[0] ? r.c[0].v : '';
+      const apellido = r.c[1] ? r.c[1].v : '';
+      const score = r.c[2] ? Number(r.c[2].v) : 0;
+      if (nombre) scores.push({ nombre, apellido, score });
+    });
+    scores.sort((a, b) => b.score - a.score);
+    renderAll(scores);
+    document.getElementById('status-txt').textContent = 'Última actualización: ' + new Date().toLocaleTimeString('es-VE');
+  } catch (e) {
+    document.getElementById('status-txt').textContent = 'Error de conexión — reintentando...';
+  }
+}
+
+function renderAll(scores) {
+  const total = scores.length;
+  const avg = total ? Math.round(scores.reduce((a, b) => a + b.score, 0) / total) : 0;
+  const perfect = scores.filter(s => s.score === 50).length;
+  document.getElementById('total-part').textContent = total;
+  document.getElementById('avg-score').textContent = avg;
+  document.getElementById('perfect-count').textContent = perfect;
+  renderPodium(scores);
+  renderList(scores);
+}
+
+function renderPodium(scores) {
+  const top = scores.slice(0, 3);
+  const blocks = [
+    { cls: 'p2-block', medal: '🥈', idx: 1 },
+    { cls: 'p1-block', medal: '🥇', idx: 0 },
+    { cls: 'p3-block', medal: '🥉', idx: 2 }
+  ];
+  const p = document.getElementById('podium');
+  if (!scores.length) { p.innerHTML = ''; return; }
+  p.innerHTML = blocks.map(b => {
+    const s = top[b.idx];
+    if (!s) return '';
+    return `<div class="podium-col">
+      <div class="podium-name">${s.nombre} ${s.apellido}</div>
+      <div class="podium-score">${s.score} pts</div>
+      <div class="podium-block ${b.cls}">${b.medal}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderList(scores) {
+  const body = document.getElementById('list-body');
+  if (!scores.length) { body.innerHTML = '<div class="empty">Esperando respuestas...</div>'; return; }
+  const max = scores[0].score || 50;
+  const posClass = ['top1', 'top2', 'top3'];
+  const posColor = ['gold', 'silver', 'bronze'];
+  body.innerHTML = scores.map((s, i) => `
+    <div class="list-row ${posClass[i] || ''}">
+      <div class="pos ${posColor[i] || ''}">${i + 1}</div>
+      <div>
+        <div class="pname">${s.nombre} ${s.apellido}</div>
+        <div class="bar-wrap"><div class="bar" style="width:${Math.round(s.score / max * 100)}%"></div></div>
+      </div>
+      <div class="pscore">${s.score}</div>
+    </div>`).join('');
+}
+
+async function resetQuiz() {
+  if (!confirm('¿Segura que quieres reiniciar? Se borrarán todos los resultados actuales.')) return;
+  try {
+    await fetch(SCRIPT_URL + '?action=reset');
+    renderAll([]);
+    document.getElementById('status-txt').textContent = 'Quiz reiniciado — ' + new Date().toLocaleTimeString('es-VE');
+  } catch (e) { alert('Error al reiniciar. Intenta de nuevo.'); }
+}
+
+fetchScores();
+setInterval(fetchScores, 10000);
+</script>
+</body>
+</html>
