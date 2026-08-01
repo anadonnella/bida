@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BIDA — herramientas de compliance, finanzas y diagnóstico para empresas.">
+<title>BIDA — Herramientas</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F4FA;
+    --card:#FFFFFF;
+    --ink:#161E33;
+    --ink-soft:#5A6274;
+    --line: rgba(22,30,51,0.13);
+    --line-strong: rgba(22,30,51,0.26);
+    --brand:#3E71FF;
+    --brand-soft:#E7EDFF;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Source Serif 4', Georgia, serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:880px;margin:0 auto;padding:34px 22px 60px;}
+  .brand-logo-text{font-family:'IBM Plex Mono', monospace;font-weight:600;font-size:22px;letter-spacing:0.02em;color:var(--brand);margin-bottom:16px;}
+  .eyebrow{font-family:'IBM Plex Mono', monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-soft);}
+  h1{font-family:'Special Elite','Courier New',monospace;font-weight:400;font-size:28px;margin:10px 0 8px;}
+  .sub{margin:0 0 28px;color:var(--ink-soft);font-size:15.5px;max-width:60ch;line-height:1.55;}
+  .group{margin-bottom:30px;}
+  .group h2{font-family:'IBM Plex Mono', monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--brand);margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line-strong);}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;}
+  a.card{display:block;background:var(--card);border:1px solid var(--line-strong);padding:16px 18px;text-decoration:none;color:var(--ink);transition:border-color .12s, transform .12s;}
+  a.card:hover{border-color:var(--brand);transform:translateY(-2px);}
+  a.card .t{font-size:15px;font-weight:600;margin-bottom:4px;}
+  a.card .d{font-size:12.5px;color:var(--ink-soft);line-height:1.4;}
+  .arrow{font-family:'IBM Plex Mono',monospace;color:var(--brand);font-size:12px;margin-top:8px;display:block;}
+  .brandmark{margin-top:40px;text-align:center;font-family:'IBM Plex Mono', monospace;font-size:11px;letter-spacing:0.18em;color:var(--brand);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand-logo-text">BIDA</div>
+  <span class="eyebrow">Herramientas BIDA</span>
+  <h1>Centro de herramientas</h1>
+  <p class="sub">Instrumentos interactivos de BIDA para compliance, finanzas y diagnóstico empresarial. Elige la herramienta que necesitas.</p>
+
+  <div class="group">
+    <h2>Cumplimiento y trámites</h2>
+    <div class="cards">
+      <a class="card" href="checklist-cumplimiento.html">
+        <div class="t">Expediente de Cumplimiento</div>
+        <div class="d">Checklist de documentos, permisos y declaraciones para empresas en Venezuela.</div>
+        <span class="arrow">Abrir →</span>
+      </a>
+      <a class="card" href="constituir-empresa-venezuela.html">
+        <div class="t">Constituir Empresa</div>
+        <div class="d">Guía para constituir una empresa en Venezuela.</div>
+        <span class="arrow">Abrir →</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="group">
+    <h2>Finanzas</h2>
+    <div class="cards">
+      <a class="card" href="evaluador-credito.html">
+        <div class="t">Evaluador de Capacidad Crediticia</div>
+        <div class="d">Analiza ratios financieros y capacidad de pago.</div>
+        <span class="arrow">Abrir →</span>
+      </a>
+      <a class="card" href="excel-bi.html">
+        <div class="t">Excel BI</div>
+        <div class="d">Herramienta de inteligencia de negocios en Excel.</div>
+        <span class="arrow">Abrir →</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="group">
+    <h2>Diagnósticos</h2>
+    <div class="cards">
+      <a class="card" href="quiz.html">
+        <div class="t">Quiz General</div>
+        <div class="d">Cuestionario de diagnóstico.</div>
+        <span class="arrow">Abrir →</span>
+      </a>
+      <a class="card" href="quiz-productividad.html">
+        <div class="t">Quiz de Productividad</div>
+        <div class="d">Evalúa la productividad de tu equipo o empresa.</div>
+        <span class="arrow">Abrir →</span>
+      </a>
+      <a class="card" href="quiz-resiliencia.html">
+        <div class="t">Quiz de Resiliencia</div>
+        <div class="d">Evalúa la resiliencia organizacional.</div>
+        <span class="arrow">Abrir →</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="group">
+    <h2>Resultados y tablas</h2>
+    <div class="cards">
+      <a class="card" href="tabla.html">
+        <div class="t">Tabla General</div>
+        <div class="d">Vista de resultados general.</div>
+        <span class="arrow">Abrir →</span>
+      </a>
+      <a class="card" href="tabla-productividad.html">
+        <div class="t">Tabla de Productividad</div>
+        <div class="d">Resultados del quiz de productividad.</div>
+        <span class="arrow">Abrir →</span>
+      </a>
+      <a class="card" href="tabla-resiliencia.html">
+        <div class="t">Tabla de Resiliencia</div>
+        <div class="d">Resultados del quiz de resiliencia.</div>
+        <span class="arrow">Abrir →</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="brandmark">BIDA</div>
+</div>
+</body>
+</html>
