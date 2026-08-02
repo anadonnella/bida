@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Diagnóstico inicial de documentos de contabilidad — BIDA">
+<title>Diagnóstico Inicial — BIDA</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F4FA;
+    --paper-2:#E6EAF6;
+    --card:#FFFFFF;
+    --ink:#161E33;
+    --ink-soft:#5A6274;
+    --line: rgba(22,30,51,0.13);
+    --line-strong: rgba(22,30,51,0.26);
+    --brand:#3E71FF;
+    --brand-soft:#E7EDFF;
+    --seal-green:#1B7A57;
+    --seal-green-soft:#E1F2EA;
+    --danger:#B4400F;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:28px 20px 60px;}
+  .brand-logo-text{font-family:'IBM Plex Mono', monospace;font-weight:600;font-size:20px;letter-spacing:0.02em;color:var(--brand);margin-bottom:12px;}
+  .eyebrow{font-family:'IBM Plex Mono', monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-soft);}
+  h1{font-family:'Special Elite','Courier New',monospace;font-weight:400;font-size:24px;margin:8px 0 6px;}
+  .sub{margin:0 0 6px;color:var(--ink-soft);font-size:14.5px;line-height:1.55;}
+  .confidential{
+    font-size:12px; color:var(--ink-soft);
+    border-left:2px solid var(--brand);
+    padding:8px 12px;
+    margin:16px 0 22px;
+    background:var(--brand-soft);
+    line-height:1.5;
+  }
+
+  .progress-wrap{margin-bottom:22px;}
+  .progress-steps{display:flex; gap:6px; margin-bottom:8px;}
+  .progress-steps .seg{flex:1; height:5px; background:var(--line-strong); border-radius:3px; overflow:hidden;}
+  .progress-steps .seg.done{background:var(--brand);}
+  .progress-steps .seg.current{background:linear-gradient(90deg, var(--brand) 50%, var(--line-strong) 50%);}
+  .progress-label{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--ink-soft); letter-spacing:0.04em;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line-strong);
+    padding:24px 22px;
+  }
+  .card h2{
+    font-family:'Special Elite', monospace;
+    font-weight:400;
+    font-size:17px;
+    margin:0 0 4px;
+  }
+  .card .hint{font-size:13px; color:var(--ink-soft); margin:0 0 20px; line-height:1.55;}
+
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:7px;
+  }
+  .field label .req{color:var(--danger);}
+  .field input[type=text], .field input[type=email], .field input[type=date], .field textarea{
+    width:100%;
+    border:1px solid var(--line-strong);
+    background:var(--paper);
+    padding:10px 12px;
+    font-family:'Source Serif 4', Georgia, serif;
+    font-size:14.5px;
+    color:var(--ink);
+  }
+  .field textarea{min-height:90px; resize:vertical;}
+  .field input:focus, .field textarea:focus{outline:2px solid var(--brand); outline-offset:1px;}
+
+  .filebox{
+    border:1px dashed var(--line-strong);
+    background:var(--paper);
+    padding:14px;
+  }
+  .filebox .doclist{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    margin:0 0 12px;
+  }
+  .filebox input[type=file]{display:none;}
+  .filebox .btn-pick{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.04em;
+    padding:8px 14px;
+    border:1px solid var(--ink);
+    background:var(--ink);
+    color:var(--card);
+    cursor:pointer;
+  }
+  .filebox .btn-pick:hover{background:#28345A;}
+  .filelist{margin-top:12px;}
+  .filelist .fitem{
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:12.5px;
+    padding:6px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .filelist .fitem:last-child{border-bottom:none;}
+  .filelist .fname{color:var(--ink); word-break:break-all; padding-right:8px;}
+  .filelist .fsize{color:var(--ink-soft); font-family:'IBM Plex Mono', monospace; font-size:10.5px; flex:none;}
+  .filelist .fremove{
+    flex:none; margin-left:10px; cursor:pointer; color:var(--danger);
+    font-family:'IBM Plex Mono', monospace; font-size:11px; text-decoration:underline;
+  }
+
+  .nav-row{display:flex; justify-content:space-between; gap:10px; margin-top:24px;}
+  .btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    padding:11px 22px;
+    border:1px solid var(--ink);
+    background:var(--ink);
+    color:var(--card);
+    cursor:pointer;
+  }
+  .btn:hover{background:#28345A;}
+  .btn:disabled{opacity:0.5; cursor:not-allowed;}
+  .btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line-strong);}
+  .btn.ghost:hover{background:rgba(22,30,51,0.06);}
+
+  .error-msg{color:var(--danger); font-size:12.5px; margin-top:6px; display:none;}
+  .error-msg.show{display:block;}
+
+  .final-status{
+    text-align:center;
+    padding:40px 20px;
+  }
+  .final-status .stamp{
+    display:inline-block;
+    font-family:'Special Elite', monospace;
+    font-size:15px;
+    letter-spacing:0.06em;
+    color:var(--seal-green);
+    border:2px solid var(--seal-green);
+    padding:10px 22px;
+    transform:rotate(-4deg);
+    margin-bottom:18px;
+  }
+  .final-status p{color:var(--ink-soft); font-size:14px; line-height:1.6; max-width:44ch; margin:0 auto;}
+  .submit-log{
+    margin-top:18px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+  .brandmark{
+    margin-top:26px;
+    text-align:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.18em;
+    color:var(--brand);
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGMVcWMbGQF5yze_Ta66OgQx4_GODgV_tD0u54xvGAVsHNy7XQWTbZapWiInB2pYct/exec";
+const FORM_NAME = "Diagnostico Contabilidad";
+
+const STEPS = ['Datos generales', 'Legal y fiscal', 'Registros contables', 'Observaciones'];
+
+let state = {
+  step: 0,
+  fields: {
+    nombre_organizacion: '', rif: '', persona_contacto: '', correo_contacto: '', fecha: '',
+    observaciones: '', descripcion_organizacion: ''
+  },
+  files: { legal_fiscal: [], registros_contables: [] },
+  submitting: false,
+  submitLog: [],
+  done: false,
+  error: null
+};
+
+const DOC_LEGAL = "RIF, Acta constitutiva y estatutos, Registro vigente ante el ente regulador de ONG, última declaración de ISLR, últimas 3 declaraciones de IVA (si aplica), certificado de exención de ISLR (si aplica).";
+const DOC_CONTABLE = "Estados financieros (últimos 2 años), última actualización de libros legales, catálogo de cuentas, conciliaciones bancarias del último mes, balance de comprobación del último mes, presupuesto anual, listado de donantes/convenios, listado de nómina, contratos de servicios, pólizas de seguro, últimos pagos de parafiscales (IVSS/INCES/BANAVIH) y pensiones.";
+
+function fmtSize(bytes){
+  if(bytes < 1024) return bytes + ' B';
+  if(bytes < 1024*1024) return (bytes/1024).toFixed(0) + ' KB';
+  return (bytes/(1024*1024)).toFixed(1) + ' MB';
+}
+
+function fileToBase64(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=> resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function render(){
+  const app = document.getElementById('app');
+  if(state.done){ app.innerHTML = coverHTML() + doneHTML(); return; }
+  app.innerHTML = coverHTML() + progressHTML() + stepHTML();
+  bindStep();
+}
+
+function coverHTML(){
+  return `
+  <div class="brand-logo-text">BIDA</div>
+  <span class="eyebrow">Diagnóstico inicial</span>
+  <h1>Documentos de Contabilidad</h1>
+  <p class="sub">Completa tus datos y adjunta los documentos indicados en cada sección. Si tienes dudas sobre algún documento, indícalo en observaciones.</p>
+  <div class="confidential">
+    Toda la información compartida es <b>confidencial</b> y no podrá usarse con un fin distinto al diagnóstico inicial. La confidencialidad se extiende por 10 años. — BIDA GLOBAL 21, C.A. · J-506687011
+  </div>`;
+}
+
+function progressHTML(){
+  const segs = STEPS.map((s,i)=>{
+    let cls = 'seg';
+    if(i < state.step) cls += ' done';
+    else if(i === state.step) cls += ' current';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+  return `
+  <div class="progress-wrap">
+    <div class="progress-steps">${segs}</div>
+    <div class="progress-label">PASO ${state.step+1} DE ${STEPS.length} — ${STEPS[state.step].toUpperCase()}</div>
+  </div>`;
+}
+
+function fieldHTML(id, label, type, required){
+  const val = state.fields[id] || '';
+  const req = required ? '<span class="req">*</span>' : '';
+  if(type === 'textarea'){
+    return `<div class="field">
+      <label for="${id}">${label} ${req}</label>
+      <textarea id="${id}">${val}</textarea>
+    </div>`;
+  }
+  return `<div class="field">
+    <label for="${id}">${label} ${req}</label>
+    <input type="${type}" id="${id}" value="${val}">
+  </div>`;
+}
+
+function fileBoxHTML(bucket, docListText){
+  const files = state.files[bucket];
+  const items = files.map((f,i)=>`
+    <div class="fitem">
+      <span class="fname">${f.name}</span>
+      <span class="fsize">${fmtSize(f.size)}</span>
+      <span class="fremove" data-bucket="${bucket}" data-idx="${i}">quitar</span>
+    </div>`).join('');
+  return `
+  <div class="filebox">
+    <div class="doclist">${docListText}</div>
+    <label class="btn-pick" for="file_${bucket}">+ Adjuntar archivos</label>
+    <input type="file" id="file_${bucket}" data-bucket="${bucket}" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+    <div class="filelist">${items}</div>
+  </div>`;
+}
+
+function stepHTML(){
+  let body = '';
+  if(state.step === 0){
+    body = `
+      <h2>Datos generales</h2>
+      <p class="hint">Información básica de la organización.</p>
+      ${fieldHTML('nombre_organizacion','Nombre de la organización','text',true)}
+      ${fieldHTML('rif','RIF','text',true)}
+      ${fieldHTML('persona_contacto','Persona de contacto','text',true)}
+      ${fieldHTML('correo_contacto','Correo de contacto','email',true)}
+      ${fieldHTML('fecha','Fecha','date',true)}
+      <div class="error-msg" id="stepError">Completa los campos obligatorios antes de continuar.</div>`;
+  } else if(state.step === 1){
+    body = `
+      <h2>Legal y fiscal</h2>
+      <p class="hint">Sube hasta 10 archivos compatibles. Tamaño máximo por archivo: 10 MB.</p>
+      ${fileBoxHTML('legal_fiscal', DOC_LEGAL)}`;
+  } else if(state.step === 2){
+    body = `
+      <h2>Registros contables y operación</h2>
+      <p class="hint">Sube hasta 10 archivos compatibles. Tamaño máximo por archivo: 10 MB.</p>
+      ${fileBoxHTML('registros_contables', DOC_CONTABLE)}`;
+  } else if(state.step === 3){
+    body = `
+      <h2>Observaciones</h2>
+      <p class="hint">Opcional, pero nos ayuda a preparar mejor el diagnóstico.</p>
+      ${fieldHTML('observaciones','Observaciones generales — falta algún documento, está en trámite, o cualquier duda','textarea',false)}
+      ${fieldHTML('descripcion_organizacion','Explica a qué se dedica tu organización, cómo lo hace desde el inicio del ciclo hasta el cierre, y a qué otras organizaciones rinde cuentas','textarea',false)}`;
+  }
+
+  const isFirst = state.step === 0;
+  const isLast = state.step === STEPS.length - 1;
+  const nav = `
+    <div class="nav-row">
+      <button class="btn ghost" id="btnBack" ${isFirst?'disabled':''}>Atrás</button>
+      ${isLast
+        ? `<button class="btn" id="btnSubmit" ${state.submitting?'disabled':''}>${state.submitting?'Enviando...':'Enviar diagnóstico'}</button>`
+        : `<button class="btn" id="btnNext">Siguiente</button>`}
+    </div>
+    ${state.error ? `<div class="error-msg show">${state.error}</div>` : ''}
+    ${state.submitting ? `<div class="submit-log">${state.submitLog.join('<br>')}</div>` : ''}
+  `;
+
+  return `<div class="card">${body}${nav}</div><div class="brandmark">BIDA</div>`;
+}
+
+function doneHTML(){
+  return `
+  <div class="card final-status">
+    <div class="stamp">recibido</div>
+    <p>Gracias. Recibimos tu información y los documentos adjuntos. Nos pondremos en contacto si necesitamos algo adicional.</p>
+  </div>
+  <div class="brandmark">BIDA</div>`;
+}
+
+function readCurrentFields(){
+  if(state.step === 0){
+    ['nombre_organizacion','rif','persona_contacto','correo_contacto','fecha'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) state.fields[id] = el.value;
+    });
+  } else if(state.step === 3){
+    ['observaciones','descripcion_organizacion'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) state.fields[id] = el.value;
+    });
+  }
+}
+
+function bindStep(){
+  document.querySelectorAll('input[type=file]').forEach(el=>{
+    el.addEventListener('change', (e)=>{
+      const bucket = el.getAttribute('data-bucket');
+      const newFiles = Array.from(e.target.files);
+      newFiles.forEach(f=>{
+        if(f.size > 10*1024*1024){ alert(`"${f.name}" supera 10 MB y no se agregó.`); return; }
+        if(state.files[bucket].length >= 10){ alert('Máximo 10 archivos en esta sección.'); return; }
+        state.files[bucket].push(f);
+      });
+      el.value = '';
+      render();
+    });
+  });
+  document.querySelectorAll('.fremove').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const bucket = el.getAttribute('data-bucket');
+      const idx = parseInt(el.getAttribute('data-idx'),10);
+      state.files[bucket].splice(idx,1);
+      render();
+    });
+  });
+  const back = document.getElementById('btnBack');
+  if(back) back.addEventListener('click', ()=>{
+    readCurrentFields();
+    state.step = Math.max(0, state.step-1);
+    state.error = null;
+    render();
+  });
+  const next = document.getElementById('btnNext');
+  if(next) next.addEventListener('click', ()=>{
+    readCurrentFields();
+    if(state.step === 0){
+      const req = ['nombre_organizacion','rif','persona_contacto','correo_contacto','fecha'];
+      const missing = req.some(id => !state.fields[id] || !state.fields[id].trim());
+      if(missing){
+        document.getElementById('stepError').classList.add('show');
+        return;
+      }
+    }
+    state.step = Math.min(STEPS.length-1, state.step+1);
+    state.error = null;
+    render();
+  });
+  const submit = document.getElementById('btnSubmit');
+  if(submit) submit.addEventListener('click', doSubmit);
+}
+
+async function doSubmit(){
+  readCurrentFields();
+  if(!SCRIPT_URL || SCRIPT_URL.indexOf('PEGA_AQUI') === 0){
+    state.error = 'Este formulario aún no está conectado a Google Sheets/Drive. Falta configurar la URL de Apps Script.';
+    render();
+    return;
+  }
+  state.submitting = true;
+  state.error = null;
+  state.submitLog = ['Enviando tus datos...'];
+  render();
+
+  const submissionId = 'sub_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+
+  try{
+    const initRes = await fetch(SCRIPT_URL, {
+      method:'POST',
+      body: JSON.stringify({
+        action:'init',
+        formName: FORM_NAME,
+        submissionId,
+        orgLabel: state.fields.nombre_organizacion,
+        answers: {
+          'Nombre de la organizacion': state.fields.nombre_organizacion,
+          'RIF': state.fields.rif,
+          'Persona de contacto': state.fields.persona_contacto,
+          'Correo de contacto': state.fields.correo_contacto,
+          'Fecha': state.fields.fecha,
+          'Observaciones generales': state.fields.observaciones,
+          'Descripcion de la organizacion': state.fields.descripcion_organizacion
+        }
+      })
+    }).then(r=>r.json());
+
+    if(!initRes.ok) throw new Error(initRes.error || 'No se pudo iniciar el envío.');
+    const folderId = initRes.folderId;
+
+    const allFiles = [
+      ...state.files.legal_fiscal.map(f=>({f, field:'Legal y fiscal'})),
+      ...state.files.registros_contables.map(f=>({f, field:'Registros contables y operacion'}))
+    ];
+
+    for(let i=0;i<allFiles.length;i++){
+      const {f, field} = allFiles[i];
+      state.submitLog.push(`Subiendo archivo ${i+1} de ${allFiles.length}: ${f.name}`);
+      render();
+      const base64 = await fileToBase64(f);
+      const fileRes = await fetch(SCRIPT_URL, {
+        method:'POST',
+        body: JSON.stringify({
+          action:'file', formName: FORM_NAME, submissionId, folderId,
+          fieldName: field, fileName: f.name, mimeType: f.type || 'application/octet-stream', base64
+        })
+      }).then(r=>r.json());
+      if(!fileRes.ok) throw new Error(fileRes.error || `Error subiendo ${f.name}`);
+    }
+
+    state.submitting = false;
+    state.done = true;
+    render();
+  }catch(err){
+    state.submitting = false;
+    state.error = 'Ocurrió un problema al enviar: ' + err.message + '. Puedes intentar de nuevo.';
+    render();
+  }
+}
+
+render();
+</script>
+</body>
+</html>
