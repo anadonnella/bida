@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz · Storytelling para Perfiles Técnicos · Bida Global</title>
+<style>
+  :root{
+    --navy:#0D1B4B;
+    --navy-dark:#0A1440;
+    --accent:#F5A623;
+    --accent-dark:#C9860F;
+    --light:#F4F5F9;
+    --text:#1A2340;
+    --muted:#5B6482;
+    --green:#1FAE7A;
+    --red:#E4573D;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh;
+    font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    background:linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 100%);
+    color:var(--text);
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .card{
+    width:100%; max-width:640px; background:var(--white);
+    border-radius:14px; box-shadow:0 30px 60px rgba(0,0,0,.35);
+    overflow:hidden;
+  }
+  .head{
+    background:var(--navy); padding:26px 30px 22px; text-align:center;
+    border-bottom:4px solid var(--accent);
+  }
+  .head .logo{ font-family:Georgia,serif; font-weight:800; font-size:26px; color:#fff; letter-spacing:1px; }
+  .head .logo span{ color:var(--accent); }
+  .head .tag{ color:var(--accent); font-size:11px; font-weight:700; letter-spacing:2px; margin-top:4px; }
+  .head h1{ color:#fff; font-family:Georgia,serif; font-size:19px; margin:10px 0 0; font-weight:700; }
+  .body{ padding:28px 30px 30px; }
+  .progress-wrap{ height:6px; background:var(--light); border-radius:6px; overflow:hidden; margin-bottom:22px; }
+  .progress-bar{ height:100%; background:var(--accent); width:0%; transition:width .35s ease; }
+  .step-label{ font-size:12px; font-weight:700; color:var(--muted); letter-spacing:1px; margin-bottom:6px; }
+  .question{ font-family:Georgia,serif; font-size:19px; font-weight:700; color:var(--navy); margin:0 0 18px; line-height:1.35;}
+  .opt{
+    display:flex; align-items:center; gap:12px;
+    border:2px solid #E4E6EF; border-radius:10px; padding:13px 16px; margin-bottom:10px;
+    cursor:pointer; transition:.15s; font-size:15px; background:#fff;
+  }
+  .opt:hover{ border-color:var(--accent); background:#FFF9EF; }
+  .opt.selected{ border-color:var(--accent); background:#FFF3DC; }
+  .opt .bullet{
+    width:22px;height:22px;border-radius:50%;border:2px solid #C7CCE3;
+    display:flex;align-items:center;justify-content:center;flex:0 0 22px;font-size:12px;color:#fff;font-weight:700;
+  }
+  .opt.selected .bullet{ background:var(--accent); border-color:var(--accent); }
+  input[type=text], input[type=email]{
+    width:100%; padding:13px 14px; border:2px solid #E4E6EF; border-radius:10px;
+    font-size:15px; margin-bottom:14px; font-family:inherit;
+  }
+  input[type=text]:focus, input[type=email]:focus{ outline:none; border-color:var(--accent); }
+  label.field-label{ font-size:13px; font-weight:700; color:var(--navy); display:block; margin-bottom:6px; }
+  .btn{
+    width:100%; padding:14px; border:none; border-radius:10px; font-size:15px; font-weight:700;
+    background:var(--accent); color:var(--navy-dark); cursor:pointer; transition:.15s;
+  }
+  .btn:hover{ background:var(--accent-dark); color:#fff; }
+  .btn:disabled{ background:#E4E6EF; color:#9AA3C4; cursor:not-allowed; }
+  .btn-ghost{
+    width:100%; padding:12px; border:none; background:transparent; color:var(--muted);
+    font-size:13px; margin-top:10px; cursor:pointer; text-decoration:underline;
+  }
+  .row2{ display:flex; gap:10px; }
+  .row2 > div{ flex:1; }
+  .screen{ display:none; }
+  .screen.active{ display:block; }
+  .result-hero{ text-align:center; padding:10px 0 20px; }
+  .result-score{ font-family:Georgia,serif; font-size:56px; font-weight:800; color:var(--accent); line-height:1; }
+  .result-sub{ color:var(--muted); font-size:14px; margin-top:6px; }
+  .badge{
+    display:inline-block; margin-top:16px; background:var(--navy); color:#fff;
+    padding:10px 20px; border-radius:30px; font-size:13px; font-weight:700;
+  }
+  .badge span{ color:var(--accent); }
+  .review{ margin-top:22px; border-top:1px solid #E4E6EF; padding-top:16px; }
+  .review-item{ display:flex; gap:10px; padding:8px 0; font-size:13.5px; align-items:flex-start; }
+  .review-item .ic{ flex:0 0 18px; font-weight:800; }
+  .ok{ color:var(--green); } .no{ color:var(--red); }
+  .foot-note{ text-align:center; color:var(--muted); font-size:12px; margin-top:18px; }
+  .link-tabla{ color:var(--accent-dark); font-weight:700; text-decoration:none; }
+  .error-msg{ color:var(--red); font-size:13px; margin-top:-6px; margin-bottom:12px; display:none; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="head">
+    <div class="logo">BID<span>A</span></div>
+    <div class="tag">BIDA GLOBAL · SKILLS PROGRAM</div>
+    <h1>Storytelling para Perfiles Técnicos</h1>
+  </div>
+  <div class="body">
+
+    <!-- PANTALLA 0: nombre -->
+    <div class="screen active" id="screen-intro">
+      <div class="step-label">ANTES DE EMPEZAR</div>
+      <p class="question" style="font-size:17px;">Escribe tu nombre para aparecer en la tabla de posiciones:</p>
+      <label class="field-label">Nombre completo</label>
+      <input type="text" id="inputNombre" placeholder="Ej. María Fernández" maxlength="60">
+      <div class="error-msg" id="errNombre">Por favor escribe tu nombre para continuar.</div>
+      <button class="btn" onclick="startQuiz()">Comenzar Quiz →</button>
+      <p class="foot-note">6 preguntas · ~3 minutos · Tus respuestas se guardan en tiempo real</p>
+    </div>
+
+    <!-- PANTALLAS DE PREGUNTAS (generadas por JS) -->
+    <div class="screen" id="screen-quiz">
+      <div class="step-label" id="stepLabel">PREGUNTA 1 DE 6</div>
+      <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+      <p class="question" id="questionText"></p>
+      <div id="optionsWrap"></div>
+      <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente →</button>
+    </div>
+
+    <!-- PANTALLA FINAL -->
+    <div class="screen" id="screen-result">
+      <div class="result-hero">
+        <div class="step-label">¡QUIZ COMPLETADO!</div>
+        <div class="result-score" id="scoreText">0/6</div>
+        <div class="result-sub" id="scoreSub">Enviando tu resultado…</div>
+        <div class="badge">🏆 Badge: <span>Technical Storyteller</span></div>
+      </div>
+      <div class="review" id="reviewWrap"></div>
+      <a class="link-tabla" href="tabla-storytelling.html" target="_blank">
+        <button class="btn" style="margin-top:20px;">Ver tabla de posiciones en vivo →</button>
+      </a>
+      <p class="foot-note">Storytelling para Perfiles Técnicos · Bida Global Skills Program</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURACIÓN — pega aquí la URL de tu Google Apps Script
+   (Implementación > Nueva implementación > Aplicación web)
+   ============================================================ */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyMIWKX18_xCeJSnEySeLxeOK5sgK3jrjmotpXpO_sQjObN0TgN1Y5RoYOSHUjAjqla/exec";
+const SESION = "storytelling";
+
+/* Preguntas — fuentes verificadas (ver Guía del Facilitador, Parte 3) */
+const QUESTIONS = [
+  {
+    q: "Según Bower & Clark (Psychonomic Science, 1969), ¿cuántas veces más se recuerda un dato transmitido dentro de una historia frente a un dato aislado?",
+    options: ["Se recuerda igual, no hay diferencia", "Se recuerda de 6 a 7 veces más", "Se recuerda 22 veces más", "Se recuerda la mitad de veces"],
+    correct: 1
+  },
+  {
+    q: "En la adaptación del Viaje del Héroe (Joseph Campbell) para productos o servicios tecnológicos, ¿quién debe ser el Héroe?",
+    options: ["El equipo técnico que resuelve el problema", "El producto o la herramienta", "El cliente o usuario final", "El proveedor de la tecnología"],
+    correct: 2
+  },
+  {
+    q: "El Paradigma Narrativo de Walter Fisher sostiene que evaluamos las historias mediante:",
+    options: ["Coherencia (lógica) y Fidelidad (resonancia con la experiencia)", "Precisión técnica y velocidad de entrega", "Cantidad de datos y nivel de detalle", "Autoridad del emisor únicamente"],
+    correct: 0
+  },
+  {
+    q: "¿Cuál es el error principal al presentarse únicamente con habilidades técnicas ('soy experto en Java')?",
+    options: ["Suena poco profesional", "Obliga al interlocutor a adivinar la utilidad práctica de la habilidad", "Es una frase demasiado corta", "No menciona certificaciones"],
+    correct: 1
+  },
+  {
+    q: "La forma narrativa 'Man in a Hole' de Kurt Vonnegut es ideal para comunicar:",
+    options: ["Una lista de precios", "Un manual de instalación", "Análisis de causa raíz (RCA) y cómo la operación aprendió y se fortaleció", "Los términos y condiciones de un contrato"],
+    correct: 2
+  },
+  {
+    q: "P6 (accionable) — Según la encuesta de Duolingo/LinkedIn en 8 países, ¿qué porcentaje de empleados reportó malentendidos reales en el trabajo por el uso de jerga técnica no traducida?",
+    options: ["10%", "25%", "40%", "68%"],
+    correct: 2
+  },
+];
+
+let current = 0;
+let answers = [];
+let nombre = "";
+
+function startQuiz(){
+  const val = document.getElementById('inputNombre').value.trim();
+  if(!val){
+    document.getElementById('errNombre').style.display = 'block';
+    return;
+  }
+  nombre = val;
+  document.getElementById('screen-intro').classList.remove('active');
+  document.getElementById('screen-quiz').classList.add('active');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const item = QUESTIONS[current];
+  document.getElementById('stepLabel').textContent = `PREGUNTA ${current+1} DE ${QUESTIONS.length}`;
+  document.getElementById('progressBar').style.width = `${(current/QUESTIONS.length)*100}%`;
+  document.getElementById('questionText').textContent = item.q;
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+  item.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'opt';
+    div.innerHTML = `<div class="bullet">${String.fromCharCode(65+i)}</div><div>${opt}</div>`;
+    div.onclick = () => selectOption(i, div);
+    wrap.appendChild(div);
+  });
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').textContent = current === QUESTIONS.length-1 ? 'Ver resultado →' : 'Siguiente →';
+}
+
+function selectOption(i, el){
+  document.querySelectorAll('#optionsWrap .opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[current] = i;
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion(){
+  if(current < QUESTIONS.length - 1){
+    current++;
+    renderQuestion();
+  } else {
+    finishQuiz();
+  }
+}
+
+function finishQuiz(){
+  document.getElementById('screen-quiz').classList.remove('active');
+  document.getElementById('screen-result').classList.add('active');
+
+  let score = 0;
+  const reviewWrap = document.getElementById('reviewWrap');
+  reviewWrap.innerHTML = '';
+  QUESTIONS.forEach((item, i) => {
+    const isCorrect = answers[i] === item.correct;
+    if(isCorrect) score++;
+    const row = document.createElement('div');
+    row.className = 'review-item';
+    row.innerHTML = `<div class="ic ${isCorrect?'ok':'no'}">${isCorrect?'✓':'✗'}</div>
+      <div><b>P${i+1}.</b> ${item.q}<br><span style="color:${isCorrect?'#1FAE7A':'#E4573D'}">
+      Tu respuesta: ${item.options[answers[i]] ?? '(sin responder)'}</span>
+      ${isCorrect?'':'<br><span style="color:#5B6482">Correcta: '+item.options[item.correct]+'</span>'}</div>`;
+    reviewWrap.appendChild(row);
+  });
+
+  document.getElementById('scoreText').textContent = `${score}/${QUESTIONS.length}`;
+  document.getElementById('scoreSub').textContent =
+    score === 6 ? '¡Puntaje perfecto, storyteller!' :
+    score >= 4 ? '¡Muy buen dominio de los marcos narrativos!' :
+    'Buen intento — repasa el cheat sheet para reforzar.';
+
+  submitResult(score);
+}
+
+function submitResult(score){
+  const payload = {
+    sesion: SESION,
+    nombre: nombre,
+    score: score,
+    total: QUESTIONS.length,
+    timestamp: new Date().toISOString(),
+  };
+  if(!SCRIPT_URL || SCRIPT_URL.indexOf('PEGA_AQUI') === 0){
+    document.getElementById('scoreSub').textContent += ' (Nota: falta configurar SCRIPT_URL)';
+    return;
+  }
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+  }).catch(() => {
+    document.getElementById('scoreSub').textContent += ' (no se pudo enviar — revisa tu conexión)';
+  });
+}
+</script>
+</body>
+</html>
