@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico Financiero-Tecnológico — Bida Global</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12161c; --panel: #1b212b; --panel-2: #232b37;
+    --text: #ede9df; --text-dim: #9aa3af;
+    --amber: #c9973f; --green: #4c8b6b; --sienna: #a8562e; --brick: #8c3b2e;
+    --hair: #2b3340;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{ background: var(--bg); color: var(--text); font-family:'Inter',sans-serif;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+  .device{ width:100%; max-width:640px; background:var(--panel); border:1px solid var(--hair);
+    border-radius:6px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.45); }
+  .strip{ display:flex; align-items:center; justify-content:space-between; padding:18px 24px;
+    border-bottom:1px solid var(--hair); background:var(--panel-2); }
+  .brand{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-dim); }
+  .brand b{ color:var(--amber); font-weight:600; }
+  .gauge-track{ height:3px; background:var(--hair); position:relative; overflow:hidden; }
+  .gauge-fill{ height:100%; background:var(--amber); width:0%; transition:width .4s ease; }
+  .body-pad{ padding:36px 32px 32px; }
+  .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin:0 0 10px; }
+  h1{ font-family:'Source Serif 4',serif; font-weight:600; font-size:26px; line-height:1.25; margin:0 0 14px; }
+  p.lead{ color:var(--text-dim); font-size:15px; line-height:1.6; margin:0 0 22px; }
+  .qnum{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dim); margin-bottom:8px; }
+  .qnum b{ color:var(--text); }
+  .qtext{ font-family:'Source Serif 4',serif; font-size:20px; line-height:1.4; margin:0 0 24px; }
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{ display:flex; align-items:center; gap:14px; padding:14px 16px; border:1px solid var(--hair);
+    border-radius:4px; cursor:pointer; background:var(--panel-2); transition:border-color .15s ease, background .15s ease; }
+  .opt:hover{ border-color:var(--amber); }
+  .opt.selected{ border-color:var(--amber); background:rgba(201,151,63,0.12); }
+  .opt .dot{ width:16px; height:16px; border-radius:50%; border:1px solid var(--text-dim); flex:0 0 auto; position:relative; }
+  .opt.selected .dot{ border-color:var(--amber); }
+  .opt.selected .dot::after{ content:''; position:absolute; inset:3px; border-radius:50%; background:var(--amber); }
+  .opt span.label{ font-size:14.5px; line-height:1.4; }
+  .other-field{ margin-top:12px; }
+  .other-field textarea{ width:100%; background:var(--panel-2); border:1px solid var(--hair); border-radius:4px;
+    color:var(--text); font-family:'Inter',sans-serif; font-size:14px; padding:12px; resize:vertical; }
+  .other-field textarea:focus{ outline:none; border-color:var(--amber); }
+  .name-field input{ width:100%; background:var(--panel-2); border:1px solid var(--hair); border-radius:4px;
+    color:var(--text); font-family:'Inter',sans-serif; font-size:15px; padding:14px 16px; margin-bottom:26px; }
+  .name-field input:focus{ outline:none; border-color:var(--amber); }
+  .nav{ display:flex; justify-content:space-between; align-items:center; margin-top:30px; }
+  button{ font-family:'Inter',sans-serif; font-size:13.5px; font-weight:600; letter-spacing:.02em;
+    padding:12px 22px; border-radius:4px; border:1px solid var(--hair); background:transparent; color:var(--text-dim); cursor:pointer; transition:all .15s ease; }
+  button.primary{ background:var(--amber); border-color:var(--amber); color:#191207; }
+  button.primary:hover{ filter:brightness(1.08); }
+  button:disabled{ opacity:.35; cursor:not-allowed; }
+  button.ghost:hover{ border-color:var(--text-dim); color:var(--text); }
+  .section-tag{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.12em;
+    text-transform:uppercase; padding:3px 8px; border-radius:3px; margin-bottom:14px; }
+  .tag-fin{ background:rgba(76,139,107,.16); color:#7fb897; }
+  .tag-tech{ background:rgba(201,151,63,.16); color:var(--amber); }
+  .matrix-wrap{ display:flex; justify-content:center; margin:8px 0 26px; }
+  .quad-title{ font-family:'Source Serif 4',serif; font-size:24px; font-weight:700; margin:4px 0 2px; }
+  .risk-badge{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; padding:4px 10px; border-radius:3px; margin:10px 0 16px; border:1px solid currentColor; }
+  .quad-desc{ color:var(--text-dim); font-size:14.5px; line-height:1.6; margin:0 0 18px; }
+  .block-title{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--text); margin:22px 0 8px; }
+  .block-para{ color:var(--text-dim); font-size:14px; line-height:1.65; margin:0 0 4px; }
+  .scores{ display:flex; gap:14px; margin-bottom:8px; }
+  .score-card{ flex:1; background:var(--panel-2); border:1px solid var(--hair); border-radius:4px; padding:16px; }
+  .score-card .n{ font-family:'IBM Plex Mono',monospace; font-size:28px; font-weight:600; }
+  .score-card .of{ font-size:13px; color:var(--text-dim); font-weight:400; }
+  .score-card .l{ font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.08em; margin-top:4px; }
+  .score-card .gap{ font-size:11.5px; color:var(--text-dim); margin-top:6px; }
+  .footer-note{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dim); border-top:1px solid var(--hair);
+    padding-top:18px; margin-top:22px; line-height:1.6; }
+  @media print{
+    body{ background:#fff; color:#111; padding:0; }
+    .device{ box-shadow:none; border:none; max-width:100%; }
+    .strip, .gauge-track, .nav, .footer-note{ display:none; }
+    .quad-desc, .block-para{ color:#333; }
+    .score-card{ background:#f4f4f4; border-color:#ccc; }
+    .eyebrow{ color:#a8752c; }
+  }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="strip">
+    <div class="brand"><b>BIDA GLOBAL</b> · Instrumento de Diagnóstico</div>
+    <div class="brand" id="counter">INICIO</div>
+  </div>
+  <div class="gauge-track"><div class="gauge-fill" id="gaugeFill"></div></div>
+  <div class="body-pad" id="app"></div>
+</div>
+
+<script>
+const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxZHJukuFB0jjlzIYDdno20DKXe0f5w10X5S3wpKYYhVegTkq1M7-KSpZbTnvlWCcYe/exec";
+
+const FIN_Q = [
+  {t:"¿Con qué frecuencia revisas tus estados financieros?", o:["Nunca, o solo en el cierre anual","Trimestral","Mensual","Semanal o en tiempo real"]},
+  {t:"¿Conoces tu punto de equilibrio actual?", o:["No","Tengo una idea aproximada","Sí, calculado","Sí, actualizado y monitoreado"]},
+  {t:"¿Tienes una proyección de flujo de caja a 3 meses?", o:["No existe","Está en proceso","Existe, se actualiza a veces","Existe y se actualiza siempre"]},
+  {t:"¿Qué tan cubierta está tu empresa ante inflación y diferencial cambiario?", o:["Sin ninguna cobertura","Algo, de forma informal","Con una política definida","Cobertura activa y monitoreada"]},
+  {t:"¿Tus obligaciones tributarias están al día y sin riesgo?", o:["No estoy seguro","Al día, pero con dudas","Al día y revisado ocasionalmente","Al día y verificado sistemáticamente"]},
+  {t:"¿Alguien más allá de ti revisa tus números?", o:["Nadie","Un contador externo puntual","Un asesor recurrente","Un equipo o comité financiero"]},
+  {t:"¿Tu Registro Mercantil está actualizado, con balances anuales aprobados hasta 2025?", o:["No está actualizado","En trámite de actualización","Actualizado, pero sin balance 2025 aprobado","Actualizado y con balance 2025 aprobado"]},
+];
+const TECH_Q = [
+  {t:"¿Cómo llevas tu contabilidad hoy?", o:["Cuaderno o Excel sin estructura","Excel estructurado","Sistema contable básico","ERP integrado"]},
+  {t:"¿Tus sistemas de ventas, inventario y contabilidad están conectados?", o:["No, todo por separado","Algunos conectados manualmente","La mayoría conectados","Todo integrado automáticamente"]},
+  {t:"¿Usas alguna herramienta de IA en tu operación financiera?", o:["No","La probé una vez","La uso ocasionalmente","La uso todos los días"]},
+  {t:"¿Cuánto tiempo del mes se va en tareas manuales repetitivas (cargar data, cuadrar Excel)?", o:["Mucho, es la mayor carga","Bastante","Poco, ya está en parte automatizado","Casi nada, está automatizado"]},
+  {t:"¿Tienes un tablero o reporte que te muestre tus números sin armarlo a mano?", o:["No","A veces, con esfuerzo","Sí, pero se desactualiza","Sí, siempre actualizado"]},
+  {t:"Si necesitaras un diagnóstico completo de tu empresa mañana, ¿en cuánto tiempo tendrías la información lista?", o:["Semanas","Días","Un día","Horas"]},
+  {t:"¿Cómo factura tu empresa actualmente?", o:["Formato preimpreso (talonario físico)","Otro (especifica)","Facturación digital (PDF/Excel generado internamente)","Sistema homologado ante el ente fiscal (factura electrónica)"], otherIndex:1},
+];
+const ALL_Q = FIN_Q.map(q=>({...q, block:'fin'})).concat(TECH_Q.map(q=>({...q, block:'tech'})));
+
+let stage = 'intro'; // intro | questions | result
+let current = 0;
+const answers = new Array(ALL_Q.length).fill(null);
+const otherTexts = {};
+let empresa = '';
+
+const app = document.getElementById('app');
+const counter = document.getElementById('counter');
+const gaugeFill = document.getElementById('gaugeFill');
+function pad(n){ return n.toString().padStart(2,'0'); }
+
+function renderIntro(){
+  counter.textContent = 'INICIO';
+  gaugeFill.style.width = '0%';
+  app.innerHTML = `
+    <div class="eyebrow">Diagnóstico express</div>
+    <h1>Diagnóstico Financiero-Tecnológico</h1>
+    <p class="lead">14 preguntas, 5 minutos. Al final vas a ver exactamente dónde está tu empresa hoy — y qué tan lejos está del punto óptimo.</p>
+    <div class="name-field">
+      <input type="text" id="empresaInput" placeholder="Nombre de la empresa (opcional)" value="${empresa}">
+    </div>
+    <div class="nav">
+      <span></span>
+      <button class="primary" id="startBtn">Comenzar diagnóstico</button>
+    </div>
+  `;
+  document.getElementById('startBtn').addEventListener('click', ()=>{
+    empresa = document.getElementById('empresaInput').value.trim();
+    stage = 'questions';
+    current = 0;
+    renderQuestion();
+  });
+}
+
+function renderQuestion(){
+  const q = ALL_Q[current];
+  counter.textContent = pad(current+1) + ' / ' + ALL_Q.length;
+  gaugeFill.style.width = ((current)/ALL_Q.length*100) + '%';
+  const showOther = q.otherIndex !== undefined && answers[current] === q.otherIndex;
+  const nextDisabled = answers[current]===null || (showOther && (!otherTexts[current] || otherTexts[current].trim()===''));
+
+  app.innerHTML = `
+    <div class="eyebrow">${q.block==='fin' ? 'Madurez financiera' : 'Madurez tecnológica'}</div>
+    <div class="qnum">Pregunta <b>${current+1}</b> de ${ALL_Q.length}</div>
+    <div class="qtext">${q.t}</div>
+    <div class="options">
+      ${q.o.map((opt,i)=>`
+        <div class="opt ${answers[current]===i?'selected':''}" data-i="${i}">
+          <div class="dot"></div><span class="label">${opt}</span>
+        </div>`).join('')}
+    </div>
+    ${showOther ? `<div class="other-field"><textarea id="otherInput" rows="2" placeholder="Describe brevemente cómo facturas...">${otherTexts[current]||''}</textarea></div>` : ''}
+    <div class="nav">
+      <button class="ghost" id="backBtn">Atrás</button>
+      <button class="primary" id="nextBtn" ${nextDisabled?'disabled':''}>
+        ${current === ALL_Q.length-1 ? 'Ver resultado' : 'Siguiente'}
+      </button>
+    </div>
+  `;
+
+  app.querySelectorAll('.opt').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      answers[current] = parseInt(el.dataset.i);
+      renderQuestion();
+    });
+  });
+  if(showOther){
+    const ta = document.getElementById('otherInput');
+    ta.addEventListener('input', ()=>{
+      otherTexts[current] = ta.value;
+      document.getElementById('nextBtn').disabled = ta.value.trim().length === 0;
+    });
+  }
+  document.getElementById('backBtn').addEventListener('click', ()=>{
+    if(current>0){ current--; renderQuestion(); } else { stage='intro'; renderIntro(); }
+  });
+  document.getElementById('nextBtn').addEventListener('click', ()=>{
+    if(current < ALL_Q.length-1){ current++; renderQuestion(); }
+    else { stage='result'; renderResult(); }
+  });
+}
+
+function scoreBlock(block){
+  const idxs = ALL_Q.map((q,i)=>q.block===block?i:null).filter(i=>i!==null);
+  const sum = idxs.reduce((acc,i)=> acc + (answers[i]!==null?answers[i]:0), 0);
+  const max = idxs.length * 3;
+  return Math.round((sum/max)*100);
+}
+
+function quadrantInfo(finScore, techScore){
+  const finHigh = finScore>=50, techHigh = techScore>=50;
+  if(finHigh && techHigh) return {
+    quadrant:'Preparado', color:'var(--green)', risk:'Riesgo bajo',
+    desc:'Disciplina financiera y respaldo tecnológico ya conviven. El riesgo aquí no es de exposición, es de subutilización.',
+    loss:'Con esta base, la empresa puede tomar decisiones con datos en tiempo real, negociar mejor financiamiento y escalar sin fricción — dejar de aprovecharlo es el único costo real.',
+    rec:'Pasar de diagnóstico a optimización: automatizar reportes recurrentes y usar los datos ya disponibles para planeación estratégica, no solo control.'
+  };
+  if(finHigh && !techHigh) return {
+    quadrant:'Manual pero sano', color:'var(--amber)', risk:'Riesgo medio',
+    desc:'Los números están sanos, pero se sostienen a pulso, no con sistema.',
+    loss:'Cada vez que la persona que lleva los números falta, se enferma o se va, el control financiero se pausa. Sin trazabilidad digital, escalar el negocio implica escalar también el esfuerzo manual.',
+    rec:'Digitalizar el registro y el reporting sin tocar la disciplina financiera que ya existe: es la ganancia más rápida y de menor riesgo.'
+  };
+  if(!finHigh && techHigh) return {
+    quadrant:'Digital pero desordenado', color:'var(--sienna)', risk:'Riesgo medio-alto',
+    desc:'Hay herramientas y datos, pero no se están traduciendo en control financiero real.',
+    loss:'Es el perfil más peligroso: la sensación de estar "al día" esconde exposición cambiaria, tributaria o de flujo que nadie está mirando con criterio experto.',
+    rec:'No se necesita más tecnología — se necesita criterio financiero que interprete lo que la tecnología ya está generando.'
+  };
+  return {
+    quadrant:'A ciegas', color:'var(--brick)', risk:'Riesgo crítico',
+    desc:'Ni el control financiero ni el respaldo tecnológico están consolidados.',
+    loss:'Decisiones sin visibilidad de punto de equilibrio, exposición cambiaria o cumplimiento tributario. El costo no se ve hasta que aparece: una multa, un financiamiento perdido por falta de balances aprobados, o una crisis de caja que se pudo anticipar.',
+    rec:'Empezar por lo mínimo viable: visibilidad financiera básica y regularización de registros, antes de invertir en cualquier sistema.'
+  };
+}
+
+function renderResult(){
+  gaugeFill.style.width = '100%';
+  counter.textContent = 'RESULTADO';
+  const finScore = scoreBlock('fin');
+  const techScore = scoreBlock('tech');
+  const info = quadrantInfo(finScore, techScore);
+
+  submitToSheet({
+    empresa: empresa || 'Sin especificar',
+    finScore, techScore,
+    quadrant: info.quadrant,
+    riskLevel: info.risk,
+    answers: answers.slice()
+  });
+
+  app.innerHTML = `
+    <div class="eyebrow">Instrumento de posición · Financiera × Tecnológica</div>
+    ${empresa ? `<div class="qnum" style="margin-bottom:2px">${empresa}</div>` : ''}
+    <div class="quad-title" style="color:${info.color}">${info.quadrant}</div>
+    <div class="risk-badge" style="color:${info.color}">${info.risk}</div>
+    <div class="quad-desc">${info.desc}</div>
+
+    <div class="scores">
+      <div class="score-card">
+        <div class="n" style="color:var(--green)">${finScore}<span class="of"> / 100</span></div>
+        <div class="l">Madurez financiera</div>
+        <div class="gap">A ${100-finScore} puntos del óptimo</div>
+      </div>
+      <div class="score-card">
+        <div class="n" style="color:var(--amber)">${techScore}<span class="of"> / 100</span></div>
+        <div class="l">Madurez tecnológica</div>
+        <div class="gap">A ${100-techScore} puntos del óptimo</div>
+      </div>
+    </div>
+
+    <div class="matrix-wrap">${renderMatrix(finScore, techScore, info.color)}</div>
+
+    <div class="block-title">Qué te está costando hoy</div>
+    <div class="block-para">${info.loss}</div>
+
+    <div class="block-title">Recomendación</div>
+    <div class="block-para">${info.rec}</div>
+
+    <div class="nav">
+      <button class="ghost" id="restartBtn">Repetir diagnóstico</button>
+      <button class="primary" id="printBtn">Descargar / imprimir PDF</button>
+    </div>
+    <div class="footer-note">Diagnóstico express de referencia — orienta la conversación inicial. El informe ejecutivo completo se elabora en la fase de consultoría con Bida Global.</div>
+  `;
+
+  document.getElementById('restartBtn').addEventListener('click', ()=>{
+    current=0; answers.fill(null); for(const k in otherTexts) delete otherTexts[k];
+    stage='intro'; renderIntro();
+  });
+  document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+}
+
+function renderMatrix(finScore, techScore, dotColor){
+  const size=260, pad=20;
+  const x = pad + (techScore/100)*(size-pad*2);
+  const y = pad + ((100-finScore)/100)*(size-pad*2);
+  return `
+  <svg width="${size+60}" height="${size+50}" viewBox="0 0 ${size+60} ${size+50}">
+    <text x="${(size+60)/2}" y="14" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#9aa3af" letter-spacing="1">MADUREZ TECNOLÓGICA →</text>
+    <g transform="translate(40,22)">
+      <text x="-12" y="${size/2}" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#9aa3af" transform="rotate(-90 -12 ${size/2})">MADUREZ FINANCIERA →</text>
+      <rect x="0" y="0" width="${size/2}" height="${size/2}" fill="rgba(140,59,46,0.10)"/>
+      <rect x="${size/2}" y="0" width="${size/2}" height="${size/2}" fill="rgba(76,139,107,0.10)"/>
+      <rect x="0" y="${size/2}" width="${size/2}" height="${size/2}" fill="rgba(168,86,46,0.10)"/>
+      <rect x="${size/2}" y="${size/2}" width="${size/2}" height="${size/2}" fill="rgba(201,151,63,0.10)"/>
+      <line x1="0" y1="${size/2}" x2="${size}" y2="${size/2}" stroke="#2b3340" stroke-width="1"/>
+      <line x1="${size/2}" y1="0" x2="${size/2}" y2="${size}" stroke="#2b3340" stroke-width="1"/>
+      <rect x="0" y="0" width="${size}" height="${size}" fill="none" stroke="#2b3340" stroke-width="1"/>
+      <circle cx="${x}" cy="${y}" r="7" fill="${dotColor}" stroke="#12161c" stroke-width="2"/>
+    </g>
+  </svg>`;
+}
+
+function submitToSheet(payload){
+  if(!SHEET_ENDPOINT || SHEET_ENDPOINT.indexOf('PEGA_AQUI') !== -1) return;
+  fetch(SHEET_ENDPOINT, {
+    method:'POST',
+    headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  }).catch(function(err){ console.warn('No se pudo registrar la respuesta', err); });
+}
+
+renderIntro();
+</script>
+</body>
+</html>
