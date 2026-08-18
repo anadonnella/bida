@@ -90,19 +90,21 @@
     .print-brand img{ height:30px; width:auto; }
     .print-brand .pb-text{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:#333; line-height:1.5; }
     .print-brand .pb-text b{ color:#111; font-size:12px; }
-    .print-header{ display:flex; align-items:center; gap:12px; border-bottom:1px solid #ccc; margin-bottom:22px; padding-bottom:14px; }
-    .print-header img{ height:34px; width:auto; }
-    .print-header .ph-text{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:#333; line-height:1.5; }
-    .print-header .ph-text b{ color:#111; font-size:13px; }
+    .print-header{ display:flex; flex-direction:column; align-items:flex-start; gap:7px; border-bottom:1px solid #ccc; margin-bottom:22px; padding-bottom:14px; }
+    .print-header img{ height:36px; width:auto; }
+    .print-header .ph-text{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:#333; }
   }
 </style>
 </head>
 <body>
 <div class="device">
   <div class="strip">
-    <div class="brand" style="display:flex;align-items:center;gap:10px;">
-      <img src="https://cdn.phototourl.com/member/2026-04-10-39b01671-098b-477b-8812-7f25ee321705.png" alt="Bida Global" style="height:20px;width:auto;">
-      <span><b>BIDA GLOBAL</b> · Instrumento de Diagnóstico</span>
+    <div class="brand" style="display:flex;flex-direction:column;gap:3px;align-items:flex-start;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="https://cdn.phototourl.com/member/2026-08-18-294083eb-e3ed-4f4d-a448-6af15c6a84f3.png" alt="Bida Global" style="height:20px;width:auto;border-radius:3px;">
+        <span>Instrumento de Diagnóstico</span>
+      </div>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--text-dim); padding-left:2px;">RIF: J-506687011</span>
     </div>
     <div class="brand" id="counter">INICIO</div>
   </div>
@@ -275,8 +277,8 @@ function renderResult(){
 
   app.innerHTML = `
     <div class="print-header">
-      <img src="https://cdn.phototourl.com/member/2026-04-10-39b01671-098b-477b-8812-7f25ee321705.png" alt="Bida Global">
-      <div class="ph-text"><b>Bida Global</b><br>RIF: J-506687011</div>
+      <img src="https://cdn.phototourl.com/member/2026-08-18-294083eb-e3ed-4f4d-a448-6af15c6a84f3.png" alt="Bida Global">
+      <div class="ph-text">RIF: J-506687011</div>
     </div>
     <div class="eyebrow">Instrumento de posición · Financiera × Tecnológica</div>
     ${empresa ? `<div class="qnum" style="margin-bottom:2px">${empresa}</div>` : ''}
@@ -315,7 +317,7 @@ function renderResult(){
     <div class="footer-note">Diagnóstico express de referencia — orienta la conversación inicial. El informe ejecutivo completo se elabora en la fase de consultoría con Bida Global.</div>
 
     <div class="print-brand">
-      <img src="https://cdn.phototourl.com/member/2026-04-10-39b01671-098b-477b-8812-7f25ee321705.png" alt="Bida Global">
+      <img src="https://cdn.phototourl.com/member/2026-08-18-294083eb-e3ed-4f4d-a448-6af15c6a84f3.png" alt="Bida Global">
       <div class="pb-text"><b>Bida Global</b><br>WhatsApp: <a href="https://wa.me/584242557764" style="color:inherit;">+58 424-255-7764</a> · Instrumento de Diagnóstico Financiero-Tecnológico</div>
     </div>
   `;
