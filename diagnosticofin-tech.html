@@ -63,10 +63,13 @@
   .quad-title{ font-family:'Source Serif 4',serif; font-size:24px; font-weight:700; margin:4px 0 2px; }
   .risk-badge{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em;
     text-transform:uppercase; padding:4px 10px; border-radius:3px; margin:10px 0 16px; border:1px solid currentColor; }
-  .quad-desc{ color:var(--text-dim); font-size:14.5px; line-height:1.6; margin:0 0 18px; }
+  .quad-desc{ color:var(--text); font-size:14.5px; line-height:1.6; margin:0 0 18px; }
+  .score-sentence{ font-family:'Source Serif 4',serif; font-size:17px; line-height:1.5; color:var(--text); margin:0 0 20px; }
+  .score-sentence b{ color:var(--amber); }
   .block-title{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase;
     color:var(--text); margin:22px 0 8px; }
-  .block-para{ color:var(--text-dim); font-size:14px; line-height:1.65; margin:0 0 4px; }
+  .block-para{ color:var(--text); font-size:14px; line-height:1.65; margin:0 0 4px; }
+  .print-brand{ display:none; }
   .scores{ display:flex; gap:14px; margin-bottom:8px; }
   .score-card{ flex:1; background:var(--panel-2); border:1px solid var(--hair); border-radius:4px; padding:16px; }
   .score-card .n{ font-family:'IBM Plex Mono',monospace; font-size:28px; font-weight:600; }
@@ -79,16 +82,23 @@
     body{ background:#fff; color:#111; padding:0; }
     .device{ box-shadow:none; border:none; max-width:100%; }
     .strip, .gauge-track, .nav, .footer-note{ display:none; }
-    .quad-desc, .block-para{ color:#333; }
+    .quad-desc, .block-para, .score-sentence{ color:#111; }
     .score-card{ background:#f4f4f4; border-color:#ccc; }
     .eyebrow{ color:#a8752c; }
+    .print-brand{ display:flex; align-items:center; gap:12px; border-top:1px solid #ccc; margin-top:24px; padding-top:16px; }
+    .print-brand img{ height:30px; width:auto; }
+    .print-brand .pb-text{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:#333; line-height:1.5; }
+    .print-brand .pb-text b{ color:#111; font-size:12px; }
   }
 </style>
 </head>
 <body>
 <div class="device">
   <div class="strip">
-    <div class="brand"><b>BIDA GLOBAL</b> · Instrumento de Diagnóstico</div>
+    <div class="brand" style="display:flex;align-items:center;gap:10px;">
+      <img src="https://cdn.phototourl.com/member/2026-04-10-39b01671-098b-477b-8812-7f25ee321705.png" alt="Bida Global" style="height:20px;width:auto;">
+      <span><b>BIDA GLOBAL</b> · Instrumento de Diagnóstico</span>
+    </div>
     <div class="brand" id="counter">INICIO</div>
   </div>
   <div class="gauge-track"><div class="gauge-fill" id="gaugeFill"></div></div>
@@ -99,22 +109,30 @@
 const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxZHJukuFB0jjlzIYDdno20DKXe0f5w10X5S3wpKYYhVegTkq1M7-KSpZbTnvlWCcYe/exec";
 
 const FIN_Q = [
-  {t:"¿Con qué frecuencia revisas tus estados financieros?", o:["Nunca, o solo en el cierre anual","Trimestral","Mensual","Semanal o en tiempo real"]},
+  {t:"¿Con qué frecuencia se revisan los estados financieros de tu empresa (tú, tu equipo o un asesor externo)?", o:["Nunca, o solo en el cierre anual","Trimestral","Mensual","Semanal o en tiempo real"]},
   {t:"¿Conoces tu punto de equilibrio actual?", o:["No","Tengo una idea aproximada","Sí, calculado","Sí, actualizado y monitoreado"]},
   {t:"¿Tienes una proyección de flujo de caja a 3 meses?", o:["No existe","Está en proceso","Existe, se actualiza a veces","Existe y se actualiza siempre"]},
   {t:"¿Qué tan cubierta está tu empresa ante inflación y diferencial cambiario?", o:["Sin ninguna cobertura","Algo, de forma informal","Con una política definida","Cobertura activa y monitoreada"]},
   {t:"¿Tus obligaciones tributarias están al día y sin riesgo?", o:["No estoy seguro","Al día, pero con dudas","Al día y revisado ocasionalmente","Al día y verificado sistemáticamente"]},
   {t:"¿Alguien más allá de ti revisa tus números?", o:["Nadie","Un contador externo puntual","Un asesor recurrente","Un equipo o comité financiero"]},
   {t:"¿Tu Registro Mercantil está actualizado, con balances anuales aprobados hasta 2025?", o:["No está actualizado","En trámite de actualización","Actualizado, pero sin balance 2025 aprobado","Actualizado y con balance 2025 aprobado"]},
+  {t:"¿Tu RIF está exhibido en tus redes sociales, sitio web y material publicitario, como exige la normativa vigente?", o:["No lo he revisado","Está en algunos canales","Está en la mayoría de mis canales digitales","Está exhibido en todos mis canales y actualizado"]},
+  {t:"¿Tu equipo está formado en finanzas y nuevas tecnologías?", o:["Sin formación formal","Formación puntual, no continua","Formación regular en algunas áreas","Formación continua y actualizada en ambas áreas"]},
+  {t:"¿Tu empresa opera con criptomonedas, wallets o exchanges como parte de su gestión financiera?", o:["No opera con criptoactivos","Opera de forma ocasional, sin controles ni política definida","Opera con cierta regularidad, con controles básicos","Opera de forma regular, con política y controles definidos"]},
+  {t:"¿Tienes procedimientos de seguridad establecidos para tu tesorería (pagos, transferencias, custodia de fondos)?", o:["No hay procedimientos definidos","Existen de forma informal","Existen y se aplican parcialmente","Existen, se aplican y se revisan periódicamente"]},
 ];
 const TECH_Q = [
   {t:"¿Cómo llevas tu contabilidad hoy?", o:["Cuaderno o Excel sin estructura","Excel estructurado","Sistema contable básico","ERP integrado"]},
   {t:"¿Tus sistemas de ventas, inventario y contabilidad están conectados?", o:["No, todo por separado","Algunos conectados manualmente","La mayoría conectados","Todo integrado automáticamente"]},
-  {t:"¿Usas alguna herramienta de IA en tu operación financiera?", o:["No","La probé una vez","La uso ocasionalmente","La uso todos los días"]},
+  {t:"¿Para qué usas IA en tu operación financiera?", o:["No la uso","La uso para consultas puntuales (preguntas, dudas)","La uso para generar reportes o análisis","La uso para automatizar procesos financieros de forma recurrente"]},
   {t:"¿Cuánto tiempo del mes se va en tareas manuales repetitivas (cargar data, cuadrar Excel)?", o:["Mucho, es la mayor carga","Bastante","Poco, ya está en parte automatizado","Casi nada, está automatizado"]},
   {t:"¿Tienes un tablero o reporte que te muestre tus números sin armarlo a mano?", o:["No","A veces, con esfuerzo","Sí, pero se desactualiza","Sí, siempre actualizado"]},
   {t:"Si necesitaras un diagnóstico completo de tu empresa mañana, ¿en cuánto tiempo tendrías la información lista?", o:["Semanas","Días","Un día","Horas"]},
-  {t:"¿Cómo factura tu empresa actualmente?", o:["Formato preimpreso (talonario físico)","Otro (especifica)","Facturación digital (PDF/Excel generado internamente)","Sistema homologado ante el ente fiscal (factura electrónica)"], otherIndex:1},
+  {t:"¿Cómo factura tu empresa actualmente?", o:["Formato preimpreso (talonario físico)","Otro (especifica)","Facturación digital (PDF/Excel generado internamente)","Facturación en forma libre con sistema computarizado"], otherIndex:1},
+  {t:"¿Dónde está almacenada la información financiera de tu empresa?", o:["Solo en físico (papel/archivadores)","Mezcla de físico y digital sin criterio claro","Digital, en equipos locales (PC/servidor propio)","En la nube, con acceso controlado"]},
+  {t:"¿Tu empresa cuenta con un plan de respaldo (backup) de su información financiera?", o:["No existe","Manual y esporádico","Manual pero regular","Automatizado y verificado periódicamente"]},
+  {t:"¿Cuentas con alguna herramienta o protocolo para protegerte de ciberataques?", o:["Ninguno","Antivirus básico, sin protocolo formal","Herramientas específicas, sin revisión periódica","Herramientas activas y protocolo de respuesta revisado periódicamente"]},
+  {t:"¿Tus equipos (PCs, servidores) están actualizados y dentro de su ciclo de vida útil?", o:["Obsoletos","Algunos desactualizados","La mayoría al día","Todos al día, con renovación planificada"]},
 ];
 const ALL_Q = FIN_Q.map(q=>({...q, block:'fin'})).concat(TECH_Q.map(q=>({...q, block:'tech'})));
 
@@ -135,7 +153,7 @@ function renderIntro(){
   app.innerHTML = `
     <div class="eyebrow">Diagnóstico express</div>
     <h1>Diagnóstico Financiero-Tecnológico</h1>
-    <p class="lead">14 preguntas, 5 minutos. Al final vas a ver exactamente dónde está tu empresa hoy — y qué tan lejos está del punto óptimo.</p>
+    <p class="lead">22 preguntas, 8-10 minutos. Al final vas a ver exactamente dónde está tu empresa hoy — y qué tan lejos está del punto óptimo.</p>
     <div class="name-field">
       <input type="text" id="empresaInput" placeholder="Nombre de la empresa (opcional)" value="${empresa}">
     </div>
@@ -224,13 +242,13 @@ function quadrantInfo(finScore, techScore){
   if(!finHigh && techHigh) return {
     quadrant:'Digital pero desordenado', color:'var(--sienna)', risk:'Riesgo medio-alto',
     desc:'Hay herramientas y datos, pero no se están traduciendo en control financiero real.',
-    loss:'Es el perfil más peligroso: la sensación de estar "al día" esconde exposición cambiaria, tributaria o de flujo que nadie está mirando con criterio experto.',
+    loss:'Es el perfil más peligroso: la sensación de estar "al día" esconde exposición cambiaria, tributaria o de flujo que nadie está mirando con criterio experto — y con el Seniat y el Saren integrando sus plataformas, esas inconsistencias son cada vez más fáciles de detectar desde afuera.',
     rec:'No se necesita más tecnología — se necesita criterio financiero que interprete lo que la tecnología ya está generando.'
   };
   return {
     quadrant:'A ciegas', color:'var(--brick)', risk:'Riesgo crítico',
     desc:'Ni el control financiero ni el respaldo tecnológico están consolidados.',
-    loss:'Decisiones sin visibilidad de punto de equilibrio, exposición cambiaria o cumplimiento tributario. El costo no se ve hasta que aparece: una multa, un financiamiento perdido por falta de balances aprobados, o una crisis de caja que se pudo anticipar.',
+    loss:'Decisiones sin visibilidad de punto de equilibrio, exposición cambiaria o cumplimiento tributario. Con el Seniat y el Saren avanzando hacia una interconexión directa, un Registro Mercantil desactualizado deja de ser un riesgo invisible: pasa a quedar expuesto casi automáticamente. El costo no se ve hasta que aparece: una multa, un financiamiento perdido por falta de balances aprobados, o una crisis de caja que se pudo anticipar.',
     rec:'Empezar por lo mínimo viable: visibilidad financiera básica y regularización de registros, antes de invertir en cualquier sistema.'
   };
 }
@@ -256,6 +274,9 @@ function renderResult(){
     <div class="quad-title" style="color:${info.color}">${info.quadrant}</div>
     <div class="risk-badge" style="color:${info.color}">${info.risk}</div>
     <div class="quad-desc">${info.desc}</div>
+
+    <div class="score-sentence">En función de tus respuestas, tu empresa <b>podría estar ${finScore}% sana financieramente</b> y <b>${techScore}% madura en procesos y tecnología</b>.</div>
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dim); margin:-12px 0 20px;">Percepción inicial a partir de tus respuestas — no es una auditoría.</div>
 
     <div class="scores">
       <div class="score-card">
@@ -283,6 +304,11 @@ function renderResult(){
       <button class="primary" id="printBtn">Descargar / imprimir PDF</button>
     </div>
     <div class="footer-note">Diagnóstico express de referencia — orienta la conversación inicial. El informe ejecutivo completo se elabora en la fase de consultoría con Bida Global.</div>
+
+    <div class="print-brand">
+      <img src="https://cdn.phototourl.com/member/2026-04-10-39b01671-098b-477b-8812-7f25ee321705.png" alt="Bida Global">
+      <div class="pb-text"><b>Bida Global</b><br>WhatsApp: <a href="https://wa.me/584242557764" style="color:inherit;">+58 424-255-7764</a> · Instrumento de Diagnóstico Financiero-Tecnológico</div>
+    </div>
   `;
 
   document.getElementById('restartBtn').addEventListener('click', ()=>{
