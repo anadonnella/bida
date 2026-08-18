@@ -81,7 +81,10 @@
 <body>
   <div class="top">
     <div>
-      <div class="brand"><b>BIDA GLOBAL</b> · Diagnóstico Financiero-Tecnológico</div>
+      <div class="brand" style="display:flex;align-items:center;gap:10px;">
+        <img src="https://cdn.phototourl.com/member/2026-04-10-39b01671-098b-477b-8812-7f25ee321705.png" alt="Bida Global" style="height:18px;width:auto;">
+        <span><b>BIDA GLOBAL</b> · Diagnóstico Financiero-Tecnológico</span>
+      </div>
       <h1>Panorama en vivo</h1>
     </div>
     <div class="live"><div class="dot"></div> actualizando cada 4s</div>
@@ -126,22 +129,30 @@
 const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxZHJukuFB0jjlzIYDdno20DKXe0f5w10X5S3wpKYYhVegTkq1M7-KSpZbTnvlWCcYe/exec";
 
 const FIN_Q = [
-  {t:"¿Con qué frecuencia revisas tus estados financieros?", o:["Nunca, o solo en el cierre anual","Trimestral","Mensual","Semanal o en tiempo real"], risk:"revisa sus estados financieros con poca frecuencia (trimestral o menos)"},
+  {t:"¿Con qué frecuencia se revisan los estados financieros de tu empresa (tú, tu equipo o un asesor externo)?", o:["Nunca, o solo en el cierre anual","Trimestral","Mensual","Semanal o en tiempo real"], risk:"revisa sus estados financieros con poca frecuencia (trimestral o menos)"},
   {t:"¿Conoces tu punto de equilibrio actual?", o:["No","Tengo una idea aproximada","Sí, calculado","Sí, actualizado y monitoreado"], risk:"no conoce con precisión su punto de equilibrio"},
   {t:"¿Tienes una proyección de flujo de caja a 3 meses?", o:["No existe","Está en proceso","Existe, se actualiza a veces","Existe y se actualiza siempre"], risk:"no tiene una proyección de flujo de caja confiable a 3 meses"},
   {t:"¿Qué tan cubierta está tu empresa ante inflación y diferencial cambiario?", o:["Sin ninguna cobertura","Algo, de forma informal","Con una política definida","Cobertura activa y monitoreada"], risk:"no tiene cobertura formal ante inflación o diferencial cambiario"},
   {t:"¿Tus obligaciones tributarias están al día y sin riesgo?", o:["No estoy seguro","Al día, pero con dudas","Al día y revisado ocasionalmente","Al día y verificado sistemáticamente"], risk:"no tiene certeza de estar al día con sus obligaciones tributarias"},
   {t:"¿Alguien más allá de ti revisa tus números?", o:["Nadie","Un contador externo puntual","Un asesor recurrente","Un equipo o comité financiero"], risk:"no cuenta con revisión financiera recurrente más allá de sí mismo"},
   {t:"¿Tu Registro Mercantil está actualizado, con balances anuales aprobados hasta 2025?", o:["No está actualizado","En trámite de actualización","Actualizado, pero sin balance 2025 aprobado","Actualizado y con balance 2025 aprobado"], risk:"no tiene su Registro Mercantil actualizado con balance 2025 aprobado"},
+  {t:"¿Tu RIF está exhibido en tus redes sociales, sitio web y material publicitario, como exige la normativa vigente?", o:["No lo he revisado","Está en algunos canales","Está en la mayoría de mis canales digitales","Está exhibido en todos mis canales y actualizado"], risk:"no ha verificado que su RIF esté exhibido en sus canales digitales"},
+  {t:"¿Tu equipo está formado en finanzas y nuevas tecnologías?", o:["Sin formación formal","Formación puntual, no continua","Formación regular en algunas áreas","Formación continua y actualizada en ambas áreas"], risk:"no cuenta con formación continua de su equipo en finanzas y tecnología"},
+  {t:"¿Tu empresa opera con criptomonedas, wallets o exchanges como parte de su gestión financiera?", o:["No opera con criptoactivos","Opera de forma ocasional, sin controles ni política definida","Opera con cierta regularidad, con controles básicos","Opera de forma regular, con política y controles definidos"], risk:"no opera con criptoactivos, o lo hace sin controles ni política definida"},
+  {t:"¿Tienes procedimientos de seguridad establecidos para tu tesorería (pagos, transferencias, custodia de fondos)?", o:["No hay procedimientos definidos","Existen de forma informal","Existen y se aplican parcialmente","Existen, se aplican y se revisan periódicamente"], risk:"no tiene procedimientos de seguridad definidos para su tesorería"},
 ];
 const TECH_Q = [
   {t:"¿Cómo llevas tu contabilidad hoy?", o:["Cuaderno o Excel sin estructura","Excel estructurado","Sistema contable básico","ERP integrado"], risk:"lleva su contabilidad sin un sistema contable formal"},
   {t:"¿Tus sistemas de ventas, inventario y contabilidad están conectados?", o:["No, todo por separado","Algunos conectados manualmente","La mayoría conectados","Todo integrado automáticamente"], risk:"no tiene sus sistemas de ventas, inventario y contabilidad integrados"},
-  {t:"¿Usas alguna herramienta de IA en tu operación financiera?", o:["No","La probé una vez","La uso ocasionalmente","La uso todos los días"], risk:"no usa herramientas de IA de forma regular en su operación financiera"},
+  {t:"¿Para qué usas IA en tu operación financiera?", o:["No la uso","La uso para consultas puntuales (preguntas, dudas)","La uso para generar reportes o análisis","La uso para automatizar procesos financieros de forma recurrente"], risk:"no usa IA en su operación financiera, o solo para consultas puntuales"},
   {t:"¿Cuánto tiempo del mes se va en tareas manuales repetitivas (cargar data, cuadrar Excel)?", o:["Mucho, es la mayor carga","Bastante","Poco, ya está en parte automatizado","Casi nada, está automatizado"], risk:"dedica una parte importante del mes a tareas manuales repetitivas"},
   {t:"¿Tienes un tablero o reporte que te muestre tus números sin armarlo a mano?", o:["No","A veces, con esfuerzo","Sí, pero se desactualiza","Sí, siempre actualizado"], risk:"no cuenta con un tablero de reportes que se actualice solo"},
   {t:"Si necesitaras un diagnóstico completo de tu empresa mañana, ¿en cuánto tiempo tendrías la información lista?", o:["Semanas","Días","Un día","Horas"], risk:"tardaría días o semanas en tener un diagnóstico completo listo"},
-  {t:"¿Cómo factura tu empresa actualmente?", o:["Formato preimpreso (talonario físico)","Otro (especifica)","Facturación digital (PDF/Excel generado internamente)","Sistema homologado ante el ente fiscal (factura electrónica)"], risk:"no factura mediante un sistema digital u homologado"},
+  {t:"¿Cómo factura tu empresa actualmente?", o:["Formato preimpreso (talonario físico)","Otro (especifica)","Facturación digital (PDF/Excel generado internamente)","Facturación en forma libre con sistema computarizado"], risk:"factura en formato preimpreso, o sin un sistema computarizado propio"},
+  {t:"¿Dónde está almacenada la información financiera de tu empresa?", o:["Solo en físico (papel/archivadores)","Mezcla de físico y digital sin criterio claro","Digital, en equipos locales (PC/servidor propio)","En la nube, con acceso controlado"], risk:"tiene su información financiera solo en físico, o mezclada sin criterio claro"},
+  {t:"¿Tu empresa cuenta con un plan de respaldo (backup) de su información financiera?", o:["No existe","Manual y esporádico","Manual pero regular","Automatizado y verificado periódicamente"], risk:"no tiene un plan de respaldo, o lo hace de forma manual y esporádica"},
+  {t:"¿Cuentas con alguna herramienta o protocolo para protegerte de ciberataques?", o:["Ninguno","Antivirus básico, sin protocolo formal","Herramientas específicas, sin revisión periódica","Herramientas activas y protocolo de respuesta revisado periódicamente"], risk:"no cuenta con ninguna herramienta o protocolo formal de ciberseguridad"},
+  {t:"¿Tus equipos (PCs, servidores) están actualizados y dentro de su ciclo de vida útil?", o:["Obsoletos","Algunos desactualizados","La mayoría al día","Todos al día, con renovación planificada"], risk:"tiene equipos obsoletos o desactualizados"},
 ];
 const ALL_Q = FIN_Q.map(q=>({...q, block:'fin'})).concat(TECH_Q.map(q=>({...q, block:'tech'})));
 const SEG_COLORS = ['var(--brick)','var(--sienna)','var(--amber)','var(--green)'];
@@ -261,4 +272,3 @@ setInterval(refresh, 4000);
 </script>
 </body>
 </html>
-
