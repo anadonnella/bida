@@ -70,6 +70,7 @@
     color:var(--text); margin:22px 0 8px; }
   .block-para{ color:var(--text); font-size:14px; line-height:1.65; margin:0 0 4px; }
   .print-brand{ display:none; }
+  .print-header{ display:none; }
   .scores{ display:flex; gap:14px; margin-bottom:8px; }
   .score-card{ flex:1; background:var(--panel-2); border:1px solid var(--hair); border-radius:4px; padding:16px; }
   .score-card .n{ font-family:'IBM Plex Mono',monospace; font-size:28px; font-weight:600; }
@@ -89,6 +90,10 @@
     .print-brand img{ height:30px; width:auto; }
     .print-brand .pb-text{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:#333; line-height:1.5; }
     .print-brand .pb-text b{ color:#111; font-size:12px; }
+    .print-header{ display:flex; align-items:center; gap:12px; border-bottom:1px solid #ccc; margin-bottom:22px; padding-bottom:14px; }
+    .print-header img{ height:34px; width:auto; }
+    .print-header .ph-text{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:#333; line-height:1.5; }
+    .print-header .ph-text b{ color:#111; font-size:13px; }
   }
 </style>
 </head>
@@ -269,6 +274,10 @@ function renderResult(){
   });
 
   app.innerHTML = `
+    <div class="print-header">
+      <img src="https://cdn.phototourl.com/member/2026-04-10-39b01671-098b-477b-8812-7f25ee321705.png" alt="Bida Global">
+      <div class="ph-text"><b>Bida Global</b><br>RIF: J-506687011</div>
+    </div>
     <div class="eyebrow">Instrumento de posición · Financiera × Tecnológica</div>
     ${empresa ? `<div class="qnum" style="margin-bottom:2px">${empresa}</div>` : ''}
     <div class="quad-title" style="color:${info.color}">${info.quadrant}</div>
