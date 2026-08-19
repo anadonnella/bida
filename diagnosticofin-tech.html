@@ -11,6 +11,7 @@
     --bg: #12161c; --panel: #1b212b; --panel-2: #232b37;
     --text: #ede9df; --text-dim: #9aa3af;
     --amber: #c9973f; --green: #4c8b6b; --sienna: #a8562e; --brick: #8c3b2e;
+    --green-bright: #7fd0a4; --amber-bright: #f0b855;
     --hair: #2b3340;
   }
   *{box-sizing:border-box;}
@@ -40,6 +41,10 @@
   .opt .dot{ width:16px; height:16px; border-radius:50%; border:1px solid var(--text-dim); flex:0 0 auto; position:relative; }
   .opt.selected .dot{ border-color:var(--amber); }
   .opt.selected .dot::after{ content:''; position:absolute; inset:3px; border-radius:50%; background:var(--amber); }
+  .rank-dot{ width:22px; height:22px; display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:var(--bg); }
+  .opt.selected .rank-dot::after{ content:none; }
+  .opt.selected .rank-dot{ background:var(--amber); border-color:var(--amber); }
   .opt span.label{ font-size:14.5px; line-height:1.4; }
   .other-field{ margin-top:12px; }
   .other-field textarea{ width:100%; background:var(--panel-2); border:1px solid var(--hair); border-radius:4px;
@@ -60,6 +65,12 @@
   .tag-fin{ background:rgba(76,139,107,.16); color:#7fb897; }
   .tag-tech{ background:rgba(201,151,63,.16); color:var(--amber); }
   .matrix-wrap{ display:flex; justify-content:center; margin:8px 0 26px; }
+  .mtx-axis{ fill:#c3cad4; }
+  .mtx-grid{ stroke:#4a5568; }
+  .mtx-ql-amber{ fill:#e0b364; }
+  .mtx-ql-green{ fill:#8fd4ae; }
+  .mtx-ql-brick{ fill:#e0897a; }
+  .mtx-ql-sienna{ fill:#e0a184; }
   .quad-title{ font-family:'Source Serif 4',serif; font-size:24px; font-weight:700; margin:4px 0 2px; }
   .risk-badge{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em;
     text-transform:uppercase; padding:4px 10px; border-radius:3px; margin:10px 0 16px; border:1px solid currentColor; }
@@ -70,13 +81,14 @@
     color:var(--text); margin:22px 0 8px; }
   .block-para{ color:var(--text); font-size:14px; line-height:1.65; margin:0 0 4px; }
   .print-brand{ display:none; }
+  .print-route{ display:none; }
   .print-header{ display:none; }
   .scores{ display:flex; gap:14px; margin-bottom:8px; }
-  .score-card{ flex:1; background:var(--panel-2); border:1px solid var(--hair); border-radius:4px; padding:16px; }
-  .score-card .n{ font-family:'IBM Plex Mono',monospace; font-size:28px; font-weight:600; }
-  .score-card .of{ font-size:13px; color:var(--text-dim); font-weight:400; }
-  .score-card .l{ font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.08em; margin-top:4px; }
-  .score-card .gap{ font-size:11.5px; color:var(--text-dim); margin-top:6px; }
+  .score-card{ flex:1; background:var(--panel-2); border:1px solid var(--hair); border-radius:6px; padding:18px 16px; }
+  .score-card .n{ font-family:'IBM Plex Mono',monospace; font-size:40px; font-weight:700; line-height:1; letter-spacing:-.01em; }
+  .score-card .of{ font-size:14px; color:var(--text-dim); font-weight:400; }
+  .score-card .l{ font-size:11.5px; color:var(--text); text-transform:uppercase; letter-spacing:.08em; margin-top:8px; font-weight:600; }
+  .score-card .gap{ font-size:12px; color:var(--text-dim); margin-top:5px; }
   .footer-note{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dim); border-top:1px solid var(--hair);
     padding-top:18px; margin-top:22px; line-height:1.6; }
   @media print{
@@ -85,11 +97,26 @@
     .strip, .gauge-track, .nav, .footer-note{ display:none; }
     .quad-desc, .block-para, .score-sentence{ color:#111; }
     .score-card{ background:#f4f4f4; border-color:#ccc; }
+    .score-card:first-child .n{ color:#1f6b4a !important; }
+    .score-card:last-child .n{ color:#a86a1a !important; }
+    .score-card .l{ color:#111; }
+    .mtx-axis{ fill:#555 !important; }
+    .mtx-grid{ stroke:#888 !important; }
+    .mtx-ql-amber{ fill:#8a6318 !important; }
+    .mtx-ql-green{ fill:#1f6b4a !important; }
+    .mtx-ql-brick{ fill:#8c3b2e !important; }
+    .mtx-ql-sienna{ fill:#a8562e !important; }
     .eyebrow{ color:#a8752c; }
     .print-brand{ display:flex; flex-direction:column; align-items:flex-start; gap:7px; border-top:1px solid #ccc; margin-top:24px; padding-top:16px; }
     .print-brand img{ height:30px; width:auto; }
     .print-brand .pb-text{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:#333; line-height:1.5; }
     .print-brand .pb-text b{ color:#111; font-size:12px; }
+    .print-route{ display:block; border-top:1px solid #ccc; margin-top:26px; padding-top:20px; page-break-inside:avoid; }
+    .print-route h3{ font-family:'Source Serif 4',serif; font-size:19px; color:#111; margin:0 0 10px; }
+    .print-route p{ font-size:12.5px; line-height:1.65; color:#222; margin:0 0 10px; }
+    .print-route .steps{ margin:18px 0 14px; }
+    .print-route .gain{ font-size:12.5px; line-height:1.65; color:#222; background:#f6f1e7; border-left:3px solid #c9973f; padding:10px 14px; margin:14px 0; }
+    .print-route .gain b{ color:#111; }
     .print-header{ display:flex; flex-direction:column; align-items:flex-start; gap:7px; border-bottom:1px solid #ccc; margin-bottom:22px; padding-bottom:14px; }
     .print-header img{ height:36px; width:auto; }
     .print-header .ph-text{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:#333; }
@@ -99,12 +126,16 @@
 <body>
 <div class="device">
   <div class="strip">
-    <div class="brand" style="display:flex;flex-direction:column;gap:3px;align-items:flex-start;">
+    <div class="brand" style="display:flex;flex-direction:column;gap:4px;align-items:flex-start;">
       <div style="display:flex;align-items:center;gap:10px;">
         <img src="https://cdn.phototourl.com/member/2026-08-18-294083eb-e3ed-4f4d-a448-6af15c6a84f3.png" alt="Bida Global" style="height:20px;width:auto;border-radius:3px;">
-        <span>Instrumento de Diagnóstico</span>
+        <span style="opacity:.4;">×</span>
+        <span style="background:#fff;padding:3px 7px;border-radius:4px;display:inline-flex;align-items:center;">
+          <img src="https://cdn.phototourl.com/member/2026-08-19-6daefb9a-3fdf-448f-ae15-242dc3e12d7c.png" alt="Cavedatos" style="height:13px;width:auto;">
+        </span>
       </div>
-      <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--text-dim); padding-left:2px;">RIF: J-506687011</span>
+      <span style="font-size:9px; color:var(--text-dim);">Instrumento de Diagnóstico · Alianza Bida Global × Cavedatos</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--text-dim);">RIF Bida: J-506687011 · RIF Cavedatos: J-002106000</span>
     </div>
     <div class="brand" id="counter">INICIO</div>
   </div>
@@ -143,11 +174,33 @@ const TECH_Q = [
 ];
 const ALL_Q = FIN_Q.map(q=>({...q, block:'fin'})).concat(TECH_Q.map(q=>({...q, block:'tech'})));
 
-let stage = 'intro'; // intro | questions | result
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+// Orden de presentación aleatorio por pregunta (no altera el puntaje real, que sigue el índice original 0-3)
+ALL_Q.forEach(q=>{ q.order = shuffleArray(q.o.map((_,i)=>i)); });
+
+let stage = 'intro'; // intro | questions | priority | result
 let current = 0;
 const answers = new Array(ALL_Q.length).fill(null);
 const otherTexts = {};
 let empresa = '';
+
+const PRIORITY_ITEMS = [
+  {id:'fin', label:'Orden financiero'},
+  {id:'dig', label:'Digitalización'},
+  {id:'auto', label:'Automatización'},
+  {id:'ciber', label:'Ciberseguridad'},
+];
+let priorityOrder = [];
+let optimoText = '';
+let contactEmail = '';
+let contactWhatsapp = '';
 
 const app = document.getElementById('app');
 const counter = document.getElementById('counter');
@@ -160,7 +213,7 @@ function renderIntro(){
   app.innerHTML = `
     <div class="eyebrow">Diagnóstico express</div>
     <h1>Diagnóstico Financiero-Tecnológico</h1>
-    <p class="lead">22 preguntas, 8-10 minutos. Al final vas a ver exactamente dónde está tu empresa hoy — y qué tan lejos está del punto óptimo.</p>
+    <p class="lead">23 preguntas, 8-10 minutos. Al final vas a ver exactamente dónde está tu empresa hoy — y qué tan lejos está del punto óptimo.</p>
     <div class="name-field">
       <input type="text" id="empresaInput" placeholder="Nombre de la empresa (opcional)" value="${empresa}">
     </div>
@@ -189,10 +242,10 @@ function renderQuestion(){
     <div class="qnum">Pregunta <b>${current+1}</b> de ${ALL_Q.length}</div>
     <div class="qtext">${q.t}</div>
     <div class="options">
-      ${q.o.map((opt,i)=>`
+      ${q.order.map(i=>{ const opt=q.o[i]; return `
         <div class="opt ${answers[current]===i?'selected':''}" data-i="${i}">
           <div class="dot"></div><span class="label">${opt}</span>
-        </div>`).join('')}
+        </div>`; }).join('')}
     </div>
     ${showOther ? `<div class="other-field"><textarea id="otherInput" rows="2" placeholder="Describe brevemente cómo facturas...">${otherTexts[current]||''}</textarea></div>` : ''}
     <div class="nav">
@@ -221,7 +274,63 @@ function renderQuestion(){
   });
   document.getElementById('nextBtn').addEventListener('click', ()=>{
     if(current < ALL_Q.length-1){ current++; renderQuestion(); }
-    else { stage='result'; renderResult(); }
+    else { stage='priority'; renderPriority(); }
+  });
+}
+
+function renderPriority(){
+  counter.textContent = pad(ALL_Q.length+1) + ' / ' + (ALL_Q.length+1);
+  gaugeFill.style.width = '97%';
+
+  app.innerHTML = `
+    <div class="eyebrow">Antes de ver tu resultado</div>
+    <div class="qnum">Pregunta <b>${ALL_Q.length+1}</b> de ${ALL_Q.length+1}</div>
+    <div class="qtext">¿En qué orden priorizarías estos frentes en tu empresa?</div>
+    <p class="lead" style="margin:-6px 0 14px;">Toca en el orden que quieras — 1° es lo más urgente. Puedes tocar de nuevo para quitarlo.</p>
+    <div class="options">
+      ${PRIORITY_ITEMS.map(item=>{
+        const rank = priorityOrder.indexOf(item.id);
+        return `<div class="opt priority-opt ${rank!==-1?'selected':''}" data-id="${item.id}">
+          <div class="dot rank-dot">${rank!==-1 ? (rank+1) : ''}</div><span class="label">${item.label}</span>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="qtext" style="font-size:16px; margin-top:26px;">Completa la frase</div>
+    <div class="other-field">
+      <textarea id="optimoInput" rows="2" placeholder="Mi versión óptima en 12 meses es...">${optimoText}</textarea>
+    </div>
+
+    <div class="qtext" style="font-size:16px; margin-top:22px;">¿Quieres que te contactemos? (opcional)</div>
+    <div class="other-field" style="display:flex; gap:10px; flex-wrap:wrap;">
+      <input type="email" id="contactEmailInput" placeholder="Correo" value="${contactEmail}" style="flex:1; min-width:180px; background:var(--panel-2); border:1px solid var(--hair); border-radius:4px; padding:10px 12px; color:var(--text); font-family:inherit; font-size:14px;">
+      <input type="tel" id="contactWaInput" placeholder="WhatsApp" value="${contactWhatsapp}" style="flex:1; min-width:180px; background:var(--panel-2); border:1px solid var(--hair); border-radius:4px; padding:10px 12px; color:var(--text); font-family:inherit; font-size:14px;">
+    </div>
+
+    <div class="nav">
+      <button class="ghost" id="backBtn">Atrás</button>
+      <button class="primary" id="nextBtn">Ver resultado</button>
+    </div>
+  `;
+
+  app.querySelectorAll('.priority-opt').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const id = el.dataset.id;
+      const idx = priorityOrder.indexOf(id);
+      if(idx !== -1){ priorityOrder.splice(idx,1); }
+      else { priorityOrder.push(id); }
+      renderPriority();
+    });
+  });
+  document.getElementById('optimoInput').addEventListener('input', (e)=>{ optimoText = e.target.value; });
+  document.getElementById('contactEmailInput').addEventListener('input', (e)=>{ contactEmail = e.target.value; });
+  document.getElementById('contactWaInput').addEventListener('input', (e)=>{ contactWhatsapp = e.target.value; });
+
+  document.getElementById('backBtn').addEventListener('click', ()=>{
+    stage='questions'; current = ALL_Q.length-1; renderQuestion();
+  });
+  document.getElementById('nextBtn').addEventListener('click', ()=>{
+    stage='result'; renderResult();
   });
 }
 
@@ -272,13 +381,20 @@ function renderResult(){
     finScore, techScore,
     quadrant: info.quadrant,
     riskLevel: info.risk,
-    answers: answers.slice()
+    answers: answers.slice(),
+    prioridades: priorityOrder.map(id => PRIORITY_ITEMS.find(p=>p.id===id).label),
+    optimoIdeal: optimoText || '',
+    contactoCorreo: contactEmail || '',
+    contactoWhatsapp: contactWhatsapp || ''
   });
 
   app.innerHTML = `
     <div class="print-header">
-      <img src="https://cdn.phototourl.com/member/2026-08-18-294083eb-e3ed-4f4d-a448-6af15c6a84f3.png" alt="Bida Global">
-      <div class="ph-text">RIF: J-506687011</div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <img src="https://cdn.phototourl.com/member/2026-08-18-294083eb-e3ed-4f4d-a448-6af15c6a84f3.png" alt="Bida Global">
+        <img src="https://cdn.phototourl.com/member/2026-08-19-6daefb9a-3fdf-448f-ae15-242dc3e12d7c.png" alt="Cavedatos" style="height:32px;">
+      </div>
+      <div class="ph-text">Alianza Bida Global × Cavedatos<br>RIF Bida: J-506687011 · RIF Cavedatos: J-002106000</div>
     </div>
     <div class="eyebrow">Instrumento de posición · Financiera × Tecnológica</div>
     ${empresa ? `<div class="qnum" style="margin-bottom:2px">${empresa}</div>` : ''}
@@ -291,12 +407,12 @@ function renderResult(){
 
     <div class="scores">
       <div class="score-card">
-        <div class="n" style="color:var(--green)">${finScore}<span class="of"> / 100</span></div>
+        <div class="n" style="color:var(--green-bright)">${finScore}<span class="of"> / 100</span></div>
         <div class="l">Madurez financiera</div>
         <div class="gap">A ${100-finScore} puntos del óptimo</div>
       </div>
       <div class="score-card">
-        <div class="n" style="color:var(--amber)">${techScore}<span class="of"> / 100</span></div>
+        <div class="n" style="color:var(--amber-bright)">${techScore}<span class="of"> / 100</span></div>
         <div class="l">Madurez tecnológica</div>
         <div class="gap">A ${100-techScore} puntos del óptimo</div>
       </div>
@@ -316,6 +432,51 @@ function renderResult(){
     </div>
     <div class="footer-note">Diagnóstico express de referencia — orienta la conversación inicial. El informe ejecutivo completo se elabora en la fase de consultoría con Bida Global.</div>
 
+    <div class="print-route">
+      <h3>Tu ruta al óptimo</h3>
+      <p>El SENIAT ya trazó su rumbo. Desde inicios de agosto, el superintendente Román Maniglia viene presentando el <i>Plan MODA</i> — Modernización, Digitalización y Automatización — en encuentros con la Asociación Venezolana de Derecho Tributario, la Federación de Colegios de Contadores, la banca y hasta plataformas de pago digital como Cashea. La meta declarada: una recaudación más simple, conectada y cada vez menos dependiente del papel.</p>
+      <p>Ya se ven los primeros pasos: se instruyó a los fiscales dejar de exigir y sancionar la exhibición física del RIF (esa información el SENIAT ya la tiene digital), se suspendió la venta de impresoras fiscales mientras se revisa el sistema, y avanza una interconexión directa entre el SENIAT, el SAREN y la banca. La dirección es clara: menos trámite en papel, más visibilidad automática entre sistemas.</p>
+      <p>Esto no es una amenaza — es una oportunidad para quien llegue preparado. Las empresas con sus procesos financieros y tecnológicos en orden van a sentir esta transición como una simplificación. Las que no, van a sentir fricción justo cuando el sistema tenga más visibilidad de sus números que nunca.</p>
+
+      <div class="steps">
+        <svg viewBox="0 0 700 175" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <line x1="70" y1="38" x2="630" y2="38" stroke="#d8d2c2" stroke-width="2"/>
+          <g font-family="IBM Plex Mono, monospace">
+            <circle cx="70" cy="38" r="22" fill="#c9973f"/>
+            <text x="70" y="45" text-anchor="middle" font-size="18" font-weight="600" fill="#12161c">1</text>
+            <text x="70" y="82" text-anchor="middle" font-size="13" font-weight="600" fill="#111">Orden</text>
+            <text x="70" y="98" text-anchor="middle" font-size="13" font-weight="600" fill="#111">documental</text>
+            <text x="70" y="118" text-anchor="middle" font-size="10.5" fill="#555">Registro Mercantil</text>
+            <text x="70" y="132" text-anchor="middle" font-size="10.5" fill="#555">al día · RIF exhibido</text>
+
+            <circle cx="240" cy="38" r="22" fill="#c9973f"/>
+            <text x="240" y="45" text-anchor="middle" font-size="18" font-weight="600" fill="#12161c">2</text>
+            <text x="240" y="82" text-anchor="middle" font-size="13" font-weight="600" fill="#111">Base</text>
+            <text x="240" y="98" text-anchor="middle" font-size="13" font-weight="600" fill="#111">digital</text>
+            <text x="240" y="118" text-anchor="middle" font-size="10.5" fill="#555">Contabilidad, factura</text>
+            <text x="240" y="132" text-anchor="middle" font-size="10.5" fill="#555">y respaldo sin papel</text>
+
+            <circle cx="410" cy="38" r="22" fill="#c9973f"/>
+            <text x="410" y="45" text-anchor="middle" font-size="18" font-weight="600" fill="#12161c">3</text>
+            <text x="410" y="82" text-anchor="middle" font-size="13" font-weight="600" fill="#111">Automatización</text>
+            <text x="410" y="98" text-anchor="middle" font-size="13" font-weight="600" fill="#111">con criterio</text>
+            <text x="410" y="118" text-anchor="middle" font-size="10.5" fill="#555">IA en reportes y</text>
+            <text x="410" y="132" text-anchor="middle" font-size="10.5" fill="#555">procesos recurrentes</text>
+
+            <circle cx="590" cy="38" r="22" fill="#c9973f"/>
+            <text x="590" y="45" text-anchor="middle" font-size="18" font-weight="600" fill="#12161c">4</text>
+            <text x="590" y="82" text-anchor="middle" font-size="13" font-weight="600" fill="#111">Gobernanza</text>
+            <text x="590" y="98" text-anchor="middle" font-size="13" font-weight="600" fill="#111">y resguardo</text>
+            <text x="590" y="118" text-anchor="middle" font-size="10.5" fill="#555">Ciberseguridad,</text>
+            <text x="590" y="132" text-anchor="middle" font-size="10.5" fill="#555">tesorería y equipo</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="gain"><b>Lo que ganas al llegar ahí:</b> horas que hoy se van en cuadrar Excel, cero sorpresas frente a una fiscalización cada vez más automática, y decisiones tomadas con números confiables, no con intuición.</div>
+      <p>Ese es el trabajo que hacemos desde Cavedatos y sus empresas afiliadas.</p>
+    </div>
+
     <div class="print-brand">
       <img src="https://cdn.phototourl.com/member/2026-08-18-294083eb-e3ed-4f4d-a448-6af15c6a84f3.png" alt="Bida Global">
       <div class="pb-text">RIF: J-506687011<br>WhatsApp: <a href="https://wa.me/584242557764" style="color:inherit;">+58 424-255-7764</a> · Instrumento de Diagnóstico Financiero-Tecnológico</div>
@@ -330,22 +491,27 @@ function renderResult(){
 }
 
 function renderMatrix(finScore, techScore, dotColor){
-  const size=260, pad=20;
+  const size=300, pad=24;
   const x = pad + (techScore/100)*(size-pad*2);
   const y = pad + ((100-finScore)/100)*(size-pad*2);
   return `
-  <svg width="${size+60}" height="${size+50}" viewBox="0 0 ${size+60} ${size+50}">
-    <text x="${(size+60)/2}" y="14" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#9aa3af" letter-spacing="1">MADUREZ TECNOLÓGICA →</text>
-    <g transform="translate(40,22)">
-      <text x="-12" y="${size/2}" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#9aa3af" transform="rotate(-90 -12 ${size/2})">MADUREZ FINANCIERA →</text>
-      <rect x="0" y="0" width="${size/2}" height="${size/2}" fill="rgba(140,59,46,0.10)"/>
-      <rect x="${size/2}" y="0" width="${size/2}" height="${size/2}" fill="rgba(76,139,107,0.10)"/>
-      <rect x="0" y="${size/2}" width="${size/2}" height="${size/2}" fill="rgba(168,86,46,0.10)"/>
-      <rect x="${size/2}" y="${size/2}" width="${size/2}" height="${size/2}" fill="rgba(201,151,63,0.10)"/>
-      <line x1="0" y1="${size/2}" x2="${size}" y2="${size/2}" stroke="#2b3340" stroke-width="1"/>
-      <line x1="${size/2}" y1="0" x2="${size/2}" y2="${size}" stroke="#2b3340" stroke-width="1"/>
-      <rect x="0" y="0" width="${size}" height="${size}" fill="none" stroke="#2b3340" stroke-width="1"/>
-      <circle cx="${x}" cy="${y}" r="7" fill="${dotColor}" stroke="#12161c" stroke-width="2"/>
+  <svg width="${size+70}" height="${size+58}" viewBox="0 0 ${size+70} ${size+58}">
+    <text class="mtx-axis" x="${(size+70)/2}" y="15" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" letter-spacing="1">MADUREZ TECNOLÓGICA →</text>
+    <g transform="translate(46,24)">
+      <text class="mtx-axis" x="-14" y="${size/2}" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" transform="rotate(-90 -14 ${size/2})">MADUREZ FINANCIERA →</text>
+      <rect x="0" y="0" width="${size/2}" height="${size/2}" fill="rgba(201,151,63,0.22)"/>
+      <rect x="${size/2}" y="0" width="${size/2}" height="${size/2}" fill="rgba(76,139,107,0.26)"/>
+      <rect x="0" y="${size/2}" width="${size/2}" height="${size/2}" fill="rgba(140,59,46,0.26)"/>
+      <rect x="${size/2}" y="${size/2}" width="${size/2}" height="${size/2}" fill="rgba(168,86,46,0.22)"/>
+      <line class="mtx-grid" x1="0" y1="${size/2}" x2="${size}" y2="${size/2}" stroke-width="1"/>
+      <line class="mtx-grid" x1="${size/2}" y1="0" x2="${size/2}" y2="${size}" stroke-width="1"/>
+      <rect class="mtx-grid" x="0" y="0" width="${size}" height="${size}" fill="none" stroke-width="1.5"/>
+      <text class="mtx-ql-amber" x="10" y="18" font-family="IBM Plex Mono" font-size="9.5" font-weight="600" letter-spacing=".5">MANUAL PERO SANO</text>
+      <text class="mtx-ql-green" x="${size-10}" y="18" text-anchor="end" font-family="IBM Plex Mono" font-size="9.5" font-weight="600" letter-spacing=".5">PREPARADO</text>
+      <text class="mtx-ql-brick" x="10" y="${size-10}" font-family="IBM Plex Mono" font-size="9.5" font-weight="600" letter-spacing=".5">A CIEGAS</text>
+      <text class="mtx-ql-sienna" x="${size-10}" y="${size-10}" text-anchor="end" font-family="IBM Plex Mono" font-size="9.5" font-weight="600" letter-spacing=".5">DIGITAL DESORDENADO</text>
+      <circle cx="${x}" cy="${y}" r="10" fill="${dotColor}" stroke="#12161c" stroke-width="2.5"/>
+      <circle cx="${x}" cy="${y}" r="16" fill="none" stroke="${dotColor}" stroke-width="1.5" opacity="0.45"/>
     </g>
   </svg>`;
 }
