@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha de Inicio — Módulo 3: Costos</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f6fa;min-height:100vh;padding:2rem 1rem}
+.wrap{max-width:680px;margin:0 auto}
+.header{background:#1a1a2e;color:#fff;border-radius:12px;padding:2rem;margin-bottom:1.5rem;text-align:center}
+.header h1{font-size:1.4rem;font-weight:600;margin-bottom:.4rem}
+.header p{font-size:.9rem;opacity:.75}
+.badge{display:inline-block;background:#e8b14a;color:#1a1a2e;font-size:.75rem;font-weight:700;padding:.25rem .75rem;border-radius:20px;margin-bottom:.75rem;letter-spacing:.05em}
+.card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:1.5rem;margin-bottom:1rem}
+.card h2{font-size:1rem;font-weight:600;color:#1a1a2e;margin-bottom:1rem}
+.card .section-tag{font-size:.72rem;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+.intro-note{background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:.85rem;line-height:1.5;border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1rem}
+.name-row{display:flex;gap:.75rem;margin-bottom:.75rem}
+.name-row input{flex:1;padding:.6rem .85rem;border:1px solid #d1d5db;border-radius:8px;font-size:.95rem;font-family:inherit}
+.name-row input:focus{outline:none;border-color:#4f46e5;box-shadow:0 0 0 2px rgba(79,70,229,.15)}
+.grupo-row{display:flex;gap:.75rem}
+.grupo-btn{flex:1;padding:.7rem;border:1.5px solid #e5e7eb;border-radius:8px;text-align:center;cursor:pointer;font-weight:600;font-size:.9rem;color:#374151;transition:all .15s}
+.grupo-btn:hover{border-color:#a5b4fc}
+.grupo-btn.selected{border-color:#4f46e5;background:#ede9fe;color:#4338ca}
+.likert-item{margin-bottom:1.25rem}
+.likert-item:last-child{margin-bottom:0}
+.likert-text{font-size:.9rem;color:#1f2937;margin-bottom:.6rem;line-height:1.45}
+.likert-scale{display:flex;gap:.5rem;align-items:center}
+.likert-opt{flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;cursor:pointer}
+.likert-circle{width:36px;height:36px;border-radius:50%;border:1.5px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:#6b7280;transition:all .15s}
+.likert-opt:hover .likert-circle{border-color:#a5b4fc}
+.likert-opt.selected .likert-circle{border-color:#4f46e5;background:#4f46e5;color:#fff}
+.likert-caption{font-size:.65rem;color:#9ca3af;text-align:center}
+.likert-endlabels{display:flex;justify-content:space-between;font-size:.68rem;color:#9ca3af;margin-top:.5rem}
+.q-num{font-size:.75rem;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
+.q-text{font-size:.95rem;color:#1f2937;margin-bottom:.9rem;line-height:1.5}
+.options{display:flex;flex-direction:column;gap:.5rem}
+.opt{display:flex;align-items:center;gap:.7rem;padding:.6rem .85rem;border:1.5px solid #e5e7eb;border-radius:8px;cursor:pointer;transition:all .15s}
+.opt:hover{border-color:#a5b4fc;background:#f5f3ff}
+.opt input[type=radio]{accent-color:#4f46e5;width:16px;height:16px;flex-shrink:0}
+.opt label{font-size:.9rem;color:#374151;cursor:pointer;line-height:1.4}
+.opt.selected{border-color:#4f46e5;background:#ede9fe}
+.opt.correct{border-color:#059669;background:#ecfdf5}
+.opt.correct label{color:#065f46}
+.opt.wrong{border-color:#dc2626;background:#fef2f2}
+.opt.wrong label{color:#991b1b}
+.feedback{font-size:.82rem;margin-top:.7rem;padding:.6rem .85rem;border-radius:8px;line-height:1.5}
+.feedback.ok{background:#ecfdf5;color:#065f46}
+.feedback.ko{background:#fef2f2;color:#991b1b}
+.btn{width:100%;padding:.85rem;background:#4f46e5;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:.02em;transition:background .15s;margin-top:.5rem}
+.btn:hover{background:#4338ca}
+.btn:disabled{background:#a5b4fc;cursor:not-allowed}
+.result-card{background:#1a1a2e;color:#fff;border-radius:12px;padding:2rem;margin-bottom:1.5rem;text-align:center;display:none}
+.score-big{font-size:3.5rem;font-weight:700;color:#e8b14a;line-height:1}
+.score-label{font-size:.9rem;opacity:.7;margin-top:.3rem}
+.result-msg{margin-top:1rem;font-size:1rem;opacity:.9;line-height:1.5}
+.answer-summary{margin-top:1rem}
+.answer-summary h3{font-size:.85rem;font-weight:600;color:#9ca3af;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em}
+.ans-row{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.ans-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:2px;font-size:.7rem;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+.ans-dot.ok{background:#059669}
+.ans-dot.ko{background:#dc2626}
+.ans-text{font-size:.82rem;color:#d1d5db;line-height:1.5;text-align:left}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="badge">BIDA GLOBAL</div>
+    <h1>Módulo 3: Estructura de Costos y Bases Legales</h1>
+    <p>Ficha de Inicio · Sección A + Sección B</p>
+  </div>
+
+  <div id="quiz-form">
+    <div class="intro-note">
+      Este cuestionario nos ayuda a preparar mejor el taller. <strong>No hay respuestas correctas o incorrectas en la Sección A</strong> — tus respuestas son confidenciales. Escribe tu nombre y apellido igual en la Ficha de Final, así podemos comparar tu antes y tu después.
+    </div>
+
+    <div class="card">
+      <h2>¿Quién eres?</h2>
+      <div class="name-row">
+        <input id="nombre" type="text" placeholder="Nombre" autocomplete="given-name">
+        <input id="apellido" type="text" placeholder="Apellido" autocomplete="family-name">
+      </div>
+      <div class="grupo-row">
+        <div class="grupo-btn" id="grupo-G1" onclick="selectGrupo('G1')">Grupo 1</div>
+        <div class="grupo-btn" id="grupo-G2" onclick="selectGrupo('G2')">Grupo 2</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-tag">Sección A · ¿Cómo te sientes con estos temas?</div>
+      <h2>Marca qué tan de acuerdo estás con cada frase</h2>
+      <div id="likert"></div>
+      <div class="likert-endlabels" style="margin-top:.5rem">
+        <span>1 = Nada de acuerdo</span><span>5 = Totalmente de acuerdo</span>
+      </div>
+    </div>
+
+    <div id="questions"></div>
+    <button class="btn" id="submit-btn" onclick="submitQuiz()">Enviar Ficha de Inicio</button>
+  </div>
+
+  <div class="result-card" id="result-card">
+    <div class="score-big" id="score-display">0</div>
+    <div class="score-label">aciertos de 5 (Sección B)</div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="answer-summary" id="answer-summary"></div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIU66pAzhNMK2rMYNIau893O4bmxbZUqA8ai4S8VDW_WBALOUtUg6XWVi1nt8ZlYz4qg/exec';
+const MOMENTO = 'Inicio';
+let grupoSel = '';
+
+const afirmaciones = [
+  'Sé calcular el punto de equilibrio de mi negocio.',
+  'Sé cuánto vale mi tiempo de trabajo, incluyendo el cuidado del hogar.',
+  'Sé calcular el precio de venta correcto de lo que hago.',
+  'Sé cuánto descuento puedo dar sin perder dinero.',
+  'Conozco los pasos para registrar mi emprendimiento legalmente.'
+];
+
+const preguntas = [
+  {
+    id:1, tipo:'mc',
+    texto:'María vende arepas. Este mes no vendió ninguna, pero igual pagó el alquiler del local. ¿Qué tipo de costo es el alquiler?',
+    opciones:['a) Costo variable','b) Costo fijo','c) Ganancia','d) No es un costo'],
+    correcta:1,
+    feedback_ok:'✓ Correcto. El alquiler se paga exista o no producción — por eso es un costo fijo.',
+    feedback_ko:'✗ La respuesta correcta es b) Costo fijo. Un costo fijo se paga aunque no vendas nada ese mes.'
+  },
+  {
+    id:2, tipo:'mc',
+    texto:'Tus costos fijos son $100 al mes y cada producto que vendes te deja una ganancia de $10. ¿Cuántos productos necesitas vender para llegar al punto de equilibrio?',
+    opciones:['a) 10 productos','b) 5 productos','c) 100 productos','d) 1000 productos'],
+    correcta:0,
+    feedback_ok:'✓ Correcto. $100 de costos fijos ÷ $10 de ganancia por unidad = 10 productos para cubrir el fijo.',
+    feedback_ko:'✗ La respuesta correcta es a) 10 productos. Se calcula dividiendo los costos fijos ($100) entre la ganancia por unidad ($10).'
+  },
+  {
+    id:3, tipo:'mc',
+    texto:'Ana cose carteras y no le pone precio a las horas que trabaja porque "es su propio negocio". ¿Qué está pasando con esas horas de trabajo?',
+    opciones:['a) No cuestan nada porque no le paga a nadie','b) Solo cuentan si contrata a alguien','c) Son un costo real que no está cobrando','d) Se descuentan del punto de equilibrio'],
+    correcta:2,
+    feedback_ok:'✓ Correcto. Su tiempo es un costo real, aunque no le pague a nadie más — y hay que incluirlo en el precio.',
+    feedback_ko:'✗ La respuesta correcta es c) Son un costo real que no está cobrando. Su tiempo tiene valor, aunque no le pague a nadie por él.'
+  },
+  {
+    id:4, tipo:'mc',
+    texto:'El costo de un producto es $10 y quieres ganar un margen del 30% sobre el precio de venta. ¿Cuál es el precio de venta correcto?',
+    opciones:['a) $13.00','b) $10.30','c) $30.00','d) $14.29'],
+    correcta:3,
+    feedback_ok:'✓ Correcto. Precio = Costo ÷ (1 − Margen) = $10 ÷ 0.70 = $14.29. Así la ganancia real sí es 30% del precio.',
+    feedback_ko:'✗ La respuesta correcta es d) $14.29 (Precio = Costo ÷ (1 − Margen) = $10 ÷ 0.70). Con $13.00 la ganancia real es solo 23%, no 30%.'
+  },
+  {
+    id:5, tipo:'mc',
+    texto:'Vendes un producto en $14.29 con una ganancia de $4.29. Si das un 10% de descuento sobre el precio, ¿qué le pasa a tu ganancia?',
+    opciones:['a) Baja mucho más que 10%, casi un tercio','b) Baja exactamente 10%','c) No cambia','d) Sube'],
+    correcta:0,
+    feedback_ok:'✓ Correcto. Un descuento de $1.43 sale completo de tu ganancia de $4.29 — casi un tercio de tu ganancia, no un 10%.',
+    feedback_ko:'✗ La respuesta correcta es a) Baja mucho más que 10%, casi un tercio. El descuento se resta de la ganancia, no del precio total — por eso duele mucho más de lo que parece.'
+  }
+];
+
+function selectGrupo(g){
+  grupoSel = g;
+  document.getElementById('grupo-G1').classList.toggle('selected', g==='G1');
+  document.getElementById('grupo-G2').classList.toggle('selected', g==='G2');
+}
+
+function buildLikert(){
+  const cont = document.getElementById('likert');
+  cont.innerHTML = afirmaciones.map((texto,i)=>`
+    <div class="likert-item">
+      <div class="likert-text">${i+1}. ${texto}</div>
+      <div class="likert-scale" id="likert-${i}">
+        ${[1,2,3,4,5].map(v=>`
+          <div class="likert-opt" id="likert-${i}-${v}" onclick="selectLikert(${i},${v})">
+            <div class="likert-circle">${v}</div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function selectLikert(i,v){
+  for(let k=1;k<=5;k++) document.getElementById(`likert-${i}-${k}`).classList.remove('selected');
+  document.getElementById(`likert-${i}-${v}`).classList.add('selected');
+}
+
+function buildQuestions() {
+  const cont = document.getElementById('questions');
+  cont.innerHTML = `<div class="card" style="padding-bottom:.5rem"><div class="section-tag">Sección B · Veamos cuánto sabemos</div><h2 style="margin-bottom:0">Elige la respuesta correcta</h2></div>` +
+  preguntas.map((p,i) => `
+    <div class="card" id="q-${i}">
+      <div class="q-num">Pregunta ${p.id}</div>
+      <div class="q-text">${p.texto}</div>
+      <div class="options" id="opts-${i}">
+        ${p.opciones.map((op,j)=>`
+          <div class="opt" id="opt-${i}-${j}" onclick="selectOpt(${i},${j})">
+            <input type="radio" name="q${i}" id="r-${i}-${j}" value="${j}">
+            <label for="r-${i}-${j}">${op}</label>
+          </div>`).join('')}
+      </div>
+      <div class="feedback" id="fb-${i}" style="display:none"></div>
+    </div>`).join('');
+}
+
+function selectOpt(qi,oi) {
+  document.querySelectorAll(`#opts-${qi} .opt`).forEach(el=>el.classList.remove('selected'));
+  document.getElementById(`opt-${qi}-${oi}`).classList.add('selected');
+  document.getElementById(`r-${qi}-${oi}`).checked=true;
+}
+
+async function submitQuiz() {
+  const nombre = document.getElementById('nombre').value.trim();
+  const apellido = document.getElementById('apellido').value.trim();
+  if (!nombre||!apellido){alert('Por favor ingresa tu nombre y apellido.');return;}
+  if (!grupoSel){alert('Por favor selecciona tu grupo.');return;}
+
+  const likertVals = [];
+  for(let i=0;i<afirmaciones.length;i++){
+    const sel = document.querySelector(`#likert-${i} .likert-opt.selected`);
+    if(!sel){alert('Responde todas las afirmaciones de la Sección A.');return;}
+    likertVals.push(sel.id.split('-')[2]);
+  }
+
+  let scoreB=0, allAnswered=true;
+  const respuestas=[];
+
+  preguntas.forEach((p,i)=>{
+    const sel=document.querySelector(`input[name="q${i}"]:checked`);
+    if(!sel){allAnswered=false;return;}
+    const chosen=parseInt(sel.value);
+    const ok=chosen===p.correcta;
+    if(ok) scoreB+=1;
+    respuestas.push({pregunta:p.id, elegida:p.opciones[chosen], correcta:p.opciones[p.correcta], ok});
+
+    document.querySelectorAll(`#opts-${i} .opt`).forEach((el,j)=>{
+      el.style.pointerEvents='none';
+      if(j===p.correcta) el.classList.add('correct');
+      else if(j===chosen&&!ok) el.classList.add('wrong');
+    });
+    const fb=document.getElementById(`fb-${i}`);
+    fb.textContent=ok?p.feedback_ok:p.feedback_ko;
+    fb.className=`feedback ${ok?'ok':'ko'}`;
+    fb.style.display='block';
+  });
+
+  if(!allAnswered){alert('Responde todas las preguntas de la Sección B antes de enviar.');return;}
+
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;
+  btn.textContent='Enviando...';
+
+  try {
+    const params=new URLSearchParams({
+      action:'submit', momento:MOMENTO, grupo:grupoSel, nombre, apellido,
+      a1:likertVals[0], a2:likertVals[1], a3:likertVals[2], a4:likertVals[3], a5:likertVals[4],
+      b1:respuestas[0].ok?1:0, b2:respuestas[1].ok?1:0, b3:respuestas[2].ok?1:0,
+      b4:respuestas[3].ok?1:0, b5:respuestas[4].ok?1:0,
+      scoreB,
+      respuestas:JSON.stringify(respuestas)
+    });
+    await fetch(SCRIPT_URL+'?'+params.toString(),{mode:'no-cors'});
+  } catch(e){}
+
+  btn.textContent='✓ Ficha enviada';
+
+  const msgs=[
+    [5,'¡Excelente base! Ya dominas los conceptos clave de costos y precio. En el taller los vamos a poner en práctica con tus propios números.'],
+    [4,'Muy buen punto de partida. Hoy vamos a cerrar los últimos detalles de la fórmula de precio.'],
+    [3,'Vas por buen camino. El taller de hoy te va a dar la fórmula exacta para calcular tu precio correcto.'],
+    [0,'Perfecto punto de partida — para eso es el taller de hoy. Al final vas a poder calcular todo esto con tus propios números.']
+  ];
+  const msg=msgs.find(m=>scoreB>=m[0])[1];
+
+  const rc=document.getElementById('result-card');
+  document.getElementById('score-display').textContent=scoreB;
+  document.getElementById('result-msg').textContent=msg;
+
+  const sumHtml=`<h3>Detalle de la Sección B</h3>`+respuestas.map(r=>`
+    <div class="ans-row">
+      <div class="ans-dot ${r.ok?'ok':'ko'}">${r.ok?'✓':'✗'}</div>
+      <div class="ans-text"><strong>P${r.pregunta}:</strong> ${r.ok?r.elegida:`Tu respuesta: ${r.elegida} · Correcta: ${r.correcta}`}</div>
+    </div>`).join('');
+  document.getElementById('answer-summary').innerHTML=sumHtml;
+  rc.style.display='block';
+  rc.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+buildLikert();
+buildQuestions();
+</script>
+</body>
+</html>
