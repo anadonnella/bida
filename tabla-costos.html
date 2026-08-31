@@ -46,12 +46,9 @@ h1{font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:.3rem}
 .controls{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
 .ctrl-btn{padding:.6rem 1.4rem;border-radius:8px;border:1px solid #2d2d4e;background:#1a1a2e;color:#d1d5db;font-size:.85rem;cursor:pointer;transition:all .15s;font-family:inherit}
 .ctrl-btn:hover{background:#2d2d4e;color:#fff}
-.ctrl-btn.danger{border-color:#dc2626;color:#f87171}
-.ctrl-btn.danger:hover{background:#dc2626;color:#fff}
 .pulse{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .status{font-size:.78rem;color:#6b7280;text-align:center;margin-top:.5rem}
-.warn{font-size:.72rem;color:#f87171;text-align:center;margin-top:.4rem;line-height:1.4}
 .empty{text-align:center;padding:3rem;color:#6b7280;font-size:.9rem}
 </style>
 </head>
@@ -94,10 +91,8 @@ h1{font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:.3rem}
 
   <div class="controls">
     <button class="ctrl-btn" onclick="fetchScores()">↻ Actualizar ahora</button>
-    <button class="ctrl-btn danger" onclick="resetQuiz()">⚠ Borrar TODAS las respuestas</button>
   </div>
   <div class="status"><span class="pulse"></span><span id="status-txt">Actualizando cada 10 segundos</span></div>
-  <div class="warn">⚠ "Borrar TODAS las respuestas" elimina también las Fichas de Inicio guardadas en el Sheet — úsalo solo para limpiar pruebas antes de la sesión real, nunca durante o después de recoger datos reales.</div>
 </div>
 
 <script>
@@ -171,19 +166,6 @@ function renderList(scores){
       </div>
       <div class="pscore">${s.score}</div>
     </div>`).join('');
-}
-
-async function resetQuiz(){
-  if(!confirm('¿Segura que quieres borrar TODO? Esto elimina también las Fichas de Inicio (Grupo 1 y Grupo 2) del Sheet, no solo este podio. Úsalo solo antes de la sesión real, para limpiar pruebas.')) return;
-  if(!confirm('Confirma una vez más: se borran TODAS las filas del Sheet "Quiz Costos", sin poder deshacerlo. ¿Continuar?')) return;
-  try{
-    const res=await fetch(SCRIPT_URL+'?action=reset');
-    const data=await res.json();
-    if(data.ok){
-      renderAll([]);
-      document.getElementById('status-txt').textContent='Datos reiniciados — '+new Date().toLocaleTimeString('es-VE');
-    }
-  }catch(e){alert('Error al reiniciar. Intenta de nuevo.');}
 }
 
 fetchScores();
