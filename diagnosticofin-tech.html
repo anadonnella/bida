@@ -91,10 +91,15 @@
   .score-card .gap{ font-size:12px; color:var(--text-dim); margin-top:5px; }
   .footer-note{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dim); border-top:1px solid var(--hair);
     padding-top:18px; margin-top:22px; line-height:1.6; }
+  .save-status{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; margin-top:18px; padding:8px 0; color:var(--text-dim); }
+  .save-status.ok{ color:#7fd0a4; }
+  .save-status.err{ color:#e08a7a; }
+  .save-status button{ background:none; border:1px solid currentColor; color:inherit; font-family:inherit; font-size:11px;
+    padding:3px 9px; border-radius:3px; cursor:pointer; margin-left:6px; }
   @media print{
     body{ background:#fff; color:#111; padding:0; }
     .device{ box-shadow:none; border:none; max-width:100%; }
-    .strip, .gauge-track, .nav, .footer-note{ display:none; }
+    .strip, .gauge-track, .nav, .footer-note, .save-status{ display:none; }
     .quad-desc, .block-para, .score-sentence{ color:#111; }
     .score-card{ background:#f4f4f4; border-color:#ccc; }
     .score-card:first-child .n{ color:#1f6b4a !important; }
@@ -376,7 +381,7 @@ function renderResult(){
   const techScore = scoreBlock('tech');
   const info = quadrantInfo(finScore, techScore);
 
-  submitToSheet({
+  const resultPayload = {
     empresa: empresa || 'Sin especificar',
     finScore, techScore,
     quadrant: info.quadrant,
@@ -386,7 +391,20 @@ function renderResult(){
     optimoIdeal: optimoText || '',
     contactoCorreo: contactEmail || '',
     contactoWhatsapp: contactWhatsapp || ''
-  });
+  };
+  function trySubmit(){
+    const el = document.getElementById('saveStatus');
+    if(el){ el.innerHTML = 'Guardando tu respuesta…'; el.className = 'save-status'; }
+    submitToSheet(resultPayload).then(function(result){
+      const el2 = document.getElementById('saveStatus');
+      if(!el2) return;
+      if(result === true){ el2.innerHTML = '✓ Respuesta guardada'; el2.className = 'save-status ok'; }
+      else if(result === 'sent'){ el2.innerHTML = '✓ Enviado'; el2.className = 'save-status ok'; }
+      else { el2.innerHTML = '⚠ No se pudo guardar tu respuesta — <button id="retrySubmit" type="button">Reintentar</button>'; el2.className = 'save-status err';
+        document.getElementById('retrySubmit').addEventListener('click', trySubmit);
+      }
+    });
+  }
 
   app.innerHTML = `
     <div class="print-header">
@@ -430,7 +448,9 @@ function renderResult(){
       <button class="ghost" id="restartBtn">Repetir diagnóstico</button>
       <button class="primary" id="printBtn">Descargar / imprimir PDF</button>
     </div>
-    <div class="footer-note">Diagnóstico express de referencia — orienta la conversación inicial. El informe ejecutivo completo se elabora en la fase de consultoría con Bida Global.</div>
+    <div id="saveStatus" class="save-status">Guardando tu respuesta…</div>
+
+    <div class="footer-note">Diagnóstico express de referencia — orienta la conversación inicial. El informe ejecutivo completo se elabora en la fase de consultoría con Cavedatos.</div>
 
     <div class="print-route">
       <h3>Tu ruta al óptimo</h3>
@@ -478,8 +498,11 @@ function renderResult(){
     </div>
 
     <div class="print-brand">
-      <img src="https://cdn.phototourl.com/member/2026-08-18-294083eb-e3ed-4f4d-a448-6af15c6a84f3.png" alt="Bida Global">
-      <div class="pb-text">RIF: J-506687011<br>WhatsApp: <a href="https://wa.me/584242557764" style="color:inherit;">+58 424-255-7764</a> · Instrumento de Diagnóstico Financiero-Tecnológico</div>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <img src="https://cdn.phototourl.com/member/2026-08-18-294083eb-e3ed-4f4d-a448-6af15c6a84f3.png" alt="Bida Global">
+        <img src="https://cdn.phototourl.com/member/2026-08-19-6daefb9a-3fdf-448f-ae15-242dc3e12d7c.png" alt="Cavedatos" style="height:26px;">
+      </div>
+      <div class="pb-text">RIF Bida: J-506687011 · RIF Cavedatos: J-002106000<br>WhatsApp: <a href="https://wa.me/584242557764" style="color:inherit;">+58 424-255-7764</a> · Instrumento de Diagnóstico Financiero-Tecnológico</div>
     </div>
   `;
 
@@ -488,6 +511,8 @@ function renderResult(){
     stage='intro'; renderIntro();
   });
   document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+
+  trySubmit();
 }
 
 function renderMatrix(finScore, techScore, dotColor){
@@ -516,13 +541,69 @@ function renderMatrix(finScore, techScore, dotColor){
   </svg>`;
 }
 
-function submitToSheet(payload){
-  if(!SHEET_ENDPOINT || SHEET_ENDPOINT.indexOf('PEGA_AQUI') !== -1) return;
-  fetch(SHEET_ENDPOINT, {
+function submitViaFetch(payload){
+  return fetch(SHEET_ENDPOINT, {
     method:'POST',
     headers:{ 'Content-Type':'text/plain;charset=utf-8' },
     body: JSON.stringify(payload)
-  }).catch(function(err){ console.warn('No se pudo registrar la respuesta', err); });
+  }).then(function(res){
+    return res.text().then(function(txt){
+      var ok = res.ok && txt.indexOf('"status":"ok"') !== -1;
+      if(!ok) console.warn('Respuesta inesperada al guardar', res.status, txt.slice(0,200));
+      return ok;
+    });
+  });
+}
+
+function submitViaForm(payload){
+  // Alterno: envío por formulario oculto. No depende de fetch/XHR, así que
+  // evade bloqueadores de anuncios/privacidad que interceptan esas llamadas.
+  // No se puede leer la respuesta (iframe cross-origin), es best-effort.
+  return new Promise(function(resolve){
+    try{
+      var frameName = 'submitFrame_' + Date.now();
+      var iframe = document.createElement('iframe');
+      iframe.name = frameName;
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      var form = document.createElement('form');
+      form.method = 'POST';
+      form.action = SHEET_ENDPOINT;
+      form.target = frameName;
+      form.style.display = 'none';
+
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'payload';
+      input.value = JSON.stringify(payload);
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+
+      setTimeout(function(){
+        if(form.parentNode) form.parentNode.removeChild(form);
+        if(iframe.parentNode) iframe.parentNode.removeChild(iframe);
+        resolve('sent');
+      }, 1800);
+    }catch(err){
+      console.warn('Falló también el envío por formulario', err);
+      resolve(false);
+    }
+  });
+}
+
+function submitToSheet(payload){
+  if(!SHEET_ENDPOINT || SHEET_ENDPOINT.indexOf('PEGA_AQUI') !== -1) return Promise.resolve(false);
+  return submitViaFetch(payload)
+    .catch(function(err){
+      console.warn('Intento 1 (fetch) falló, reintentando…', err);
+      return new Promise(function(res){ setTimeout(res, 900); }).then(function(){ return submitViaFetch(payload); });
+    })
+    .catch(function(err){
+      console.warn('Fetch falló dos veces, probando envío por formulario…', err);
+      return submitViaForm(payload);
+    });
 }
 
 renderIntro();
