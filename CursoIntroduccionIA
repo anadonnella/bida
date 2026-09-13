@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bida Global — Taller de IA Generativa para Equipos de Finanzas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#0B1A2E;--deep:#0F2240;--royal:#3B6CE7;--royal-light:#6B9BFF;--mint:#10B981;--gold:#E8A317;--white:#FFFFFF;--off-white:#F7F9FC;--light-gray:#E5E9F0;--dark-text:#1A2332;--muted:#5A6B80;--coral:#E04B4B;--slate:#3A4A5C}
+html{scroll-behavior:smooth;font-size:17px}
+body{font-family:'Outfit',sans-serif;color:var(--dark-text);background:var(--white);overflow-x:hidden;line-height:1.65}
+h1,h2,h3{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;line-height:1.25}
+.container{max-width:1120px;margin:0 auto;padding:0 28px}
+
+.navbar{position:fixed;top:0;left:0;width:100%;z-index:100;padding:14px 0;transition:all .4s}
+.navbar.scrolled{background:rgba(11,26,46,.97);backdrop-filter:blur(14px);box-shadow:0 2px 30px rgba(0,0,0,.12)}
+.navbar .container{display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;text-decoration:none}
+.logo img{height:32px;width:auto;filter:brightness(0) invert(1)}
+.nav-links{display:flex;align-items:center;gap:24px}
+.nav-links a{color:rgba(255,255,255,.65);font-size:14px;text-decoration:none;font-weight:500;transition:color .3s}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{background:var(--royal);color:var(--white)!important;padding:10px 22px;border-radius:8px;font-weight:600!important;transition:all .3s!important}
+.nav-cta:hover{background:#2a5bd4!important;transform:translateY(-1px)}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;background:linear-gradient(165deg,var(--navy) 0%,#0E2A4A 50%,#0D1F38 100%);overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px)}
+.hero-orb-1{width:500px;height:500px;background:rgba(59,108,231,.12);top:-12%;right:-6%}
+.hero-orb-2{width:350px;height:350px;background:rgba(16,185,129,.07);bottom:-10%;left:-5%}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;position:relative;z-index:2}
+.hero-tags{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+.hero-tag{font-size:11px;text-transform:uppercase;letter-spacing:2px;font-weight:600;padding:6px 14px;border-radius:5px}
+.hero-tag.blue{background:rgba(59,108,231,.12);border:1px solid rgba(59,108,231,.25);color:var(--royal-light)}
+.hero-tag.gold{background:rgba(232,163,23,.1);border:1px solid rgba(232,163,23,.2);color:var(--gold)}
+.hero h1{font-size:clamp(2rem,4.2vw,2.9rem);color:var(--white);margin-bottom:18px}
+.hero h1 em{font-style:italic;color:var(--royal-light)}
+.hero-sub{font-size:1.05rem;color:rgba(255,255,255,.6);margin-bottom:24px;max-width:490px;line-height:1.75;font-weight:300}
+.hero-hook{font-size:1.02rem;color:var(--white);font-weight:500;margin-bottom:28px;max-width:470px;line-height:1.55;border-left:3px solid var(--royal);padding-left:16px}
+.hero-cta-row{display:flex;gap:14px;flex-wrap:wrap}
+.btn-wa{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:var(--white);font-size:16px;font-weight:600;padding:14px 28px;border-radius:10px;text-decoration:none;transition:all .3s;box-shadow:0 4px 20px rgba(37,211,102,.25);font-family:'Outfit',sans-serif}
+.btn-wa:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(37,211,102,.4)}
+.btn-wa svg{width:21px;height:21px;fill:currentColor}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.65);font-size:15px;font-weight:500;text-decoration:none;padding:14px 22px;border-radius:10px;border:1px solid rgba(255,255,255,.1);transition:all .3s}
+.btn-ghost:hover{border-color:var(--royal);color:var(--royal-light)}
+
+.hero-stats{display:grid;gap:14px}
+.stat-card{background:rgba(255,255,255,.04);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:22px 20px}
+.stat-num{font-family:'Libre Baskerville',serif;font-size:2.2rem;font-weight:700;line-height:1}
+.stat-num.blue{color:var(--royal-light)}.stat-num.gold{color:var(--gold)}.stat-num.coral{color:#f87171}
+.stat-desc{font-size:.88rem;color:rgba(255,255,255,.6);margin-top:5px;line-height:1.45;font-weight:300}
+.stat-source{font-size:.72rem;color:rgba(255,255,255,.28);margin-top:5px}
+
+/* SECTIONS */
+.section-tag{display:inline-flex;align-items:center;gap:8px;font-size:12px;text-transform:uppercase;letter-spacing:2.5px;color:var(--royal);font-weight:600;margin-bottom:14px}
+.section-tag::before{content:'';width:20px;height:2px;background:var(--royal);display:inline-block}
+.section-title{font-size:clamp(1.6rem,3vw,2.3rem);color:var(--navy);margin-bottom:14px}
+.section-desc{font-size:1rem;color:var(--muted);max-width:620px;margin-bottom:44px;line-height:1.7;font-weight:300}
+
+/* PRIMER PASO / RISK */
+.primer-paso{padding:100px 0;background:var(--navy);position:relative;overflow:hidden}
+.primer-paso::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(59,108,231,.06),transparent 70%);top:-20%;right:-10%;pointer-events:none}
+.pp-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;position:relative;z-index:2}
+.pp-content .section-tag{color:var(--royal-light)}
+.pp-content .section-tag::before{background:var(--royal-light)}
+.pp-content h2{font-size:clamp(1.6rem,3vw,2.2rem);color:var(--white);margin-bottom:16px}
+.pp-content p{color:rgba(255,255,255,.6);margin-bottom:16px;line-height:1.75;font-weight:300;font-size:1rem}
+.pp-content .pp-highlight{color:var(--white);font-weight:500;font-size:1.05rem;border-left:3px solid var(--gold);padding-left:16px;margin:24px 0}
+.pp-risks{display:grid;gap:14px}
+.pp-risk-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:22px;transition:all .3s}
+.pp-risk-card:hover{border-color:rgba(59,108,231,.3);background:rgba(59,108,231,.04)}
+.pp-risk-num{font-size:10px;text-transform:uppercase;letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.pp-risk-num.green{color:var(--mint)}.pp-risk-num.blue{color:var(--royal-light)}.pp-risk-num.gold{color:var(--gold)}.pp-risk-num.coral{color:#f87171}
+.pp-risk-card h3{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.pp-risk-card p{font-size:.88rem;color:rgba(255,255,255,.5);line-height:1.5;font-weight:300}
+
+/* DIAGNOSTIC STRIP */
+.diag-strip{padding:80px 0;background:var(--white)}
+.diag-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.diag-card{text-align:center;padding:28px 16px;border-radius:14px;background:var(--off-white);border:1px solid var(--light-gray);transition:all .3s}
+.diag-card:hover{border-color:var(--royal);box-shadow:0 4px 16px rgba(59,108,231,.06)}
+.diag-icon{font-size:28px;margin-bottom:12px}
+.diag-card h3{font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:6px}
+.diag-card p{font-size:.85rem;color:var(--muted);line-height:1.5;font-weight:300}
+
+/* AUDIENCE */
+.audience{padding:90px 0;background:var(--off-white)}
+.audience-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.audience-card{background:var(--white);border-radius:14px;padding:30px;border:1px solid var(--light-gray);transition:all .3s}
+.audience-card:hover{border-color:var(--royal);box-shadow:0 6px 20px rgba(59,108,231,.06)}
+.audience-card h3{font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:8px}
+.audience-card p{font-size:.92rem;color:var(--muted);line-height:1.6;font-weight:300}
+
+/* 4D */
+.framework{padding:100px 0;background:var(--white)}
+.framework-intro{max-width:680px;margin-bottom:44px}
+.framework-intro p{font-size:.95rem;color:var(--muted);line-height:1.7;font-weight:300}
+.d4-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.d4-card{background:var(--navy);border-radius:14px;padding:26px 20px;position:relative;overflow:hidden;transition:all .35s}
+.d4-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(11,26,46,.2)}
+.d4-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2.5px;background:var(--royal)}
+.d4-num{font-size:11px;color:var(--royal-light);font-weight:700;margin-bottom:8px}
+.d4-card h3{font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.d4-card p{font-size:.86rem;color:rgba(255,255,255,.55);line-height:1.5;font-weight:300}
+
+/* TOOLS */
+.tools{padding:90px 0;background:var(--off-white)}
+.tools-grid{border:1px solid var(--light-gray);border-radius:14px;overflow:hidden;background:var(--white)}
+.tool-row{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid var(--light-gray);transition:background .3s}
+.tool-row:last-child{border:none}
+.tool-row:hover{background:var(--off-white)}
+.tool-row.header{background:var(--navy)}
+.tool-name{padding:16px 22px;font-size:.96rem;font-weight:700;color:var(--navy);display:flex;align-items:center}
+.tool-row.header .tool-name,.tool-row.header .tool-use{color:rgba(255,255,255,.7);font-size:.78rem;text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
+.tool-use{padding:16px 22px;font-size:.92rem;color:var(--muted);line-height:1.5;font-weight:300;display:flex;align-items:center}
+
+/* PROGRAM */
+.program{padding:100px 0;background:var(--white)}
+.blocks-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.block-card{background:var(--off-white);border-radius:10px;padding:18px 16px;transition:all .3s;border:1px solid transparent}
+.block-card:hover{border-color:var(--royal);background:var(--white);box-shadow:0 4px 14px rgba(59,108,231,.06)}
+.block-num{font-size:11px;color:var(--royal);font-weight:700;margin-bottom:5px}
+.block-card h3{font-family:'Outfit',sans-serif;font-size:.92rem;font-weight:600;color:var(--navy)}
+
+/* RESULTS */
+.results{padding:100px 0;background:var(--off-white)}
+.results-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:14px;overflow:hidden;background:var(--white);border:1px solid var(--light-gray)}
+.results-table thead th{background:var(--navy);color:rgba(255,255,255,.7);font-size:.78rem;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;padding:15px 20px;text-align:left}
+.results-table thead th:last-child{color:var(--royal-light)}
+.results-table tbody td{padding:15px 20px;font-size:.9rem;color:var(--muted);border-bottom:1px solid var(--light-gray);line-height:1.5;font-weight:300;vertical-align:top}
+.results-table tbody tr:last-child td{border:none}
+.results-table tbody td:first-child{font-weight:600;color:var(--navy);width:170px}
+.results-table tbody td:last-child{color:var(--slate);font-weight:500}
+.results-table tbody tr:hover{background:var(--off-white)}
+
+/* CTA */
+.cta-section{padding:100px 0;background:var(--navy);text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(59,108,231,.08),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.cta-section h2{font-size:clamp(1.7rem,3.6vw,2.4rem);color:var(--white);margin-bottom:14px;position:relative;z-index:2}
+.cta-section h2 em{font-style:italic;color:var(--royal-light)}
+.cta-section>.container>p{color:rgba(255,255,255,.5);font-size:1.02rem;margin-bottom:28px;position:relative;z-index:2;max-width:580px;margin-left:auto;margin-right:auto;font-weight:300;line-height:1.7}
+.cta-features{display:flex;justify-content:center;gap:28px;margin-bottom:32px;position:relative;z-index:2;flex-wrap:wrap}
+.cta-feat{font-size:.9rem;color:rgba(255,255,255,.55)}.cta-feat strong{color:var(--white);font-weight:600}
+.cta-dual{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;position:relative;z-index:2}
+.cta-section .btn-wa{font-size:16px;padding:15px 32px}
+.btn-email{display:inline-flex;align-items:center;gap:8px;background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.75);padding:15px 26px;border-radius:10px;text-decoration:none;font-size:15px;font-weight:600;transition:all .3s;font-family:'Outfit',sans-serif}
+.btn-email:hover{border-color:var(--royal-light);color:var(--royal-light)}
+.cta-note{margin-top:14px;font-size:.83rem;color:rgba(255,255,255,.3);position:relative;z-index:2}
+
+.wa-float{position:fixed;bottom:26px;right:26px;z-index:999;display:flex;align-items:center;gap:10px}
+.wa-float-label{background:var(--white);color:var(--dark-text);font-size:13px;font-weight:600;padding:9px 15px;border-radius:9px;box-shadow:0 4px 14px rgba(0,0,0,.1);display:none;white-space:nowrap}
+.wa-float:hover .wa-float-label{display:block;animation:fadeSlide .3s ease}
+@keyframes fadeSlide{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+.wa-float-btn{width:58px;height:58px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(37,211,102,.35);transition:all .3s;text-decoration:none;animation:pulse-wa 2.5s infinite}
+.wa-float-btn:hover{transform:scale(1.07)}
+.wa-float-btn svg{width:28px;height:28px;fill:var(--white)}
+@keyframes pulse-wa{0%,100%{box-shadow:0 4px 18px rgba(37,211,102,.35)}50%{box-shadow:0 4px 30px rgba(37,211,102,.55)}}
+.footer{background:var(--deep);padding:36px 0;text-align:center}
+.footer p{color:rgba(255,255,255,.35);font-size:.83rem;font-weight:300}
+.footer a{color:var(--royal-light);text-decoration:none}
+
+@media(max-width:900px){.hero-grid,.pp-grid,.audience-grid{grid-template-columns:1fr;gap:36px}.hero-stats{order:-1}.d4-grid{grid-template-columns:repeat(2,1fr)}.blocks-grid{grid-template-columns:repeat(2,1fr)}.diag-grid{grid-template-columns:repeat(2,1fr)}.tool-row{grid-template-columns:140px 1fr}.nav-links a:not(.nav-cta){display:none}}
+@media(max-width:600px){.d4-grid,.blocks-grid,.diag-grid{grid-template-columns:1fr}.hero-cta-row{flex-direction:column;align-items:stretch}.hero-cta-row .btn-wa,.hero-cta-row .btn-ghost{justify-content:center}.cta-dual{flex-direction:column;align-items:center}.cta-features{flex-direction:column;align-items:center;gap:10px}.tool-row{grid-template-columns:1fr}.tool-name{padding-bottom:0}}
+.fade-up{opacity:0;transform:translateY(28px);transition:all .7s cubic-bezier(.22,1,.36,1)}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<nav class="navbar" id="navbar"><div class="container">
+<a href="#" class="logo"><img src="data:image/png;base64,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" alt="Bida Global"></a><div class="nav-links">
+<a href="#primer-paso">Por qué ahora</a><a href="#programa">Programa</a><a href="#resultados">Resultados</a>
+<a href="https://wa.me/584242557764?text=Hola%2C%20me%20interesa%20el%20taller%20de%20IA%20generativa%20para%20nuestro%20equipo%20de%20finanzas.%20%C2%BFPodemos%20agendar%20una%20reuni%C3%B3n%3F" class="nav-cta" target="_blank">Solicitar cotización</a>
+</div></div></nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="hero-orb hero-orb-1"></div><div class="hero-orb hero-orb-2"></div>
+<div class="container"><div class="hero-grid"><div>
+<div class="hero-tags"><span class="hero-tag blue">Facilitación In-Company</span><span class="hero-tag gold">4 horas · Presencial</span></div>
+<h1>IA generativa para equipos de <em>finanzas o administración</em></h1>
+<p class="hero-sub">No es una charla. Es un espacio donde cada participante abre su herramienta, resuelve un caso real de su propio trabajo y sale sabiendo exactamente qué puede hacer con IA — y cómo hacerlo bien.</p>
+<p class="hero-hook">Todos saben que hay que usarla. Casi nadie se siente listo. Este taller construye el criterio que falta — y lo construye haciendo, no escuchando.</p>
+<div class="hero-cta-row">
+<a href="https://wa.me/584242557764?text=Hola%2C%20me%20interesa%20el%20taller%20de%20IA%20generativa%20para%20nuestro%20equipo%20de%20finanzas.%20%C2%BFPodemos%20agendar%20una%20reuni%C3%B3n%3F" class="btn-wa" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar cotización</a>
+<a href="#primer-paso" class="btn-ghost">¿Por qué este taller? ↓</a>
+</div></div>
+<div class="hero-stats fade-up">
+<div class="stat-card"><div class="stat-num coral">95%</div><div class="stat-desc">de los pilotos de IA en empresas no producen impacto medible</div><div class="stat-source">Fuente: MIT NANDA, 2025</div></div>
+<div class="stat-card"><div class="stat-num blue">87%</div><div class="stat-desc">de los CFO cree que la IA será muy importante para administración en 2026</div><div class="stat-source">Fuente: Deloitte</div></div>
+<div class="stat-card"><div class="stat-num gold">8%</div><div class="stat-desc">de los líderes de administración y finanzas se siente muy bien preparado para usarla</div><div class="stat-source">Fuente: AICPA and CIMA, 2025</div></div>
+</div></div></div></section>
+
+<!-- PRIMER PASO: NARRATIVA ESTRATÉGICA -->
+<section class="primer-paso" id="primer-paso">
+<div class="container"><div class="pp-grid">
+<div class="pp-content fade-up">
+<div class="section-tag">El primer paso</div>
+<h2>Usted quiere implementar IA. Este taller le dice por dónde empezar.</h2>
+<p>La mayoría de las empresas que intentan adoptar IA cometen el mismo error: compran herramientas antes de entender qué sabe hacer su equipo con ellas. Invierten en tecnología sin medir la línea base. Y cuando los resultados no llegan, no saben si el problema fue la herramienta, el proceso o la gente.</p>
+<p class="pp-highlight">Este taller no es solo capacitación — es el diagnóstico técnico que su empresa necesita antes de invertir un bolívar en implementación.</p>
+<p>Medimos el punto de partida de cada participante, evaluamos su desplazamiento durante la sesión y entregamos un reporte que le dice exactamente con qué cuenta su organización para dar el siguiente paso. Es la diferencia entre implementar a ciegas e implementar con inteligencia.</p>
+</div>
+<div class="pp-risks fade-up">
+<div class="pp-risk-card">
+<div class="pp-risk-num green">Mitigación de riesgo</div>
+<h3>Elimina el riesgo de la inversión a ciegas</h3>
+<p>Antes de comprar licencias o contratar consultores, sepa qué tan listo está su equipo. Le entregamos data real, no intuición.</p>
+</div>
+<div class="pp-risk-card">
+<div class="pp-risk-num blue">Diagnóstico medible</div>
+<h3>Evaluación técnica antes y después</h3>
+<p>Cada participante completa un diagnóstico inicial y una evaluación final. Usted recibe el desplazamiento individual y grupal.</p>
+</div>
+<div class="pp-risk-card">
+<div class="pp-risk-num gold">Línea base organizacional</div>
+<h3>Sepa con qué cuenta antes de escalar</h3>
+<p>Identifique quiénes son sus aliados naturales de adopción, quiénes necesitan más acompañamiento y dónde están las brechas reales.</p>
+</div>
+<div class="pp-risk-card">
+<div class="pp-risk-num coral">Involucrar para avanzar</div>
+<h3>El primer paso para que su gente diga "sí"</h3>
+<p>La implementación fracasa cuando se impone. Este taller convierte a sus colaboradores en participantes activos del cambio, no en resistentes.</p>
+</div>
+</div></div></div></section>
+
+<!-- DIAGNOSTIC STRIP -->
+<section class="diag-strip">
+<div class="container">
+<div style="text-align:center;margin-bottom:44px">
+<div class="section-tag" style="justify-content:center">Lo que usted recibe</div>
+<h2 class="section-title fade-up">Un diagnóstico, no solo un taller</h2>
+</div>
+<div class="diag-grid">
+<div class="diag-card fade-up"><div class="diag-icon">📋</div><h3>Diagnóstico inicial</h3><p>Evaluación del nivel de cada participante antes de comenzar la sesión.</p></div>
+<div class="diag-card fade-up"><div class="diag-icon">📊</div><h3>Evaluación técnica final</h3><p>Medición de competencias adquiridas al cierre del taller.</p></div>
+<div class="diag-card fade-up"><div class="diag-icon">📈</div><h3>Desplazamiento individual</h3><p>Cuánto avanzó cada persona — dato para decisiones de asignación y formación.</p></div>
+<div class="diag-card fade-up"><div class="diag-icon">📑</div><h3>Reporte ejecutivo</h3><p>Informe consolidado para la dirección con la línea base y recomendaciones.</p></div>
+</div>
+</div></section>
+
+<!-- AUDIENCE -->
+<section class="audience">
+<div class="container">
+<div class="section-tag">A quién va dirigido</div>
+<h2 class="section-title fade-up">Diseñado para su equipo, no para entusiastas de la tecnología</h2>
+<div class="audience-grid">
+<div class="audience-card fade-up"><h3>Equipos de administración y finanzas</h3><p>Hasta 20 participantes por sesión, con niveles heterogéneos de familiaridad con IA. No se requiere experiencia técnica previa.</p></div>
+<div class="audience-card fade-up"><h3>Desde cero o desde el uso informal</h3><p>Desde quienes ya la consultan sin método hasta quienes aún no la han incorporado a su rutina. Todos terminan al mismo nivel.</p></div>
+</div></div></section>
+
+<!-- PARTICIPANT POWER -->
+<section style="padding:90px 0;background:var(--white)">
+<div class="container">
+<div style="text-align:center;margin-bottom:48px">
+<div class="section-tag" style="justify-content:center">La experiencia del participante</div>
+<h2 class="section-title fade-up">Aquí no se viene a escuchar.<br>Se viene a hacer.</h2>
+<p class="section-desc fade-up" style="margin:0 auto 48px">Cada persona abre su herramienta, trabaja con sus propios datos y resuelve un caso real de su día a día. Nadie sale igual que como entró.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px">
+<div class="fade-up" style="background:var(--navy);border-radius:14px;padding:30px 24px;text-align:center">
+<div style="font-size:36px;margin-bottom:14px">🧑‍💻</div>
+<h3 style="font-family:Outfit,sans-serif;font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:8px">Protagonista, no espectador</h3>
+<p style="font-size:.9rem;color:rgba(255,255,255,.55);line-height:1.6;font-weight:300">Cada participante trabaja directamente con la IA desde su computadora, resolviendo tareas reales de su puesto — no ejercicios genéricos.</p>
+</div>
+<div class="fade-up" style="background:var(--navy);border-radius:14px;padding:30px 24px;text-align:center">
+<div style="font-size:36px;margin-bottom:14px">⚡</div>
+<h3 style="font-family:Outfit,sans-serif;font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:8px">Su primer resultado en vivo</h3>
+<p style="font-size:.9rem;color:rgba(255,255,255,.55);line-height:1.6;font-weight:300">Antes de que termine la sesión, cada persona habrá producido algo útil con IA que puede usar al día siguiente en su trabajo.</p>
+</div>
+<div class="fade-up" style="background:var(--navy);border-radius:14px;padding:30px 24px;text-align:center">
+<div style="font-size:36px;margin-bottom:14px">🔑</div>
+<h3 style="font-family:Outfit,sans-serif;font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:8px">Criterio propio, no dependencia</h3>
+<p style="font-size:.9rem;color:rgba(255,255,255,.55);line-height:1.6;font-weight:300">No creamos usuarios dependientes de un consultor. Formamos profesionales con criterio para decidir cuándo, cómo y con qué herramienta trabajar.</p>
+</div>
+</div>
+<div class="fade-up" style="margin-top:40px;background:linear-gradient(135deg,var(--royal),#2a5bd4);border-radius:16px;padding:36px 40px;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center">
+<div style="font-size:44px">🎯</div>
+<div>
+<h3 style="font-family:Outfit,sans-serif;font-size:1.15rem;font-weight:700;color:var(--white);margin-bottom:6px">Cada participante sale con su ficha de compromiso</h3>
+<p style="font-size:.95rem;color:rgba(255,255,255,.8);line-height:1.65;font-weight:300">Un proceso concreto de su trabajo que se compromete a automatizar, con la herramienta correcta, el prompt diseñado y las reglas de seguridad claras. No es un certificado decorativo — es un plan de acción personal.</p>
+</div>
+</div>
+</div></section>
+
+<!-- 4D FRAMEWORK -->
+<section class="framework">
+<div class="container">
+<div class="section-tag">Marco de trabajo</div>
+<h2 class="section-title fade-up">El AI Fluency Framework — las 4D</h2>
+<div class="framework-intro fade-up"><p>Desarrollado por Anthropic junto al Dr. Joseph Feller (University College Cork) y el prof. Rick Dakan (Ringling College). El marco que convierte el uso intuitivo de la IA en una competencia profesional medible.</p></div>
+<div class="d4-grid">
+<div class="d4-card fade-up"><div class="d4-num">01</div><h3>Delegación</h3><p>Qué tarea le entrego a la IA y cuál me quedo yo.</p></div>
+<div class="d4-card fade-up"><div class="d4-num">02</div><h3>Descripción</h3><p>Cómo le pido las cosas con precisión.</p></div>
+<div class="d4-card fade-up"><div class="d4-num">03</div><h3>Discernimiento</h3><p>Cómo evalúo si la respuesta es confiable.</p></div>
+<div class="d4-card fade-up"><div class="d4-num">04</div><h3>Diligencia</h3><p>Quién responde por el resultado final: siempre tú.</p></div>
+</div></div></section>
+
+<!-- TOOLS -->
+<section class="tools">
+<div class="container">
+<div class="section-tag">Herramientas comparadas</div>
+<h2 class="section-title fade-up">Cuál usar, según la tarea</h2>
+<p class="section-desc fade-up">Su equipo no necesita dominar todas las herramientas — necesita saber cuándo usar cada una.</p>
+<div class="tools-grid fade-up">
+<div class="tool-row header"><div class="tool-name">Herramienta</div><div class="tool-use">Cuándo la eliges</div></div>
+<div class="tool-row"><div class="tool-name">Claude</div><div class="tool-use">Razonamiento y documentos complejos: modelos, contratos y auditoría administrativa.</div></div>
+<div class="tool-row"><div class="tool-name">ChatGPT</div><div class="tool-use">Versatilidad del día a día: investigación con datos actuales de mercado o proveedores.</div></div>
+<div class="tool-row"><div class="tool-name">Gemini</div><div class="tool-use">Trabajo directo dentro de Google Workspace, hoja de cálculo incluida.</div></div>
+<div class="tool-row"><div class="tool-name">NotebookLM</div><div class="tool-use">Consultar políticas, contratos o manuales propios sin alucinar, con cita exacta.</div></div>
+</div></div></section>
+
+<!-- PROGRAM -->
+<section class="program" id="programa">
+<div class="container">
+<div class="section-tag">Programa</div>
+<h2 class="section-title fade-up">Los 8 bloques de la sesión</h2>
+<p class="section-desc fade-up">Cuatro horas donde nadie se queda sentado escuchando. Cada bloque combina conceptos cortos con ejercicios prácticos donde cada participante usa la IA en vivo con sus propios casos.</p>
+<div class="blocks-grid">
+<div class="block-card fade-up"><div class="block-num">01</div><h3>Diagnóstico</h3></div>
+<div class="block-card fade-up"><div class="block-num">02</div><h3>Fundamentos de IA + marco 4D</h3></div>
+<div class="block-card fade-up"><div class="block-num">03</div><h3>Panorama de herramientas</h3></div>
+<div class="block-card fade-up"><div class="block-num">04</div><h3>Ingeniería de prompts</h3></div>
+<div class="block-card fade-up"><div class="block-num">05</div><h3>Seguridad y ética</h3></div>
+<div class="block-card fade-up"><div class="block-num">06</div><h3>Procesos automatizables</h3></div>
+<div class="block-card fade-up"><div class="block-num">07</div><h3>Caso práctico ejecutivo</h3></div>
+<div class="block-card fade-up"><div class="block-num">08</div><h3>Compromiso</h3></div>
+</div></div></section>
+
+<!-- RESULTS -->
+<section class="results" id="resultados">
+<div class="container">
+<div class="section-tag">Resultado</div>
+<h2 class="section-title fade-up">Qué cambia después de las 4 horas</h2>
+<p class="section-desc fade-up">Su equipo no sale "informado sobre IA" — sale habiéndola usado, con criterio propio y un compromiso concreto de aplicación que usted puede medir.</p>
+<table class="results-table fade-up">
+<thead><tr><th>Logro</th><th>Antes</th><th>Después</th></tr></thead>
+<tbody>
+<tr><td>Elección de herramienta</td><td>Uso intuitivo o por ensayo y error</td><td>Criterio claro de cuándo usar cada una según la tarea</td></tr>
+<tr><td>Calidad de los prompts</td><td>Genéricos, con resultados inconsistentes</td><td>Estructurados y reutilizables, con ejemplos propios</td></tr>
+<tr><td>Información sensible</td><td>Sin protocolo definido para compartir datos con IA</td><td>Reglas claras de qué compartir y qué no</td></tr>
+<tr><td>Nivel del equipo</td><td>Uso disperso e informal, brecha entre colaboradores</td><td>Equipo nivelado, con lenguaje y criterios comunes</td></tr>
+<tr><td>Siguientes pasos</td><td>Sin ruta clara de cómo profundizar</td><td>Ficha de compromiso con su proceso y tarea a automatizar</td></tr>
+</tbody></table>
+</div></section>
+
+<!-- CTA -->
+<section class="cta-section">
+<div class="container">
+<h2 class="fade-up">El primer paso no es comprar tecnología.<br><em>Es saber con qué cuenta.</em></h2>
+<p class="fade-up">Agenda una reunión con nuestros especialistas. Adaptamos el alcance, la agenda y los casos de práctica a los procesos reales de su equipo.</p>
+<div class="cta-features fade-up">
+<span class="cta-feat"><strong>4 horas</strong> presencial</span>
+<span class="cta-feat"><strong>Hasta 20</strong> participantes</span>
+<span class="cta-feat"><strong>Diagnóstico</strong> antes y después</span>
+<span class="cta-feat"><strong>Reporte ejecutivo</strong> de desplazamiento</span>
+</div>
+<div class="cta-dual fade-up">
+<a href="https://wa.me/584242557764?text=Hola%2C%20me%20interesa%20el%20taller%20de%20IA%20generativa%20para%20nuestro%20equipo%20de%20finanzas.%20%C2%BFPodemos%20agendar%20una%20reuni%C3%B3n%3F" class="btn-wa" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Solicitar cotización por WhatsApp</a>
+<a href="mailto:consultoria@bidaglobal.com?subject=Cotizaci%C3%B3n%20taller%20IA%20generativa%20para%20equipo%20de%20finanzas" class="btn-email">✉ consultoria@bidaglobal.com</a>
+</div>
+<p class="cta-note">Respuesta en menos de 24 horas hábiles · www.bidaglobal.com</p>
+</div></section>
+
+<a href="https://wa.me/584242557764?text=Hola%2C%20me%20interesa%20el%20taller%20de%20IA%20generativa%20para%20nuestro%20equipo%20de%20finanzas.%20%C2%BFPodemos%20agendar%20una%20reuni%C3%B3n%3F" class="wa-float" target="_blank">
+<span class="wa-float-label">Solicitar cotización 💬</span>
+<div class="wa-float-btn"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div></a>
+
+<footer class="footer"><div class="container"><p>© 2026 <a href="#">Bida Global</a> · Inteligencia de Negocios & Formación Empresarial · consultoria@bidaglobal.com</p></div></footer>
+
+<script>
+var nb=document.getElementById('navbar');
+window.addEventListener('scroll',function(){nb.classList.toggle('scrolled',window.scrollY>50)});
+var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.15,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fade-up').forEach(function(el){obs.observe(el)});
+</script>
+</body>
+</html>
