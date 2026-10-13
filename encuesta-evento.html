@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de la sala — Lo que las empresas pidieron · CAVEDATOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0f2e;--panel:#141a45;--panel2:#1c2358;--text:#eef1fb;--dim:#a7b0d6;--blue:#2a9df4;--blue2:#0075c4;--hair:#2a3270;--ok:#7fd0a4;--warn:#f0b855;--err:#e08a7a;}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh;padding:20px 14px 40px;display:flex;justify-content:center}
+.wrap{width:100%;max-width:640px}
+.wrap.wide{max-width:1180px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--panel);border:1px solid var(--hair);border-radius:8px 8px 0 0;padding:14px 18px}
+.chip{background:#fff;border-radius:6px;padding:5px 10px;display:inline-flex;align-items:center}
+.chip img{height:34px;width:auto;display:block}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:right}
+.bar{height:3px;background:var(--hair)}.bar i{display:block;height:100%;background:var(--blue);width:0;transition:width .3s}
+.card{background:var(--panel);border:1px solid var(--hair);border-top:none;border-radius:0 0 8px 8px;padding:26px 22px 28px}
+h1{font-family:'Source Serif 4',serif;font-size:26px;line-height:1.25;margin:0 0 8px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin:0 0 10px}
+p.lead{color:var(--dim);font-size:15px;line-height:1.55;margin:0 0 20px}
+.q{margin:0 0 24px}.q h2{font-family:'Source Serif 4',serif;font-weight:600;font-size:18px;line-height:1.35;margin:0 0 4px}
+.q .n{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);margin-bottom:6px}
+.opts{display:grid;gap:8px;margin-top:10px}.opts.two{grid-template-columns:1fr 1fr}
+.opt{display:flex;align-items:center;gap:12px;padding:13px 14px;min-height:48px;background:var(--panel2);border:1px solid var(--hair);border-radius:6px;cursor:pointer;font-size:15px;line-height:1.3;user-select:none}
+.opt:hover{border-color:var(--blue)}.opt.sel{border-color:var(--blue);background:rgba(42,157,244,.14)}
+.opt .dot{width:16px;height:16px;border-radius:50%;border:1px solid var(--dim);flex:0 0 auto;position:relative}.opt.sel .dot{border-color:var(--blue)}.opt.sel .dot::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--blue)}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;color:var(--text);margin:6px 0 10px}
+.consent input{margin-top:3px;width:18px;height:18px}
+input[type=text]{width:100%;background:var(--panel2);border:1px solid var(--hair);border-radius:6px;color:var(--text);padding:13px 14px;font-size:15px;font-family:inherit}
+input[type=text]:focus{outline:none;border-color:var(--blue)}
+button{font-family:inherit;font-size:15px;font-weight:600;padding:14px 22px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#04122b;cursor:pointer;width:100%;margin-top:12px}
+button:disabled{opacity:.4;cursor:not-allowed}button.ghost{background:transparent;color:var(--dim);border-color:var(--hair)}
+.status{font-family:'IBM Plex Mono',monospace;font-size:12px;margin-top:14px;color:var(--dim)}.status.ok{color:var(--ok)}.status.err{color:var(--err)}
+.status button{width:auto;display:inline-block;padding:3px 9px;margin:0 0 0 6px;font-size:11px;background:none;color:inherit;border:1px solid currentColor}
+.mesa{border:2px solid var(--blue);border-radius:8px;padding:18px;margin:16px 0;background:rgba(42,157,244,.10)}
+.mesa b{font-family:'Source Serif 4',serif;font-size:28px;display:block;margin-bottom:4px}
+.mesa ul{margin:10px 0 0;padding-left:20px;color:var(--dim);font-size:14.5px;line-height:1.6}
+.foot{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);line-height:1.6;margin-top:22px;text-align:center}
+.hp{position:absolute;left:-9999px;opacity:0;height:0;width:0}
+/* panel */
+.pgrid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-top:16px}
+.pbox{background:var(--panel2);border:1px solid var(--hair);border-radius:8px;padding:16px 18px}
+.pbox h3{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:0 0 12px;font-weight:500}
+.big{font-family:'IBM Plex Mono',monospace;font-size:72px;font-weight:700;line-height:1;color:var(--text)}
+.row{display:grid;grid-template-columns:minmax(120px,38%) 1fr 44px;gap:10px;align-items:center;margin:7px 0;font-size:15px}
+.row .tr{height:16px;background:var(--hair);border-radius:3px;overflow:hidden}.row .tr i{display:block;height:100%;background:var(--blue);transition:width .6s}
+.row .v{font-family:'IBM Plex Mono',monospace;text-align:right;color:var(--dim)}
+.mesas{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.mcard{background:var(--panel2);border:2px solid var(--blue);border-radius:8px;padding:14px;text-align:center}
+.mcard .t{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:var(--dim)}.mcard .c{font-family:'IBM Plex Mono',monospace;font-size:52px;font-weight:700}
+.demo{background:var(--warn);color:#2b1d00;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:6px 10px;text-align:center;border-radius:4px;margin:10px 0}
+@media(max-width:560px){.opts.two{grid-template-columns:1fr}.mesas{grid-template-columns:repeat(2,1fr)}.big{font-size:56px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div class="top">
+    <span class="chip"><img id="logo" src="https://cdn.phototourl.com/member/2026-08-19-6daefb9a-3fdf-448f-ae15-242dc3e12d7c.png" alt="CAVEDATOS"></span>
+    <div class="tag" id="tag">Mapa de la sala<br>10 · NOV · 2026</div>
+  </div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="card" id="app"></div>
+  <div class="foot">Organiza: CAVEDATOS · Ponentes: KPMG · Galac · BIDA Global · Intexia<br>Evento "Lo que las empresas pidieron" · Los resultados son percepciones declaradas, no una auditoría.</div>
+</div>
+<script>
+/* ============ CONFIGURACIÓN ============ */
+// Pega aquí la URL del Web App de Apps Script de ESTA encuesta (no la del diagnóstico).
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbx_mUguAGTypQJBQd7IRigbJn0adjBym1U_v2UqUuVvIwOxlnVpPdRtxZQv0SQMSmUM5Q/exec";
+const PANEL_REFRESH_MS = 6000;
+/* ======================================= */
+
+const params = new URLSearchParams(location.search);
+const MODE = params.get('panel') ? 'panel' : (params.get('cierre') ? 'cierre' : 'encuesta');
+const IS_TEST = params.get('test') === '1';
+const IS_DEMO = params.get('demo') === '1';
+const ORIGEN = IS_TEST ? 'PRUEBA' : 'EVENTO';
+
+const SECTORES=["Comercio y distribución","Manufactura","Alimentos y restaurantes","Servicios profesionales","Tecnología","Salud","Construcción e inmobiliario","Logística y transporte","Financiero y seguros","Educación","Agro","Otro"];
+const TAMANOS=["1–10","11–50","51–200","Más de 200"];
+const ROLES=["Dueño o gerente general","Finanzas y contabilidad","TI","Administración y operaciones","Otro"];
+const PRIORIDADES=["Ordenar","Digitalizar","Automatizar","Proteger"];
+const AFIL=["Sí","No","Quiero información"];
+const PASOS=["Ordenar mi cumplimiento","Digitalizar un proceso","Automatizar una tarea","Proteger mi información","Todavía no lo sé"];
+const MESAS={
+ "Ordenar":{n:"ORDENA",s:"Cumplimiento tributario, mercantil y documental",q:["¿Qué obligación revisas con más temor?","¿Quién verifica que estás al día?","¿Qué te falta para tener tu Registro Mercantil al día?"]},
+ "Digitalizar":{n:"DIGITALIZA",s:"De Excel y papel a un sistema",q:["¿Cuántos archivos distintos usas para cerrar el mes?","¿Qué dato vuelves a digitar más veces?","¿Qué sistema probaste y por qué no funcionó?"]},
+ "Automatizar":{n:"AUTOMATIZA",s:"Tablero financiero y tareas repetitivas",q:["¿Qué tarea repites cada mes que ya no quieres hacer a mano?","¿Cuántas horas te lleva el cierre?","¿Qué número te gustaría ver cada lunes?"]},
+ "Proteger":{n:"PROTEGE",s:"Respaldo, accesos y tesorería segura",q:["¿Cuándo probaste restaurar un respaldo?","¿Cuántas personas comparten una misma clave?","¿Quién aprueba un pago grande además de ti?"]}
+};
+const app=document.getElementById('app'), bar=document.getElementById('bar');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- envío resiliente: fetch, reintento y formulario oculto ---------- */
+function viaFetch(payload){
+  return fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+   .then(r=>r.text().then(t=>r.ok && t.indexOf('"status":"ok"')!==-1));
+}
+function viaForm(payload){
+  return new Promise(res=>{try{
+    const name='f_'+Date.now(); const ifr=document.createElement('iframe'); ifr.name=name; ifr.style.display='none'; document.body.appendChild(ifr);
+    const f=document.createElement('form'); f.method='POST'; f.action=ENDPOINT; f.target=name; f.style.display='none';
+    const i=document.createElement('input'); i.type='hidden'; i.name='payload'; i.value=JSON.stringify(payload); f.appendChild(i); document.body.appendChild(f); f.submit();
+    setTimeout(()=>{f.remove();ifr.remove();res('sent')},1800);
+  }catch(e){res(false)}});
+}
+function enviar(payload){
+  if(!ENDPOINT || ENDPOINT.indexOf('PEGA_AQUI')!==-1) return Promise.resolve(false);
+  return viaFetch(payload).catch(()=>new Promise(r=>setTimeout(r,900)).then(()=>viaFetch(payload))).catch(()=>viaForm(payload));
+}
+
+/* ---------- encuesta ---------- */
+const A={sector:null,tamano:null,rol:null,prioridad:null,afiliacion:null,consent:false,contacto:''};
+function optsHtml(key,list,two){
+  return `<div class="opts ${two?'two':''}">`+list.map(o=>`<div class="opt ${A[key]===o?'sel':''}" data-k="${key}" data-v="${esc(o)}"><span class="dot"></span><span>${esc(o)}</span></div>`).join('')+`</div>`;
+}
+function renderEncuesta(){
+  const done=localStorage.getItem('evt_enc_done');
+  if(done && !IS_TEST){ renderGracias(done,true); return; }
+  const n=['sector','tamano','rol','prioridad','afiliacion'].filter(k=>A[k]).length;
+  bar.style.width=(n/5*100)+'%';
+  const ok=n===5 && (!A.consent || A.contacto.trim().length>3);
+  app.innerHTML=`
+   <div class="eyebrow">Mapa de la sala${IS_TEST?' · MODO PRUEBA':''}</div>
+   <h1>Cuéntanos quién está en la sala</h1>
+   <p class="lead">5 preguntas, menos de un minuto. Al final te decimos a qué mesa ir para conectar con empresas que comparten tu prioridad.</p>
+   <div class="q"><div class="n">1 de 5</div><h2>¿A qué sector pertenece tu empresa?</h2>${optsHtml('sector',SECTORES,true)}</div>
+   <div class="q"><div class="n">2 de 5</div><h2>¿Cuántas personas trabajan en tu empresa?</h2>${optsHtml('tamano',TAMANOS,true)}</div>
+   <div class="q"><div class="n">3 de 5</div><h2>¿Cuál es tu rol?</h2>${optsHtml('rol',ROLES,false)}</div>
+   <div class="q"><div class="n">4 de 5</div><h2>¿Qué paso es tu prioridad en los próximos 90 días?</h2>${optsHtml('prioridad',PRIORIDADES,true)}</div>
+   <div class="q"><div class="n">5 de 5</div><h2>¿Tu empresa está afiliada a CAVEDATOS?</h2>${optsHtml('afiliacion',AFIL,false)}</div>
+   <label class="consent"><input type="checkbox" id="consent" ${A.consent?'checked':''}><span>Acepto que CAVEDATOS o un ponente me contacte para dar seguimiento (opcional).</span></label>
+   ${A.consent?`<input type="text" id="contacto" placeholder="Tu correo o WhatsApp" value="${esc(A.contacto)}" autocomplete="off">`:''}
+   <input class="hp" type="text" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+   <button id="send" ${ok?'':'disabled'}>Enviar y ver mi mesa</button>
+   <div class="status" id="st"></div>`;
+  app.querySelectorAll('.opt').forEach(el=>el.addEventListener('click',()=>{A[el.dataset.k]=el.dataset.v;renderEncuesta();}));
+  document.getElementById('consent').addEventListener('change',e=>{A.consent=e.target.checked;renderEncuesta();});
+  const c=document.getElementById('contacto'); if(c){c.addEventListener('input',e=>{A.contacto=e.target.value;document.getElementById('send').disabled=!(n===5&&A.contacto.trim().length>3);});}
+  document.getElementById('send').addEventListener('click',()=>submitEncuesta());
+}
+function submitEncuesta(){
+  if(document.getElementById('hp').value) return;
+  const st=document.getElementById('st'); const btn=document.getElementById('send'); btn.disabled=true; st.className='status'; st.textContent='Enviando…';
+  const payload={tipo:'encuesta',origen:ORIGEN,sector:A.sector,tamano:A.tamano,rol:A.rol,prioridad:A.prioridad,afiliacion:A.afiliacion,consentimiento:A.consent,contacto:A.consent?A.contacto.trim():''};
+  enviar(payload).then(r=>{
+    if(r){ if(!IS_TEST) localStorage.setItem('evt_enc_done',A.prioridad); renderGracias(A.prioridad,false); }
+    else { st.className='status err'; st.innerHTML='No se pudo enviar. <button id="retry" type="button">Reintentar</button>'; btn.disabled=false; document.getElementById('retry').addEventListener('click',submitEncuesta); }
+  });
+}
+function renderGracias(prio,again){
+  bar.style.width='100%'; const m=MESAS[prio]||MESAS.Ordenar;
+  app.innerHTML=`
+   <div class="eyebrow">${again?'Ya respondiste esta encuesta':'¡Gracias!'}</div>
+   <h1>Tu mesa es:</h1>
+   <div class="mesa"><b>${m.n}</b><div>${m.s}</div>
+   <ul>${m.q.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+   <p class="lead"><b>El reto:</b> ve a esa mesa, busca a alguien de <b>otro sector</b> y pregúntale: «¿cuál es el paso que más te cuesta?». Hay consultorio express de 5 minutos con los especialistas.</p>`;
+}
+
+/* ---------- cierre ---------- */
+let paso=null;
+function renderCierre(){
+  const done=localStorage.getItem('evt_cierre_done'); if(done&&!IS_TEST){app.innerHTML=`<div class="eyebrow">Gracias</div><h1>Ya registramos tu primer paso: ${esc(done)}.</h1><p class="lead">Anótalo también en tu pasaporte.</p>`;bar.style.width='100%';return;}
+  bar.style.width=paso?'100%':'0';
+  app.innerHTML=`<div class="eyebrow">Cierre${IS_TEST?' · MODO PRUEBA':''}</div><h1>¿Cuál es tu primer paso del lunes?</h1><p class="lead">Una sola pregunta. Elige el paso que vas a dar primero.</p>
+   <div class="opts">${PASOS.map(o=>`<div class="opt ${paso===o?'sel':''}" data-v="${esc(o)}"><span class="dot"></span><span>${esc(o)}</span></div>`).join('')}</div>
+   <button id="send" ${paso?'':'disabled'}>Enviar</button><div class="status" id="st"></div>`;
+  app.querySelectorAll('.opt').forEach(el=>el.addEventListener('click',()=>{paso=el.dataset.v;renderCierre();}));
+  document.getElementById('send').addEventListener('click',()=>{
+    const st=document.getElementById('st'),b=document.getElementById('send'); b.disabled=true; st.textContent='Enviando…';
+    enviar({tipo:'cierre',origen:ORIGEN,paso}).then(r=>{ if(r){ if(!IS_TEST) localStorage.setItem('evt_cierre_done',paso); renderCierre(); if(IS_TEST){app.insertAdjacentHTML('beforeend','<div class="status ok">Enviado (modo prueba).</div>');} }
+      else{st.className='status err';st.innerHTML='No se pudo enviar. <button id="retry" type="button">Reintentar</button>';b.disabled=false;document.getElementById('retry').addEventListener('click',()=>b.click());}});
+  });
+}
+
+/* ---------- panel en vivo (proyector) ---------- */
+const DEMO={status:'ok',total:63,sector:{"Comercio y distribución":14,"Servicios profesionales":11,"Manufactura":9,"Alimentos y restaurantes":8,"Tecnología":6,"Salud":4,"Construcción e inmobiliario":4,"Otro":3,"Logística y transporte":2,"Educación":2},tamano:{"1–10":18,"11–50":29,"51–200":12,"Más de 200":4},rol:{"Dueño o gerente general":24,"Finanzas y contabilidad":22,"TI":6,"Administración y operaciones":9,"Otro":2},prioridad:{"Ordenar":22,"Digitalizar":14,"Automatizar":17,"Proteger":10},afiliacion:{"Sí":31,"No":27,"Quiero información":5},cierre:{total:41,paso:{"Ordenar mi cumplimiento":14,"Digitalizar un proceso":8,"Automatizar una tarea":11,"Proteger mi información":6,"Todavía no lo sé":2}}};
+function rows(obj,order,total){
+  const keys=(order||Object.keys(obj)).filter(k=>obj[k]!==undefined||order);
+  const sorted=order?keys:keys.sort((a,b)=>(obj[b]||0)-(obj[a]||0));
+  const max=Math.max(1,...sorted.map(k=>obj[k]||0));
+  return sorted.map(k=>{const v=obj[k]||0;return `<div class="row"><div>${esc(k)}</div><div class="tr"><i style="width:${v/max*100}%"></i></div><div class="v">${v}</div></div>`}).join('');
+}
+function drawPanel(d){
+  const mesas=PRIORIDADES.map(p=>`<div class="mcard"><div class="t">${MESAS[p].n}</div><div class="c">${(d.prioridad&&d.prioridad[p])||0}</div></div>`).join('');
+  app.innerHTML=`${IS_DEMO?'<div class="demo">DATOS DE DEMOSTRACIÓN — no son resultados reales</div>':''}
+   <div style="display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap"><div><div class="eyebrow">Mapa de la sala · en vivo</div><div class="big">${d.total||0}</div><div class="lead" style="margin:4px 0 0">personas han respondido</div></div>
+   <div style="flex:1;min-width:280px"><div class="eyebrow">Mesas de networking (según prioridad)</div><div class="mesas" style="margin-top:6px">${mesas}</div></div></div>
+   <div class="pgrid">
+    <div class="pbox"><h3>Sector</h3>${rows(d.sector||{},null)}</div>
+    <div class="pbox"><h3>Tamaño de la empresa</h3>${rows(d.tamano||{},TAMANOS)}<h3 style="margin-top:18px">Rol</h3>${rows(d.rol||{},null)}</div>
+    <div class="pbox"><h3>Afiliación a CAVEDATOS</h3>${rows(d.afiliacion||{},AFIL)}${d.cierre&&d.cierre.total?`<h3 style="margin-top:18px">Primer paso del lunes (${d.cierre.total})</h3>${rows(d.cierre.paso||{},PASOS)}`:''}</div>
+   </div>`;
+  bar.style.width='100%';
+}
+function loadPanel(){
+  if(IS_DEMO){drawPanel(DEMO);return;}
+  if(!ENDPOINT||ENDPOINT.indexOf('PEGA_AQUI')!==-1){app.innerHTML='<div class="eyebrow">Configuración pendiente</div><h1>Falta pegar la URL del Web App</h1><p class="lead">Abre este archivo y reemplaza https://script.google.com/macros/s/AKfycbx_mUguAGTypQJBQd7IRigbJn0adjBym1U_v2UqUuVvIwOxlnVpPdRtxZQv0SQMSmUM5Q/exec. Para ver una vista de ejemplo, agrega ?panel=1&demo=1 a la dirección.</p>';return;}
+  const url=ENDPOINT+(ENDPOINT.indexOf('?')===-1?'?':'&')+'action=resumen'+(IS_TEST?'&pruebas=1':'')+'&_='+Date.now();
+  fetch(url).then(r=>r.json()).then(d=>{if(d&&d.status==='ok')drawPanel(d);}).catch(()=>{const s=document.getElementById('tag');s.innerHTML='Sin conexión · reintentando…';});
+}
+if(MODE==='panel'){document.getElementById('wrap').classList.add('wide');document.getElementById('tag').innerHTML='Panel en vivo<br>10 · NOV · 2026';loadPanel();setInterval(loadPanel,PANEL_REFRESH_MS);}
+else if(MODE==='cierre'){renderCierre();}
+else{renderEncuesta();}
+</script>
+</body>
+</html>
