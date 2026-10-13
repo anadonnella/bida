@@ -98,9 +98,11 @@
     padding:3px 9px; border-radius:3px; cursor:pointer; margin-left:6px; }
   @media print{
     body{ background:#fff; color:#111; padding:0; }
-    .device{ box-shadow:none; border:none; max-width:100%; }
+    html, body{ background:#fff !important; }
+    .device, .body-pad{ background:#fff !important; box-shadow:none; border:none; max-width:100%; }
     .strip, .gauge-track, .nav, .footer-note, .save-status{ display:none; }
     .quad-desc, .block-para, .score-sentence{ color:#111; }
+    .block-title{ color:#555 !important; }
     .score-card{ background:#f4f4f4; border-color:#ccc; }
     .score-card:first-child .n{ color:#1f6b4a !important; }
     .score-card:last-child .n{ color:#a86a1a !important; }
