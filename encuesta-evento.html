@@ -35,9 +35,6 @@ button{font-family:inherit;font-size:15px;font-weight:600;padding:14px 22px;bord
 button:disabled{opacity:.4;cursor:not-allowed}button.ghost{background:transparent;color:var(--dim);border-color:var(--hair)}
 .status{font-family:'IBM Plex Mono',monospace;font-size:12px;margin-top:14px;color:var(--dim)}.status.ok{color:var(--ok)}.status.err{color:var(--err)}
 .status button{width:auto;display:inline-block;padding:3px 9px;margin:0 0 0 6px;font-size:11px;background:none;color:inherit;border:1px solid currentColor}
-.mesa{border:2px solid var(--blue);border-radius:8px;padding:18px;margin:16px 0;background:rgba(42,157,244,.10)}
-.mesa b{font-family:'Source Serif 4',serif;font-size:28px;display:block;margin-bottom:4px}
-.mesa ul{margin:10px 0 0;padding-left:20px;color:var(--dim);font-size:14.5px;line-height:1.6}
 .foot{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);line-height:1.6;margin-top:22px;text-align:center}
 .hp{position:absolute;left:-9999px;opacity:0;height:0;width:0}
 /* panel */
@@ -63,7 +60,7 @@ button:disabled{opacity:.4;cursor:not-allowed}button.ghost{background:transparen
   </div>
   <div class="bar"><i id="bar"></i></div>
   <div class="card" id="app"></div>
-  <div class="foot">Organiza: CAVEDATOS · Ponentes: KPMG · Galac · BIDA Global · Intexia<br>Evento "Lo que las empresas pidieron" · Los resultados son percepciones declaradas, no una auditoría.</div>
+  <div class="foot">Organiza: CAVEDATOS · Ponentes: KPMG · Galac · BIDA Global · Intexus<br>Evento "Lo que las empresas pidieron" · Los resultados son percepciones declaradas, no una auditoría.</div>
 </div>
 <script>
 /* ============ CONFIGURACIÓN ============ */
@@ -84,12 +81,7 @@ const ROLES=["Dueño o gerente general","Finanzas y contabilidad","TI","Administ
 const PRIORIDADES=["Ordenar","Digitalizar","Automatizar","Proteger"];
 const AFIL=["Sí","No","Quiero información"];
 const PASOS=["Ordenar mi cumplimiento","Digitalizar un proceso","Automatizar una tarea","Proteger mi información","Todavía no lo sé"];
-const MESAS={
- "Ordenar":{n:"ORDENA",s:"Cumplimiento tributario, mercantil y documental",q:["¿Qué obligación revisas con más temor?","¿Quién verifica que estás al día?","¿Qué te falta para tener tu Registro Mercantil al día?"]},
- "Digitalizar":{n:"DIGITALIZA",s:"De Excel y papel a un sistema",q:["¿Cuántos archivos distintos usas para cerrar el mes?","¿Qué dato vuelves a digitar más veces?","¿Qué sistema probaste y por qué no funcionó?"]},
- "Automatizar":{n:"AUTOMATIZA",s:"Tablero financiero y tareas repetitivas",q:["¿Qué tarea repites cada mes que ya no quieres hacer a mano?","¿Cuántas horas te lleva el cierre?","¿Qué número te gustaría ver cada lunes?"]},
- "Proteger":{n:"PROTEGE",s:"Respaldo, accesos y tesorería segura",q:["¿Cuándo probaste restaurar un respaldo?","¿Cuántas personas comparten una misma clave?","¿Quién aprueba un pago grande además de ti?"]}
-};
+const ETIQ={"Ordenar":"ORDENA","Digitalizar":"DIGITALIZA","Automatizar":"AUTOMATIZA","Proteger":"PROTEGE"};
 const app=document.getElementById('app'), bar=document.getElementById('bar');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -125,7 +117,7 @@ function renderEncuesta(){
   app.innerHTML=`
    <div class="eyebrow">Mapa de la sala${IS_TEST?' · MODO PRUEBA':''}</div>
    <h1>Cuéntanos quién está en la sala</h1>
-   <p class="lead">5 preguntas, menos de un minuto. Al final te decimos a qué mesa ir para conectar con empresas que comparten tu prioridad.</p>
+   <p class="lead">5 preguntas, menos de un minuto. Tus respuestas se suman al mapa de la sala, sin nombres.</p>
    <div class="q"><div class="n">1 de 5</div><h2>¿A qué sector pertenece tu empresa?</h2>${optsHtml('sector',SECTORES,true)}</div>
    <div class="q"><div class="n">2 de 5</div><h2>¿Cuántas personas trabajan en tu empresa?</h2>${optsHtml('tamano',TAMANOS,true)}</div>
    <div class="q"><div class="n">3 de 5</div><h2>¿Cuál es tu rol?</h2>${optsHtml('rol',ROLES,false)}</div>
@@ -134,7 +126,7 @@ function renderEncuesta(){
    <label class="consent"><input type="checkbox" id="consent" ${A.consent?'checked':''}><span>Acepto que CAVEDATOS o un ponente me contacte para dar seguimiento (opcional).</span></label>
    ${A.consent?`<input type="text" id="contacto" placeholder="Tu correo o WhatsApp" value="${esc(A.contacto)}" autocomplete="off">`:''}
    <input class="hp" type="text" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-   <button id="send" ${ok?'':'disabled'}>Enviar y ver mi mesa</button>
+   <button id="send" ${ok?'':'disabled'}>Enviar</button>
    <div class="status" id="st"></div>`;
   app.querySelectorAll('.opt').forEach(el=>el.addEventListener('click',()=>{A[el.dataset.k]=el.dataset.v;renderEncuesta();}));
   document.getElementById('consent').addEventListener('change',e=>{A.consent=e.target.checked;renderEncuesta();});
@@ -151,13 +143,11 @@ function submitEncuesta(){
   });
 }
 function renderGracias(prio,again){
-  bar.style.width='100%'; const m=MESAS[prio]||MESAS.Ordenar;
+  bar.style.width='100%';
   app.innerHTML=`
    <div class="eyebrow">${again?'Ya respondiste esta encuesta':'¡Gracias!'}</div>
-   <h1>Tu mesa es:</h1>
-   <div class="mesa"><b>${m.n}</b><div>${m.s}</div>
-   <ul>${m.q.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-   <p class="lead"><b>El reto:</b> ve a esa mesa, busca a alguien de <b>otro sector</b> y pregúntale: «¿cuál es el paso que más te cuesta?». Hay consultorio express de 5 minutos con los especialistas.</p>`;
+   <h1>Ya eres parte del mapa de la sala</h1>
+   <p class="lead">Mira la pantalla: en unos minutos veremos juntos quiénes estamos aquí. Después, el networking es libre.</p>`;
 }
 
 /* ---------- cierre ---------- */
@@ -185,10 +175,10 @@ function rows(obj,order,total){
   return sorted.map(k=>{const v=obj[k]||0;return `<div class="row"><div>${esc(k)}</div><div class="tr"><i style="width:${v/max*100}%"></i></div><div class="v">${v}</div></div>`}).join('');
 }
 function drawPanel(d){
-  const mesas=PRIORIDADES.map(p=>`<div class="mcard"><div class="t">${MESAS[p].n}</div><div class="c">${(d.prioridad&&d.prioridad[p])||0}</div></div>`).join('');
+  const mesas=PRIORIDADES.map(p=>`<div class="mcard"><div class="t">${ETIQ[p]}</div><div class="c">${(d.prioridad&&d.prioridad[p])||0}</div></div>`).join('');
   app.innerHTML=`${IS_DEMO?'<div class="demo">DATOS DE DEMOSTRACIÓN — no son resultados reales</div>':''}
    <div style="display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap"><div><div class="eyebrow">Mapa de la sala · en vivo</div><div class="big">${d.total||0}</div><div class="lead" style="margin:4px 0 0">personas han respondido</div></div>
-   <div style="flex:1;min-width:280px"><div class="eyebrow">Mesas de networking (según prioridad)</div><div class="mesas" style="margin-top:6px">${mesas}</div></div></div>
+   <div style="flex:1;min-width:280px"><div class="eyebrow">Prioridad para los próximos 90 días</div><div class="mesas" style="margin-top:6px">${mesas}</div></div></div>
    <div class="pgrid">
     <div class="pbox"><h3>Sector</h3>${rows(d.sector||{},null)}</div>
     <div class="pbox"><h3>Tamaño de la empresa</h3>${rows(d.tamano||{},TAMANOS)}<h3 style="margin-top:18px">Rol</h3>${rows(d.rol||{},null)}</div>
