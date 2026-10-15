@@ -81,7 +81,8 @@ const ROLES=["Dueño o gerente general","Finanzas y contabilidad","TI","Administ
 const PRIORIDADES=["Ordenar","Digitalizar","Automatizar","Proteger"];
 const AFIL=["Sí","No","Quiero información"];
 const PASOS=["Ordenar mi cumplimiento","Digitalizar un proceso","Automatizar una tarea","Proteger mi información","Todavía no lo sé"];
-const ETIQ={"Ordenar":"ORDENA","Digitalizar":"DIGITALIZA","Automatizar":"AUTOMATIZA","Proteger":"PROTEGE"};
+const ETIQ={"Ordenar":"ORDEN FINANCIERO","Digitalizar":"DIGITALIZACIÓN","Automatizar":"AUTOMATIZACIÓN","Proteger":"CIBERSEGURIDAD"};
+const LBL={"Ordenar":"Orden financiero y tributario","Digitalizar":"Digitalización de procesos / ERP","Automatizar":"Automatización financiera","Proteger":"Ciberseguridad"};
 const app=document.getElementById('app'), bar=document.getElementById('bar');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -106,7 +107,7 @@ function enviar(payload){
 /* ---------- encuesta ---------- */
 const A={sector:null,tamano:null,rol:null,prioridad:null,afiliacion:null,consent:false,contacto:''};
 function optsHtml(key,list,two){
-  return `<div class="opts ${two?'two':''}">`+list.map(o=>`<div class="opt ${A[key]===o?'sel':''}" data-k="${key}" data-v="${esc(o)}"><span class="dot"></span><span>${esc(o)}</span></div>`).join('')+`</div>`;
+  return `<div class="opts ${two?'two':''}">`+list.map(o=>`<div class="opt ${A[key]===o?'sel':''}" data-k="${key}" data-v="${esc(o)}"><span class="dot"></span><span>${esc(LBL[o]||o)}</span></div>`).join('')+`</div>`;
 }
 function renderEncuesta(){
   const done=localStorage.getItem('evt_enc_done');
@@ -121,7 +122,7 @@ function renderEncuesta(){
    <div class="q"><div class="n">1 de 5</div><h2>¿A qué sector pertenece tu empresa?</h2>${optsHtml('sector',SECTORES,true)}</div>
    <div class="q"><div class="n">2 de 5</div><h2>¿Cuántas personas trabajan en tu empresa?</h2>${optsHtml('tamano',TAMANOS,true)}</div>
    <div class="q"><div class="n">3 de 5</div><h2>¿Cuál es tu rol?</h2>${optsHtml('rol',ROLES,false)}</div>
-   <div class="q"><div class="n">4 de 5</div><h2>¿Qué paso es tu prioridad en los próximos 90 días?</h2>${optsHtml('prioridad',PRIORIDADES,true)}</div>
+   <div class="q"><div class="n">4 de 5</div><h2>¿Qué tema es tu prioridad en los próximos 90 días?</h2>${optsHtml('prioridad',PRIORIDADES,true)}</div>
    <div class="q"><div class="n">5 de 5</div><h2>¿Tu empresa está afiliada a CAVEDATOS?</h2>${optsHtml('afiliacion',AFIL,false)}</div>
    <label class="consent"><input type="checkbox" id="consent" ${A.consent?'checked':''}><span>Acepto que CAVEDATOS o un ponente me contacte para dar seguimiento (opcional).</span></label>
    ${A.consent?`<input type="text" id="contacto" placeholder="Tu correo o WhatsApp" value="${esc(A.contacto)}" autocomplete="off">`:''}
@@ -153,7 +154,7 @@ function renderGracias(prio,again){
 /* ---------- cierre ---------- */
 let paso=null;
 function renderCierre(){
-  const done=localStorage.getItem('evt_cierre_done'); if(done&&!IS_TEST){app.innerHTML=`<div class="eyebrow">Gracias</div><h1>Ya registramos tu primer paso: ${esc(done)}.</h1><p class="lead">Anótalo también en tu pasaporte.</p>`;bar.style.width='100%';return;}
+  const done=localStorage.getItem('evt_cierre_done'); if(done&&!IS_TEST){app.innerHTML=`<div class="eyebrow">Gracias</div><h1>Ya registramos tu primer paso: ${esc(done)}.</h1><p class="lead">Gracias por responder.</p>`;bar.style.width='100%';return;}
   bar.style.width=paso?'100%':'0';
   app.innerHTML=`<div class="eyebrow">Cierre${IS_TEST?' · MODO PRUEBA':''}</div><h1>¿Cuál es tu primer paso del lunes?</h1><p class="lead">Una sola pregunta. Elige el paso que vas a dar primero.</p>
    <div class="opts">${PASOS.map(o=>`<div class="opt ${paso===o?'sel':''}" data-v="${esc(o)}"><span class="dot"></span><span>${esc(o)}</span></div>`).join('')}</div>
