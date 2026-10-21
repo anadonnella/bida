@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Venezuela en el ILIA 2026</title>
+<meta name="description" content="La brecha de Venezuela en el Índice Latinoamericano de Inteligencia Artificial 2026 (CEPAL–CENIA), explicada con cifras oficiales.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f5f1; --card:#ffffff; --ink:#1b1d22; --ink2:#4a4f5a; --muted:#7c818c;
+  --line:#e3e1db; --bar:#c9ccd3; --vz:#c8102e; --vz-soft:#fbe3e6; --avg:#1b1d22;
+  --lead:#2f6db5; --good:#1f8a5b; --good-soft:#dff2e8; --warn:#b26b00; --warn-soft:#fbeed6;
+  --bad:#c8102e; --bad-soft:#fbe3e6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121317; --card:#1b1d23; --ink:#f1f1f3; --ink2:#c2c5cc; --muted:#8d929c;
+    --line:#2c2f37; --bar:#4a4e58; --vz:#ff5a6e; --vz-soft:#3a1b21; --avg:#f1f1f3;
+    --lead:#6ea4e8; --good:#4cc38a; --good-soft:#163326; --warn:#f0a73a; --warn-soft:#3a2c14;
+    --bad:#ff5a6e; --bad-soft:#3a1b21;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121317; --card:#1b1d23; --ink:#f1f1f3; --ink2:#c2c5cc; --muted:#8d929c;
+  --line:#2c2f37; --bar:#4a4e58; --vz:#ff5a6e; --vz-soft:#3a1b21; --avg:#f1f1f3;
+  --lead:#6ea4e8; --good:#4cc38a; --good-soft:#163326; --warn:#f0a73a; --warn-soft:#3a2c14;
+  --bad:#ff5a6e; --bad-soft:#3a1b21;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 16px 56px}
+header .kicker{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--vz)}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:8px 0 12px;font-weight:800;letter-spacing:-.02em}
+.lede{font-size:18px;color:var(--ink2);max-width:760px;margin:0}
+.byline{font-size:13px;color:var(--muted);margin-top:14px}
+section{margin-top:40px}
+h2{font-size:22px;margin:0 0 4px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--ink2);margin:0 0 18px;font-size:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi .lab{font-size:13px;color:var(--muted);font-weight:500}
+.kpi .val{font-size:40px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.kpi .note{font-size:13px;color:var(--ink2)}
+.kpi.hl{border-color:var(--vz);background:var(--vz-soft)}
+.kpi.hl .val{color:var(--vz)}
+/* ranking */
+.rank{display:flex;flex-direction:column;gap:3px;position:relative}
+.row{display:grid;grid-template-columns:150px 1fr 48px;align-items:center;gap:10px;font-size:14px;padding:3px 0;border-radius:6px;cursor:default}
+.row:hover{background:color-mix(in srgb,var(--line) 45%,transparent)}
+.row .name{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .num{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink2);font-weight:500}
+.track{position:relative;height:16px}
+.fill{position:absolute;left:0;top:2px;height:12px;background:var(--bar);border-radius:0 4px 4px 0}
+.row.vz .name,.row.vz .num{color:var(--vz);font-weight:700}
+.row.vz .fill{background:var(--vz)}
+.avgline{position:absolute;top:-4px;bottom:-4px;width:0;border-left:2px dashed var(--avg);opacity:.55;pointer-events:none}
+.tier{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 2px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--ink2);margin-top:14px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+@media(max-width:560px){.row{grid-template-columns:104px 1fr 40px;font-size:13px}}
+/* dimensions */
+.dims{grid-template-columns:repeat(3,1fr)}
+@media(max-width:820px){.dims{grid-template-columns:1fr}}
+.dim h3{font-size:16px;margin:0 0 2px}
+.dim .w{font-size:12px;color:var(--muted);margin-bottom:14px}
+.dbar{display:grid;grid-template-columns:96px 1fr 40px;gap:8px;align-items:center;font-size:13px;margin:8px 0}
+.dbar .t{color:var(--ink2)}
+.dbar .n{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.gap{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;color:var(--ink2)}
+.gap b{color:var(--vz);font-size:20px;font-variant-numeric:tabular-nums}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--vz-soft);color:var(--vz);margin-left:6px;vertical-align:middle}
+/* semaforo */
+.sema{grid-template-columns:repeat(3,1fr)}
+@media(max-width:820px){.sema{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.sema{grid-template-columns:1fr}}
+.light{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--card)}
+.dot{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:800;color:#fff}
+.light.r .dot{background:var(--bad)} .light.a .dot{background:var(--warn)} .light.g .dot{background:var(--good)}
+.light .t1{font-weight:600;font-size:15px}
+.light .t2{font-size:13px;color:var(--ink2)}
+/* zero */
+.zero{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;align-items:center}
+@media(max-width:820px){.zero{grid-template-columns:1fr}}
+.bigzero{font-size:clamp(72px,14vw,120px);font-weight:800;line-height:.9;color:var(--vz);letter-spacing:-.04em}
+.cmp{width:100%;border-collapse:collapse;font-size:14px}
+.cmp th,.cmp td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left}
+.cmp th{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.cmp td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.cmp td.vz{color:var(--vz)}
+/* energia */
+.en .dbar{grid-template-columns:120px 1fr 52px}
+.en .row-vz .t,.en .row-vz .n{color:var(--good);font-weight:700}
+/* contexto */
+.ctx{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.ctx{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.ctx{grid-template-columns:1fr}}
+.ctx .val{font-size:32px;font-weight:800;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.ctx .d{font-size:14px;color:var(--ink2);margin-top:6px}
+.ctx .s{font-size:12px;color:var(--muted);margin-top:8px}
+/* significado */
+.sig{grid-template-columns:repeat(2,1fr)}
+@media(max-width:700px){.sig{grid-template-columns:1fr}}
+.sig h3{font-size:16px;margin:0 0 6px}
+.sig p{margin:0;color:var(--ink2);font-size:14px}
+.notes{font-size:13px;color:var(--ink2)}
+.notes li{margin-bottom:6px}
+.notes a{color:var(--lead)}
+.src{font-size:12px;color:var(--muted);margin-top:12px}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font-size:13px;padding:8px 10px;border-radius:8px;opacity:0;transition:opacity .12s;z-index:10;max-width:240px}
+.toggle{position:fixed;top:12px;right:12px;background:var(--card);border:1px solid var(--line);color:var(--ink2);border-radius:99px;padding:6px 12px;font:500 12px Inter,sans-serif;cursor:pointer}
+details summary{cursor:pointer;color:var(--lead);font-size:14px;margin-top:14px}
+</style>
+</head>
+<body>
+<button class="toggle" id="themeBtn" aria-label="Cambiar tema">◐ Tema</button>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Índice Latinoamericano de Inteligencia Artificial · ILIA 2026</div>
+  <h1>Venezuela, último de 20 países en inteligencia artificial</h1>
+  <p class="lede">El índice de CEPAL y CENIA mide qué tan preparados están los países de América Latina y el Caribe para aprovechar la IA. Venezuela obtiene 23,2 puntos de 100: menos de la mitad del promedio regional y un tercio de lo que logra Chile.</p>
+  <div class="byline">Análisis: Ana María Donnella · Fuente: ILIA 2026, CENIA–CEPAL, presentado el 20 de octubre de 2026</div>
+</header>
+
+<section>
+  <div class="grid kpis">
+    <div class="card kpi hl"><div class="lab">Posición de Venezuela</div><div class="val">20/20</div><div class="note">Último lugar de la región</div></div>
+    <div class="card kpi hl"><div class="lab">Puntaje de Venezuela</div><div class="val">23,2</div><div class="note">Categoría “Explorador” (menos de 35)</div></div>
+    <div class="card kpi"><div class="lab">Promedio regional</div><div class="val" id="avgKpi">44,5</div><div class="note">Brecha de <b id="gapKpi">−21,3</b> puntos</div></div>
+    <div class="card kpi"><div class="lab">Líder: Chile</div><div class="val">71,4</div><div class="note">Venezuela logra un tercio de ese puntaje</div></div>
+  </div>
+  <div class="src">Fuente: ILIA 2026, Gráfico 1, p. 20. El promedio es simple, calculado con los 20 países.</div>
+</section>
+
+<section>
+  <h2>El ranking completo</h2>
+  <p class="sub">Puntaje ILIA 2026 de cada país, de 0 a 100. La línea punteada marca el promedio regional.</p>
+  <div class="card">
+    <div class="rank" id="rank"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--vz)"></i>Venezuela</span>
+      <span><i class="sw" style="background:var(--bar)"></i>Otros países</span>
+      <span><i style="width:14px;border-top:2px dashed var(--avg);opacity:.6;display:inline-block"></i>Promedio regional</span>
+    </div>
+    <details><summary>Ver como tabla</summary><table class="cmp" id="rankTable" style="margin-top:10px"></table></details>
+  </div>
+  <div class="src">Categorías: Pioneros (más de 60), Adoptantes (de 35 a 60), Exploradores (menos de 35). Fuente: ILIA 2026, Gráfico 1, p. 20.</div>
+</section>
+
+<section>
+  <h2>¿Dónde está la brecha?</h2>
+  <p class="sub">Venezuela contra el promedio regional y el mejor país en cada una de las tres dimensiones del índice.</p>
+  <div class="grid dims" id="dims"></div>
+  <div class="src">Fuente: ILIA 2026, Gráfico 1, p. 20. Promedios y puestos calculados con los 20 países.</div>
+</section>
+
+<section>
+  <h2>Semáforo de Venezuela por área</h2>
+  <p class="sub">El nivel de Venezuela en las áreas que el informe evalúa.</p>
+  <div class="grid sema">
+    <div class="light a"><div class="dot">!</div><div><div class="t1">Datos: 36 puntos</div><div class="t2">Nivel “en desarrollo”, el más bajo de ese grupo (p. 68)</div></div></div>
+    <div class="light a"><div class="dot">!</div><div><div class="t1">IA ética, responsable y segura: 38,4</div><div class="t2">Nivel moderado (p. 200)</div></div></div>
+    <div class="light r"><div class="dot">✕</div><div><div class="t1">Infraestructura</div><div class="t2">Nivel limitado, menos de 35 puntos (p. 44)</div></div></div>
+    <div class="light r"><div class="dot">✕</div><div><div class="t1">Visión e institucionalidad</div><div class="t2">Nivel incipiente, menos de 35 (p. 175)</div></div></div>
+    <div class="light r"><div class="dot">✕</div><div><div class="t1">Regulación</div><div class="t2">Nivel incipiente, menos de 35 (p. 193)</div></div></div>
+    <div class="light r"><div class="dot">✕</div><div><div class="t1">Vinculación internacional</div><div class="t2">Nivel incipiente, menos de 35 (p. 189)</div></div></div>
+  </div>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--bad)"></i>✕ Incipiente o limitado (menos de 35)</span>
+    <span><i class="sw" style="background:var(--warn)"></i>! En desarrollo o moderado (de 35 a 60)</span>
+  </div>
+</section>
+
+<section>
+  <h2>El dato más duro: cero en protección de datos</h2>
+  <div class="card zero">
+    <div>
+      <div class="bigzero">0 y 0</div>
+      <p style="margin:12px 0 0;color:var(--ink2);font-size:15px">Venezuela no tiene ley de protección de datos personales ni autoridad que la haga cumplir. Solo Venezuela y Guatemala tienen cero en ambos indicadores. Sin esa base, es difícil desarrollar IA de forma confiable o atraer inversión que use datos de personas.</p>
+    </div>
+    <table class="cmp">
+      <thead><tr><th>Indicador</th><th style="text-align:right">Venezuela</th><th style="text-align:right">Promedio regional</th></tr></thead>
+      <tbody>
+        <tr><td>Ley de protección de datos</td><td class="n vz">0</td><td class="n">80</td></tr>
+        <tr><td>Autoridad de protección de datos</td><td class="n vz">0</td><td class="n">70</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="src">Fuente: ILIA 2026, Cuadro 23.</div>
+</section>
+
+<section>
+  <h2>La fortaleza: energía renovable</h2>
+  <p class="sub">El porcentaje de la electricidad que viene de fuentes renovables. Es clave para los centros de datos que alimentan la IA.</p>
+  <div class="card en" id="energy"></div>
+  <div class="src">Fuente: ILIA 2026, p. 212 y Gráfico 68, p. 255. ⚠️ El dato de Venezuela es estimado por el informe (imputación MICE), y el informe aclara que una matriz renovable no garantiza que la oferta cubra la demanda.</div>
+</section>
+
+<section>
+  <h2>El contexto regional</h2>
+  <p class="sub">Cuatro cifras que explican por qué la brecha importa.</p>
+  <div class="grid ctx">
+    <div class="card"><div class="val">87,7%</div><div class="d">de las GPU de la región están en Brasil, que tiene un plan y presupuesto para cómputo de IA</div><div class="s">ILIA 2026, pp. 20-21</div></div>
+    <div class="card"><div class="val">2 de 20</div><div class="d">países especifican presupuesto para su estrategia de IA: Brasil y Colombia</div><div class="s">ILIA 2026, p. 34</div></div>
+    <div class="card"><div class="val">6,8%</div><div class="d">de las pequeñas empresas de la región adopta IA, frente al 24% en países de fuera de la región</div><div class="s">ILIA 2026, p. 34</div></div>
+    <div class="card"><div class="val">1% vs 3,5%</div><div class="d">del PIB podría aportar la IA hacia 2030 en la región, frente a las economías desarrolladas</div><div class="s">CEPAL</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Qué significa para los venezolanos</h2>
+  <div class="grid sig">
+    <div class="card"><h3>Para las pymes</h3><p>Si en la región solo el 6,8% de las pequeñas empresas usa IA, en Venezuela la cifra probablemente es menor. Las que adopten primero tendrán una ventaja real en productividad.</p></div>
+    <div class="card"><h3>Para el talento</h3><p>Venezuela ya ofrece doctorados en IA, pero sin un ecosistema que los retenga, los profesionales formados tienden a irse a donde hay más oportunidades.</p></div>
+    <div class="card"><h3>Para la inversión</h3><p>La energía renovable es una carta para atraer centros de datos, siempre que el suministro eléctrico sea confiable y existan reglas claras sobre los datos.</p></div>
+    <div class="card"><h3>Para la política pública</h3><p>La brecha más grande está en gobernanza. Una ley de protección de datos y un plan con presupuesto son pasos concretos que no dependen de grandes inversiones.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Notas y fuentes</h2>
+  <div class="card notes">
+    <ul>
+      <li>Los resultados del ILIA 2026 <b>no son totalmente comparables</b> con los de ediciones anteriores por cambios en la metodología (p. 29). Por eso aquí no se comparan con 2025.</li>
+      <li>El ILIA 2026 mide 20 países con 126 subindicadores en tres dimensiones: Factores Habilitantes (40%), Investigación, Desarrollo y Adopción (35%) y Gobernanza (25%).</li>
+      <li>El dato de energía renovable de Venezuela es estimado por el informe (imputación MICE).</li>
+      <li>Los promedios regionales y los puestos por dimensión los calculé a partir del Gráfico 1 del informe.</li>
+    </ul>
+    <p><b>Fuentes</b></p>
+    <ul>
+      <li>CENIA y CEPAL, <a href="https://indicelatam.cl" target="_blank" rel="noopener">Índice Latinoamericano de Inteligencia Artificial (ILIA) 2026</a></li>
+      <li><a href="https://cenia.cl/2026/10/20/ilia-2026-4ta-edicion-revela-que-america-latina-y-el-caribe-se-juegan-su-futuro-en-ia-en-la-colaboracion-regional-para-datos-talento-y-computo/" target="_blank" rel="noopener">CENIA, nota de lanzamiento del ILIA 2026</a></li>
+      <li><a href="https://indicelatam.cl/visualizador-de-datos-2/" target="_blank" rel="noopener">Visualizador de datos del ILIA</a></li>
+      <li>CEPAL, estimación del aporte de la IA al PIB regional hacia 2030</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+<div class="tip" id="tip"></div>
+<script>
+const data=[["Chile",71.4,63.4,73.7,80.8],["Brasil",68.4,59.2,63.9,89.5],["Uruguay",67.0,61.0,65.1,79.4],["Colombia",56.8,46.4,51.6,80.9],["Costa Rica",56.0,50.5,45.0,80.5],["Argentina",55.6,52.7,48.4,70.3],["Perú",52.7,45.5,39.4,83.2],["México",52.0,49.6,45.6,65.0],["Ecuador",51.8,47.0,39.0,77.4],["Rep. Dominicana",45.1,43.3,27.1,73.2],["Panamá",39.3,43.1,31.8,43.3],["El Salvador",37.9,35.1,24.7,61.3],["Trinidad y Tabago",35.5,44.2,31.7,26.9],["Paraguay",32.6,43.5,21.8,30.3],["Jamaica",32.4,40.4,26.9,27.2],["Cuba",30.9,21.4,31.7,45.2],["Guatemala",29.0,40.1,23.4,19.3],["Bolivia",26.4,35.4,22.3,17.4],["Honduras",26.2,31.7,22.9,21.6],["Venezuela",23.2,26.2,21.2,21.3]];
+const fmt=n=>n.toFixed(1).replace('.',',');
+const mean=i=>data.reduce((s,r)=>s+r[i],0)/data.length;
+const tip=document.getElementById('tip');
+function bindTip(el,html){el.addEventListener('mousemove',e=>{tip.innerHTML=html;tip.style.opacity=1;tip.style.left=Math.min(e.clientX+14,innerWidth-250)+'px';tip.style.top=(e.clientY+14)+'px'});el.addEventListener('mouseleave',()=>tip.style.opacity=0)}
+const tierOf=v=>v>60?'Pioneros':v>=35?'Adoptantes':'Exploradores';
+// KPIs
+const avg=mean(1);document.getElementById('avgKpi').textContent=fmt(avg);document.getElementById('gapKpi').textContent='−'+fmt(avg-23.2);
+// ranking
+const rank=document.getElementById('rank');let lastTier='';
+data.forEach((r,i)=>{const t=tierOf(r[1]);if(t!==lastTier){const h=document.createElement('div');h.className='tier';h.textContent=t;rank.appendChild(h);lastTier=t}
+  const row=document.createElement('div');row.className='row'+(r[0]==='Venezuela'?' vz':'');
+  row.innerHTML=`<div class="name">${i+1}. ${r[0]}</div><div class="track"><div class="fill" style="width:${r[1]}%"></div><div class="avgline" style="left:${avg}%"></div></div><div class="num">${fmt(r[1])}</div>`;
+  bindTip(row,`<b>${i+1}. ${r[0]}</b><br>ILIA: ${fmt(r[1])}<br>Habilitantes: ${fmt(r[2])}<br>I+D+A: ${fmt(r[3])}<br>Gobernanza: ${fmt(r[4])}`);rank.appendChild(row)});
+document.getElementById('rankTable').innerHTML='<thead><tr><th>#</th><th>País</th><th style="text-align:right">ILIA</th><th style="text-align:right">Habilit.</th><th style="text-align:right">I+D+A</th><th style="text-align:right">Gobern.</th></tr></thead><tbody>'+data.map((r,i)=>`<tr><td>${i+1}</td><td${r[0]==='Venezuela'?' class="vz" style="font-weight:700"':''}>${r[0]}</td>${r.slice(1).map(v=>`<td class="n${r[0]==='Venezuela'?' vz':''}">${fmt(v)}</td>`).join('')}</tr>`).join('')+'</tbody>';
+// dims
+const dims=[["Factores Habilitantes","Peso 40% · infraestructura, datos y talento",2],["Investigación, Desarrollo y Adopción","Peso 35% · investigación, innovación y uso",3],["Gobernanza","Peso 25% · estrategia, instituciones y regulación",4]];
+const vz=data.find(r=>r[0]==='Venezuela');
+document.getElementById('dims').innerHTML=dims.map(([n,w,i])=>{const m=mean(i);const lead=[...data].sort((a,b)=>b[i]-a[i])[0];const pos=[...data].sort((a,b)=>b[i]-a[i]).findIndex(r=>r[0]==='Venezuela')+1;const big=i===4;
+  const bar=(t,v,c)=>`<div class="dbar"><div class="t">${t}</div><div class="track"><div class="fill" style="width:${v}%;background:${c}"></div></div><div class="n">${fmt(v)}</div></div>`;
+  return `<div class="card dim"><h3>${n}${big?'<span class="badge">Mayor brecha</span>':''}</h3><div class="w">${w}</div>${bar('Venezuela',vz[i],'var(--vz)')}${bar('Promedio',m,'var(--bar)')}${bar(lead[0],lead[i],'var(--lead)')}<div class="gap">Brecha con el promedio: <b>−${fmt(m-vz[i])}</b><br>Puesto de Venezuela: ${pos} de 20</div></div>`}).join('');
+// energy
+const en=[["Paraguay",100],["Costa Rica",98.1],["Uruguay",96.3],["Venezuela",91.1],["Brasil",88.0],["Colombia",87.7]];
+document.getElementById('energy').innerHTML=en.map(([n,v])=>`<div class="dbar ${n==='Venezuela'?'row-vz':''}"><div class="t">${n}</div><div class="track"><div class="fill" style="width:${v}%;background:${n==='Venezuela'?'var(--good)':'var(--bar)'}"></div></div><div class="n">${fmt(v)}%</div></div>`).join('')+'<div class="gap">Venezuela es <b style="color:var(--good)">4.º</b> en la región y supera a Brasil y Colombia.</div>';
+// theme toggle
+document.getElementById('themeBtn').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark'};
+</script>
+</body>
+</html>
