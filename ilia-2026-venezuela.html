@@ -6,26 +6,26 @@
 <title>Venezuela en el ILIA 2026</title>
 <meta name="description" content="La brecha de Venezuela en el Índice Latinoamericano de Inteligencia Artificial 2026 (CEPAL–CENIA), explicada con cifras oficiales.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f6f5f1; --card:#ffffff; --ink:#1b1d22; --ink2:#4a4f5a; --muted:#7c818c;
   --line:#e3e1db; --bar:#c9ccd3; --vz:#c8102e; --vz-soft:#fbe3e6; --avg:#1b1d22;
-  --lead:#2f6db5; --good:#1f8a5b; --good-soft:#dff2e8; --warn:#b26b00; --warn-soft:#fbeed6;
+  --lead:#3E71FF; --brand:#3E71FF; --good:#1f8a5b; --good-soft:#dff2e8; --warn:#b26b00; --warn-soft:#fbeed6;
   --bad:#c8102e; --bad-soft:#fbe3e6;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#121317; --card:#1b1d23; --ink:#f1f1f3; --ink2:#c2c5cc; --muted:#8d929c;
     --line:#2c2f37; --bar:#4a4e58; --vz:#ff5a6e; --vz-soft:#3a1b21; --avg:#f1f1f3;
-    --lead:#6ea4e8; --good:#4cc38a; --good-soft:#163326; --warn:#f0a73a; --warn-soft:#3a2c14;
+    --lead:#7C9DFF; --brand:#7C9DFF; --good:#4cc38a; --good-soft:#163326; --warn:#f0a73a; --warn-soft:#3a2c14;
     --bad:#ff5a6e; --bad-soft:#3a1b21;
   }
 }
 :root[data-theme="dark"]{
   --bg:#121317; --card:#1b1d23; --ink:#f1f1f3; --ink2:#c2c5cc; --muted:#8d929c;
   --line:#2c2f37; --bar:#4a4e58; --vz:#ff5a6e; --vz-soft:#3a1b21; --avg:#f1f1f3;
-  --lead:#6ea4e8; --good:#4cc38a; --good-soft:#163326; --warn:#f0a73a; --warn-soft:#3a2c14;
+  --lead:#7C9DFF; --brand:#7C9DFF; --good:#4cc38a; --good-soft:#163326; --warn:#f0a73a; --warn-soft:#3a2c14;
   --bad:#ff5a6e; --bad-soft:#3a1b21;
 }
 *{box-sizing:border-box}
@@ -114,6 +114,8 @@ h2{font-size:22px;margin:0 0 4px;font-weight:700;letter-spacing:-.01em}
 .src{font-size:12px;color:var(--muted);margin-top:12px}
 .tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font-size:13px;padding:8px 10px;border-radius:8px;opacity:0;transition:opacity .12s;z-index:10;max-width:240px}
 .toggle{position:fixed;top:12px;right:12px;background:var(--card);border:1px solid var(--line);color:var(--ink2);border-radius:99px;padding:6px 12px;font:500 12px Inter,sans-serif;cursor:pointer}
+.brand-logo-text{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:22px;letter-spacing:.02em;color:var(--brand);margin-bottom:16px}
+.brandmark{margin-top:40px;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;color:var(--brand)}
 details summary{cursor:pointer;color:var(--lead);font-size:14px;margin-top:14px}
 </style>
 </head>
@@ -122,10 +124,11 @@ details summary{cursor:pointer;color:var(--lead);font-size:14px;margin-top:14px}
 <div class="wrap">
 
 <header>
+  <div class="brand-logo-text">BIDA</div>
   <div class="kicker">Índice Latinoamericano de Inteligencia Artificial · ILIA 2026</div>
   <h1>Venezuela, último de 20 países en inteligencia artificial</h1>
   <p class="lede">El índice de CEPAL y CENIA mide qué tan preparados están los países de América Latina y el Caribe para aprovechar la IA. Venezuela obtiene 23,2 puntos de 100: menos de la mitad del promedio regional y un tercio de lo que logra Chile.</p>
-  <div class="byline">Análisis: Ana María Donnella · Fuente: ILIA 2026, CENIA–CEPAL, presentado el 20 de octubre de 2026</div>
+  <div class="byline">Análisis: Ana María Donnella · Bida Global 21, C.A. · Fuente: ILIA 2026, CENIA–CEPAL, presentado el 20 de octubre de 2026</div>
 </header>
 
 <section>
@@ -242,6 +245,7 @@ details summary{cursor:pointer;color:var(--lead);font-size:14px;margin-top:14px}
   </div>
 </section>
 
+  <div class="brandmark">BIDA GLOBAL 21, C.A.</div>
 </div>
 <div class="tip" id="tip"></div>
 <script>
