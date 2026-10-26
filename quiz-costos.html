@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Evaluación Módulo 3: Estructura de Costos</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Arial,sans-serif;background:#fff;color:#222;line-height:1.45}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.35rem;margin-bottom:4px} h2{font-size:1.1rem;margin:18px 0 8px}
+.sub{color:#666;font-size:.9rem;margin-bottom:16px}
+label{display:block;font-weight:600;font-size:.9rem;margin:12px 0 4px}
+input[type=text],select,textarea{width:100%;padding:10px;border:1.5px solid #bbb;border-radius:8px;font-size:1rem;font-family:inherit}
+.q{border:1.5px solid #ddd;border-radius:10px;padding:14px;margin:14px 0}
+.q p{font-weight:600;margin-bottom:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border:1.5px solid #ddd;border-radius:8px;margin:6px 0;cursor:pointer}
+.opt input{margin-top:3px;transform:scale(1.2)}
+.opt.sel{border-color:#222;background:#f2f2f2}
+.lik{display:flex;gap:8px;flex-wrap:wrap}.lik .opt{flex:1;min-width:52px;justify-content:center}
+.legend{font-size:.8rem;color:#666;display:flex;justify-content:space-between;margin-top:4px}
+button{padding:12px 20px;border:0;border-radius:8px;background:#222;color:#fff;font-size:1rem;cursor:pointer;margin:6px 6px 6px 0;font-family:inherit}
+button.sec{background:#fff;color:#222;border:1.5px solid #222}
+.msg{padding:12px;border-radius:8px;background:#f2f2f2;margin:12px 0}
+.err{color:#b00020;font-size:.9rem;margin-top:6px}
+.prog{height:6px;background:#eee;border-radius:3px;margin:8px 0 14px}.prog div{height:6px;background:#222;border-radius:3px;width:0}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:8px 0}
+th,td{border-bottom:1px solid #ddd;padding:7px 6px;text-align:left}th{background:#f2f2f2}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin:20px 0;min-height:170px}
+.pcol{text-align:center;width:30%}.pblk{background:#444;color:#fff;font-weight:700;font-size:1.6rem;padding-top:8px;border-radius:6px 6px 0 0}
+.pn{font-weight:600;font-size:.9rem;word-break:break-word}.ps{font-size:.8rem;color:#555}
+.hide{display:none}.small{font-size:.8rem;color:#666}
+textarea{min-height:90px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem}
+.tabs{display:flex;gap:6px;margin-bottom:12px}
+
+.two{display:flex;gap:10px}.two>div{flex:1}input[type=number]{width:100%;padding:10px;border:1.5px solid #bbb;border-radius:8px;font-size:1rem}</style></head><body>
+<div class="wrap" id="app">
+ <h1>Evaluación · Módulo 3: Estructura de Costos</h1>
+ <p class="sub">Son 5 preguntas y 3 datos sobre ti. Toma unos 8 minutos.</p>
+ <div id="datos">
+  <label>Tu número (el de tu tarjeta)</label><input type="number" id="codigo" inputmode="numeric" min="1" placeholder="Ej.: 7">
+  <label>Tu nombre</label><input type="text" id="nombre" autocomplete="off">
+  <div class="two"><div><label>Grupo</label><select id="grupo"><option value="1">Grupo 1</option><option value="2">Grupo 2</option></select></div>
+  <div><label>Sesión</label><select id="sesion"><option value="1">Sesión 1</option><option value="2">Sesión 2</option></select></div></div>
+  <label>Prueba</label><select id="momento"><option value="Inicio">Prueba de inicio</option><option value="Final">Prueba final</option></select>
+  <div class="err" id="err0"></div>
+  <button onclick="empezar()">Comenzar</button>
+  
+ </div>
+ <div id="prueba" class="hide"><h2 id="tit"></h2><div class="prog"><div id="bar"></div></div><div id="qs"></div><div class="err" id="err1"></div><button onclick="enviar()">Enviar respuestas</button></div>
+ <div id="fin" class="hide"></div>
+</div>
+<script>
+const QD = {"S1I": {"titulo": "Sesión 1 · Prueba de inicio", "pc": "Me siento con seguridad para calcular cuánto cuesta lo que vendo.", "qs": [{"q": "¿Cuál de estos es un costo FIJO?", "o": ["Harina por cada torta", "Alquiler del local", "Empaque por cada pedido"], "a": 1}, {"q": "Según el criterio del taller, ¿cuál de estos es un GASTO (sostiene el negocio pero no entra al producto)?", "o": ["Harina de la torta", "Publicidad del negocio", "Mano de obra de quien hace la torta"], "a": 1}, {"q": "Compraste el saco de harina a $10. Hoy, para volver a comprarlo, cuesta $12. ¿Qué costo debes usar para calcular tu precio?", "o": ["$10", "$11", "$12"], "a": 2}, {"q": "Te quedó una ganancia aparente de $40, pero trabajaste 6 horas sin pagarte. Si tu hora vale $2, ¿cuál es tu ganancia real?", "o": ["$40", "$28", "$34"], "a": 1}, {"q": "Vendiste $500. Los costos del producto fueron $300, los gastos $100 y tu tiempo propio vale $60. ¿Cuánto ganaste realmente?", "o": ["$200", "$100", "$40"], "a": 2}]}, "S1F": {"titulo": "Sesión 1 · Prueba final", "pc": "Me siento con seguridad para calcular cuánto cuesta lo que vendo.", "qs": [{"q": "¿Cuál de estos es un costo VARIABLE?", "o": ["Seguro mensual", "Tela que usas por cada falda", "Internet del local"], "a": 1}, {"q": "Según el criterio del taller, ¿cuál de estos es un GASTO (sostiene el negocio pero no entra al producto)?", "o": ["Tela de cada falda", "Hilo de cada prenda", "Internet y teléfono de la administración"], "a": 2}, {"q": "Vendes a $15 un producto que te costó $10. El proveedor sube y hoy repones a $13. Si no cambias el precio, ¿cuánto te queda por unidad al reponer?", "o": ["$5", "$2", "$3"], "a": 1}, {"q": "Te quedó una ganancia aparente de $50, pero trabajaste 10 horas sin pagarte. Si tu hora vale $2, ¿cuál es tu ganancia real?", "o": ["$30", "$50", "$40"], "a": 0}, {"q": "Vendiste $800. Los costos del producto fueron $500, los gastos $150 y tu tiempo propio vale $100. ¿Cuánto ganaste realmente?", "o": ["$150", "$300", "$50"], "a": 2}]}, "S2I": {"titulo": "Sesión 2 · Prueba de inicio", "pc": "Sé cuánto debo cobrar por mi producto o servicio.", "qs": [{"q": "Tu costo por unidad es $10 y quieres ganar 30% SOBRE EL PRECIO DE VENTA. ¿Cuál es el precio correcto?", "o": ["$13,00", "$15,00", "$14,29"], "a": 2}, {"q": "Costos fijos: $200 al mes. Precio de venta: $4. Costo variable: $2 por unidad. ¿Cuántas unidades necesitas vender para no perder (punto de equilibrio)?", "o": ["100 unidades", "50 unidades", "200 unidades"], "a": 0}, {"q": "Precio $14,29 y costo $10. Si das 10% de descuento, ¿cuánto baja aproximadamente tu ganancia por unidad?", "o": ["10%", "33%", "20%"], "a": 1}, {"q": "Si tu margen es 30% sobre el precio, ¿cuál es el descuento máximo que puedes dar sin perder dinero?", "o": ["15%", "50%", "30%"], "a": 2}, {"q": "Según la Ley para el Fomento y Desarrollo de Nuevos Emprendimientos, la inscripción en el Registro Nacional de Emprendimiento otorga al emprendimiento:", "o": ["Personalidad jurídica", "Un RIF", "Un crédito"], "a": 0}]}, "S2F": {"titulo": "Sesión 2 · Prueba final", "pc": "Sé cuánto debo cobrar por mi producto o servicio.", "qs": [{"q": "Tu costo por unidad es $30 y quieres ganar 40% SOBRE EL PRECIO DE VENTA. ¿Cuál es el precio correcto?", "o": ["$42", "$50", "$48"], "a": 1}, {"q": "Costos fijos: $240 al mes. Precio de venta: $5. Costo variable: $2 por unidad. ¿Cuántas unidades necesitas vender para no perder (punto de equilibrio)?", "o": ["120 unidades", "48 unidades", "80 unidades"], "a": 2}, {"q": "Precio $50 y costo $30. Si das 10% de descuento, ¿cuánto baja aproximadamente tu ganancia por unidad?", "o": ["40%", "10%", "25%"], "a": 2}, {"q": "Si tu margen es 40% sobre el precio, ¿cuál es el descuento máximo que puedes dar sin perder dinero?", "o": ["40%", "20%", "60%"], "a": 0}, {"q": "Según la Ley para el Fomento y Desarrollo de Nuevos Emprendimientos, al vencer la vigencia de la inscripción en el RNE, el emprendimiento debe:", "o": ["Renovar la inscripción sin límite", "Cerrar su actividad", "Inscribirse en el Registro Mercantil"], "a": 2}]}}, OBS = {"sueldo": "¿Cuánto me pago yo por hora de lo que trabajo en mi negocio? (en dólares; puede ser 0)", "critq": "Hoy decido el precio de lo que vendo principalmente por:", "crit": ["Lo que cobra otro", "Mi intuición", "Lo que me sobra después de gastar", "Mis cálculos"]};
+const L='abcd';
+function formaDe(sesion,momento){return 'S'+sesion+(momento==='Inicio'?'I':'F');}
+function puntaje(forma,resp){let s=0;QD[forma].qs.forEach((q,i)=>{if((resp[i]||'')===L[q.a])s++;});return s;}
+function limpia(s){return String(s||'').replace(/[|\n\r]/g,' ').trim();}
+function clave(r){return r.grupo+'|'+r.sesion+'|'+r.codigo;}
+function ultimo(rows){const m={};rows.forEach(r=>{m[clave(r)+'|'+r.momento]=r;});return Object.values(m);}
+function calcular(rows,grupo,sesion){
+  const por={};
+  ultimo(rows).filter(r=>String(r.grupo)===String(grupo)&&String(r.sesion)===String(sesion)).forEach(r=>{
+    const c=(por[r.codigo]=por[r.codigo]||{codigo:r.codigo,nombre:''});
+    if(r.nombre)c.nombre=r.nombre;
+    c[r.momento]=puntaje(r.forma,r.resp); c['sh_'+r.momento]=Number(r.sh); c['cr_'+r.momento]=r.cr; c['pc_'+r.momento]=Number(r.pc);
+  });
+  return Object.values(por).map(c=>{c.completo=(c.Inicio!==undefined&&c.Final!==undefined);if(c.completo)c.desp=c.Final-c.Inicio;return c;});
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function nombreMostrar(c){return c.nombre?c.nombre+' (N.º '+c.codigo+')':'N.º '+c.codigo;}
+function renderPodio(rows,el,grupo,sesion){
+  const lista=calcular(rows,grupo,sesion);
+  const comp=lista.filter(c=>c.completo).sort((a,b)=>b.desp-a.desp||b.Final-a.Final);
+  const avg=(k)=>{const v=lista.filter(c=>c[k]!==undefined&&!isNaN(c[k]));return v.length?v.reduce((s,c)=>s+c[k],0)/v.length:null;};
+  const f=x=>x===null?'—':x.toFixed(1), f2=x=>x===null?'—':'$'+x.toFixed(2);
+  const pctCalc=(m)=>{const v=lista.filter(c=>c['cr_'+m]!==undefined);return v.length?Math.round(100*v.filter(c=>c['cr_'+m]==='d').length/v.length)+'%':'—';};
+  let h='<div class="msg"><b>Grupo '+grupo+' · Sesión '+sesion+'</b> · Participantes: '+lista.length+' · Con prueba de inicio y final: '+comp.length+
+   '<br>Aciertos promedio al inicio: <b>'+f(avg('Inicio'))+'</b>/5 · al final: <b>'+f(avg('Final'))+'</b>/5'+
+   (comp.length?' · Puntos ganados (promedio): <b>'+(comp.reduce((s,c)=>s+c.desp,0)/comp.length).toFixed(1)+'</b>':'')+
+   '<br>Lo que me pago por hora, promedio: inicio <b>'+f2(avg('sh_Inicio'))+'</b> → final <b>'+f2(avg('sh_Final'))+'</b>'+
+   '<br>Deciden el precio con “mis cálculos”: inicio <b>'+pctCalc('Inicio')+'</b> → final <b>'+pctCalc('Final')+'</b></div>';
+  if(comp.length){
+    const top=comp.slice(0,3),ord=[1,0,2],alt=[110,150,80];
+    h+='<div class="podium">'+ord.map(i=>top[i]?'<div class="pcol"><div class="pn">'+esc(nombreMostrar(top[i]))+'</div><div class="ps">'+(top[i].desp>0?'+':'')+top[i].desp+' puntos</div><div class="pblk" style="height:'+alt[i]+'px">'+(i+1)+'</div></div>':'').join('')+'</div>';
+    h+='<table><tr><th>#</th><th>Participante</th><th>Inicio</th><th>Final</th><th>Puntos ganados</th></tr>'+comp.map((c,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(nombreMostrar(c))+'</td><td>'+c.Inicio+'</td><td>'+c.Final+'</td><td>'+(c.desp>0?'+':'')+c.desp+'</td></tr>').join('')+'</table>'+
+     '<p class="small">Puntos ganados = aciertos del final − aciertos del inicio. Gana quien más subió; si empatan, quien tenga más aciertos en la prueba final.</p>';
+  } else h+='<p class="small">El podio aparece cuando haya participantes con prueba de inicio y prueba final de esta sesión.</p>';
+  el.innerHTML=h;
+}
+function aCSV(rows){const head=['grupo','sesion','codigo','nombre','momento','forma','aciertos','percepcion','sueldo_hora','criterio'];
+  return head.join(',')+'\n'+rows.map(r=>[r.grupo,r.sesion,r.codigo,'"'+(r.nombre||'').replace(/"/g,'""')+'"',r.momento,r.forma,puntaje(r.forma,r.resp),r.pc,r.sh,r.cr].join(',')).join('\n');}
+function aCadena(r){return ['R3',r.grupo,r.sesion,limpia(r.codigo),limpia(r.nombre),r.momento,r.resp.join(''),r.pc,r.sh,r.cr].join('|');}
+function deCadena(line){const p=line.trim().split('|');if(p[0]!=='R3'||p.length<10)return null;const resp=p[6].toLowerCase().split('').slice(0,5);if(resp.length<5)return null;
+  return {grupo:p[1],sesion:p[2],codigo:p[3],nombre:p[4],momento:p[5],forma:formaDe(p[2],p[5]),resp,pc:p[7],sh:p[8],cr:p[9].toLowerCase(),ts:Date.now()};}
+
+let forma='S1I',RESP=[],PC=0,SH='',CR='';
+function empezar(){
+  const c=limpia(document.getElementById('codigo').value);
+  if(!c){document.getElementById('err0').textContent='Escribe el número de tu tarjeta.';return;}
+  const s=document.getElementById('sesion').value,m=document.getElementById('momento').value;
+  forma=formaDe(s,m); RESP=new Array(5).fill(''); PC=0; SH=''; CR='';
+  document.getElementById('tit').textContent='Grupo '+document.getElementById('grupo').value+' · '+QD[forma].titulo;
+  const box=document.getElementById('qs');box.innerHTML='';
+  QD[forma].qs.forEach((q,i)=>{const d=document.createElement('div');d.className='q';
+    d.innerHTML='<p>'+(i+1)+'. '+esc(q.q)+'</p>'+q.o.map((o,j)=>'<label class="opt"><input type="radio" name="q'+i+'" value="'+L[j]+'" onchange="marca('+i+',this)"> <span><b>'+L[j]+')</b> '+esc(o)+'</span></label>').join('');box.appendChild(d);});
+  let d=document.createElement('div');d.className='q';
+  d.innerHTML='<p>6. '+esc(QD[forma].pc)+'</p><div class="lik">'+[1,2,3,4,5].map(v=>'<label class="opt"><input type="radio" name="pc" value="'+v+'" onchange="marcaP(this)"> '+v+'</label>').join('')+'</div><div class="legend"><span>1 = Nada de acuerdo</span><span>5 = Totalmente de acuerdo</span></div>';box.appendChild(d);
+  d=document.createElement('div');d.className='q';
+  d.innerHTML='<p>7. '+esc(OBS.sueldo)+'</p><input type="number" id="sh" inputmode="decimal" min="0" step="0.01" placeholder="$ por hora" oninput="SH=this.value;progreso()">';box.appendChild(d);
+  d=document.createElement('div');d.className='q';
+  d.innerHTML='<p>8. '+esc(OBS.critq)+'</p>'+OBS.crit.map((o,j)=>'<label class="opt"><input type="radio" name="cr" value="'+L[j]+'" onchange="marcaC(this)"> <span>'+esc(o)+'</span></label>').join('');box.appendChild(d);
+  document.getElementById('datos').classList.add('hide');document.getElementById('prueba').classList.remove('hide');progreso();window.scrollTo(0,0);
+}
+function marca(i,el){RESP[i]=el.value;sel(el);progreso();}
+function marcaP(el){PC=Number(el.value);sel(el);progreso();}
+function marcaC(el){CR=el.value;sel(el);progreso();}
+function sel(el){document.querySelectorAll('input[name="'+el.name+'"]').forEach(x=>x.parentElement.classList.toggle('sel',x.checked));}
+function progreso(){const n=RESP.filter(x=>x).length+(PC?1:0)+(SH!==''?1:0)+(CR?1:0);document.getElementById('bar').style.width=(n/8*100)+'%';}
+function enviar(){
+  if(RESP.some(x=>!x)||!PC||SH===''||!CR){document.getElementById('err1').textContent='Faltan preguntas por responder.';return;}
+  const r={grupo:document.getElementById('grupo').value,sesion:document.getElementById('sesion').value,codigo:limpia(document.getElementById('codigo').value),nombre:limpia(document.getElementById('nombre').value),momento:document.getElementById('momento').value,forma,resp:RESP.slice(),pc:PC,sh:SH,cr:CR,ts:Date.now()};
+  guardar(r);
+}
+function pantallaFin(r,extra){
+  const f=document.getElementById('fin');document.getElementById('prueba').classList.add('hide');f.classList.remove('hide');
+  let h='<div class="msg"><b>¡Gracias!</b> Tus respuestas quedaron registradas.</div>';
+  if(r.momento==='Final')h+='<div class="msg">Aciertos: <b>'+puntaje(r.forma,r.resp)+' de 5</b>.</div>';
+  f.innerHTML=h+(extra||'')+'<button class="sec" onclick="location.reload()">Otra persona</button>';
+}
+
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxzKp3EZ-ON9T6leYd6Qgky1NZkke0-jZkO0lwUvN9LAIVjehN0N-08WpdaebEhWDAFiA/exec';
+function leerCola(){try{return JSON.parse(localStorage.getItem('costos_cola_v3')||'[]');}catch(e){return [];}}
+async function enviarFila(r){const body=new URLSearchParams({action:'submit',grupo:r.grupo,sesion:r.sesion,codigo:r.codigo,nombre:r.nombre,momento:r.momento,forma:r.forma,resp:r.resp.join(''),pc:r.pc,sh:r.sh,cr:r.cr});
+  await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body});}
+async function guardar(r){const cola=leerCola();cola.push(r);localStorage.setItem('costos_cola_v3',JSON.stringify(cola));
+  try{await vaciar();}catch(e){}
+  const pend=leerCola().length;
+  pantallaFin(r,pend?'<div class="msg">No hay conexión estable: tus respuestas se guardaron en este teléfono y se enviarán cuando vuelva la señal. <button onclick="reintentar()">Reintentar ahora</button></div><p class="small">Respaldo para la facilitadora: '+esc(aCadena(r))+'</p>':'');}
+async function vaciar(){const cola=leerCola();const resto=[];for(const r of cola){try{await enviarFila(r);}catch(e){resto.push(r);}}localStorage.setItem('costos_cola_v3',JSON.stringify(resto));}
+async function reintentar(){try{await vaciar();}catch(e){}location.reload();}
+</script></body></html>

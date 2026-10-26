@@ -1,175 +1,81 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tabla de Posiciones — Módulo 3: Costos</title>
-<style>
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tabla de posiciones Módulo 3</title><style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f0f1a;min-height:100vh;padding:2rem 1rem;color:#fff}
-.wrap{max-width:760px;margin:0 auto}
-.header{text-align:center;margin-bottom:1.5rem}
-.badge{display:inline-block;background:#e8b14a;color:#1a1a2e;font-size:.75rem;font-weight:700;padding:.25rem .9rem;border-radius:20px;margin-bottom:.75rem;letter-spacing:.06em}
-h1{font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:.3rem}
-.subtitle{font-size:.9rem;color:#9ca3af}
-.grupo-tabs{display:flex;gap:.6rem;justify-content:center;margin:1.25rem 0 1.5rem}
-.grupo-tab{padding:.6rem 1.6rem;border-radius:8px;border:1.5px solid #2d2d4e;background:#1a1a2e;color:#9ca3af;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .15s}
-.grupo-tab.active{border-color:#e8b14a;background:rgba(232,177,74,.12);color:#e8b14a}
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
-.stat{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:12px;padding:1.25rem;text-align:center}
-.stat-num{font-size:2rem;font-weight:700;color:#e8b14a;line-height:1}
-.stat-label{font-size:.78rem;color:#9ca3af;margin-top:.3rem}
-.podium{display:flex;align-items:flex-end;justify-content:center;gap:1rem;margin-bottom:2rem;min-height:180px}
-.podium-col{display:flex;flex-direction:column;align-items:center;gap:.5rem}
-.podium-name{font-size:.85rem;font-weight:600;color:#fff;text-align:center;max-width:120px;word-break:break-word}
-.podium-score{font-size:.8rem;color:#9ca3af}
-.podium-block{width:100px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;font-size:1.6rem}
-.p1-block{height:130px;background:linear-gradient(180deg,#e8b14a,#c98d1e)}
-.p2-block{height:95px;background:linear-gradient(180deg,#9ca3af,#6b7280)}
-.p3-block{height:70px;background:linear-gradient(180deg,#cd8a6a,#a06348)}
-.medal{font-size:1.8rem}
-.list-section{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
-.list-header{display:grid;grid-template-columns:48px 1fr 80px;padding:.75rem 1.25rem;background:#12122a;font-size:.75rem;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.06em}
-.list-row{display:grid;grid-template-columns:48px 1fr 80px;padding:.85rem 1.25rem;border-top:1px solid #2d2d4e;align-items:center;transition:background .2s}
-.list-row:hover{background:#12122a}
-.list-row.top1{background:rgba(232,177,74,.08)}
-.list-row.top2{background:rgba(156,163,175,.05)}
-.list-row.top3{background:rgba(205,138,106,.05)}
-.pos{font-size:.95rem;font-weight:700;color:#6b7280;text-align:center}
-.pos.gold{color:#e8b14a}
-.pos.silver{color:#9ca3af}
-.pos.bronze{color:#cd8a6a}
-.pname{font-size:.95rem;color:#f3f4f6;font-weight:500}
-.pscore{font-size:.95rem;font-weight:700;color:#6366f1;text-align:right}
-.bar-wrap{height:4px;background:#2d2d4e;border-radius:2px;margin-top:4px}
-.bar{height:4px;background:#6366f1;border-radius:2px;transition:width .5s}
-.controls{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
-.ctrl-btn{padding:.6rem 1.4rem;border-radius:8px;border:1px solid #2d2d4e;background:#1a1a2e;color:#d1d5db;font-size:.85rem;cursor:pointer;transition:all .15s;font-family:inherit}
-.ctrl-btn:hover{background:#2d2d4e;color:#fff}
-.pulse{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.status{font-size:.78rem;color:#6b7280;text-align:center;margin-top:.5rem}
-.empty{text-align:center;padding:3rem;color:#6b7280;font-size:.9rem}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <div class="header">
-    <div class="badge">BIDA GLOBAL</div>
-    <h1>🏆 Tabla de Posiciones</h1>
-    <p class="subtitle">Módulo 3: Costos · Ficha de Final · Sección B (conocimiento técnico)</p>
-  </div>
+body{font-family:system-ui,-apple-system,'Segoe UI',Arial,sans-serif;background:#fff;color:#222;line-height:1.45}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.35rem;margin-bottom:4px} h2{font-size:1.1rem;margin:18px 0 8px}
+.sub{color:#666;font-size:.9rem;margin-bottom:16px}
+label{display:block;font-weight:600;font-size:.9rem;margin:12px 0 4px}
+input[type=text],select,textarea{width:100%;padding:10px;border:1.5px solid #bbb;border-radius:8px;font-size:1rem;font-family:inherit}
+.q{border:1.5px solid #ddd;border-radius:10px;padding:14px;margin:14px 0}
+.q p{font-weight:600;margin-bottom:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border:1.5px solid #ddd;border-radius:8px;margin:6px 0;cursor:pointer}
+.opt input{margin-top:3px;transform:scale(1.2)}
+.opt.sel{border-color:#222;background:#f2f2f2}
+.lik{display:flex;gap:8px;flex-wrap:wrap}.lik .opt{flex:1;min-width:52px;justify-content:center}
+.legend{font-size:.8rem;color:#666;display:flex;justify-content:space-between;margin-top:4px}
+button{padding:12px 20px;border:0;border-radius:8px;background:#222;color:#fff;font-size:1rem;cursor:pointer;margin:6px 6px 6px 0;font-family:inherit}
+button.sec{background:#fff;color:#222;border:1.5px solid #222}
+.msg{padding:12px;border-radius:8px;background:#f2f2f2;margin:12px 0}
+.err{color:#b00020;font-size:.9rem;margin-top:6px}
+.prog{height:6px;background:#eee;border-radius:3px;margin:8px 0 14px}.prog div{height:6px;background:#222;border-radius:3px;width:0}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:8px 0}
+th,td{border-bottom:1px solid #ddd;padding:7px 6px;text-align:left}th{background:#f2f2f2}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin:20px 0;min-height:170px}
+.pcol{text-align:center;width:30%}.pblk{background:#444;color:#fff;font-weight:700;font-size:1.6rem;padding-top:8px;border-radius:6px 6px 0 0}
+.pn{font-weight:600;font-size:.9rem;word-break:break-word}.ps{font-size:.8rem;color:#555}
+.hide{display:none}.small{font-size:.8rem;color:#666}
+textarea{min-height:90px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem}
+.tabs{display:flex;gap:6px;margin-bottom:12px}
 
-  <div class="grupo-tabs">
-    <div class="grupo-tab active" id="tab-G1" onclick="selectGrupo('G1')">Grupo 1</div>
-    <div class="grupo-tab" id="tab-G2" onclick="selectGrupo('G2')">Grupo 2</div>
-  </div>
-
-  <div class="stats-row">
-    <div class="stat">
-      <div class="stat-num" id="total-part">0</div>
-      <div class="stat-label">Participantes</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num" id="avg-score">0</div>
-      <div class="stat-label">Promedio aciertos /5</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num" id="perfect-count">0</div>
-      <div class="stat-label">Puntaje perfecto (5/5)</div>
-    </div>
-  </div>
-
-  <div class="podium" id="podium"></div>
-
-  <div class="list-section">
-    <div class="list-header">
-      <div>#</div><div>Participante</div><div style="text-align:right">Aciertos</div>
-    </div>
-    <div id="list-body"><div class="empty">Esperando respuestas de la Ficha de Final...</div></div>
-  </div>
-
-  <div class="controls">
-    <button class="ctrl-btn" onclick="fetchScores()">↻ Actualizar ahora</button>
-  </div>
-  <div class="status"><span class="pulse"></span><span id="status-txt">Actualizando cada 10 segundos</span></div>
-</div>
-
-<script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIU66pAzhNMK2rMYNIau893O4bmxbZUqA8ai4S8VDW_WBALOUtUg6XWVi1nt8ZlYz4qg/exec';
-let grupoActual = 'G1';
-
-function selectGrupo(g){
-  grupoActual = g;
-  document.getElementById('tab-G1').classList.toggle('active', g==='G1');
-  document.getElementById('tab-G2').classList.toggle('active', g==='G2');
-  fetchScores();
+.two{display:flex;gap:10px}.two>div{flex:1}input[type=number]{width:100%;padding:10px;border:1.5px solid #bbb;border-radius:8px;font-size:1rem}</style></head><body><div class="wrap"><h1>Tabla de posiciones · Módulo 3</h1><p class="sub">Se actualiza cada 10 segundos.</p><div class="two"><div><label>Grupo</label><select id="gsel" onchange="cargar()"><option value="1">Grupo 1</option><option value="2">Grupo 2</option></select></div><div><label>Sesión</label><select id="ssel" onchange="cargar()"><option value="1">Sesión 1</option><option value="2">Sesión 2</option></select></div></div><div id="podioEl"></div><div class="small" id="st"></div></div><script>
+const QD = {"S1I": {"titulo": "Sesión 1 · Prueba de inicio", "pc": "Me siento con seguridad para calcular cuánto cuesta lo que vendo.", "qs": [{"q": "¿Cuál de estos es un costo FIJO?", "o": ["Harina por cada torta", "Alquiler del local", "Empaque por cada pedido"], "a": 1}, {"q": "Según el criterio del taller, ¿cuál de estos es un GASTO (sostiene el negocio pero no entra al producto)?", "o": ["Harina de la torta", "Publicidad del negocio", "Mano de obra de quien hace la torta"], "a": 1}, {"q": "Compraste el saco de harina a $10. Hoy, para volver a comprarlo, cuesta $12. ¿Qué costo debes usar para calcular tu precio?", "o": ["$10", "$11", "$12"], "a": 2}, {"q": "Te quedó una ganancia aparente de $40, pero trabajaste 6 horas sin pagarte. Si tu hora vale $2, ¿cuál es tu ganancia real?", "o": ["$40", "$28", "$34"], "a": 1}, {"q": "Vendiste $500. Los costos del producto fueron $300, los gastos $100 y tu tiempo propio vale $60. ¿Cuánto ganaste realmente?", "o": ["$200", "$100", "$40"], "a": 2}]}, "S1F": {"titulo": "Sesión 1 · Prueba final", "pc": "Me siento con seguridad para calcular cuánto cuesta lo que vendo.", "qs": [{"q": "¿Cuál de estos es un costo VARIABLE?", "o": ["Seguro mensual", "Tela que usas por cada falda", "Internet del local"], "a": 1}, {"q": "Según el criterio del taller, ¿cuál de estos es un GASTO (sostiene el negocio pero no entra al producto)?", "o": ["Tela de cada falda", "Hilo de cada prenda", "Internet y teléfono de la administración"], "a": 2}, {"q": "Vendes a $15 un producto que te costó $10. El proveedor sube y hoy repones a $13. Si no cambias el precio, ¿cuánto te queda por unidad al reponer?", "o": ["$5", "$2", "$3"], "a": 1}, {"q": "Te quedó una ganancia aparente de $50, pero trabajaste 10 horas sin pagarte. Si tu hora vale $2, ¿cuál es tu ganancia real?", "o": ["$30", "$50", "$40"], "a": 0}, {"q": "Vendiste $800. Los costos del producto fueron $500, los gastos $150 y tu tiempo propio vale $100. ¿Cuánto ganaste realmente?", "o": ["$150", "$300", "$50"], "a": 2}]}, "S2I": {"titulo": "Sesión 2 · Prueba de inicio", "pc": "Sé cuánto debo cobrar por mi producto o servicio.", "qs": [{"q": "Tu costo por unidad es $10 y quieres ganar 30% SOBRE EL PRECIO DE VENTA. ¿Cuál es el precio correcto?", "o": ["$13,00", "$15,00", "$14,29"], "a": 2}, {"q": "Costos fijos: $200 al mes. Precio de venta: $4. Costo variable: $2 por unidad. ¿Cuántas unidades necesitas vender para no perder (punto de equilibrio)?", "o": ["100 unidades", "50 unidades", "200 unidades"], "a": 0}, {"q": "Precio $14,29 y costo $10. Si das 10% de descuento, ¿cuánto baja aproximadamente tu ganancia por unidad?", "o": ["10%", "33%", "20%"], "a": 1}, {"q": "Si tu margen es 30% sobre el precio, ¿cuál es el descuento máximo que puedes dar sin perder dinero?", "o": ["15%", "50%", "30%"], "a": 2}, {"q": "Según la Ley para el Fomento y Desarrollo de Nuevos Emprendimientos, la inscripción en el Registro Nacional de Emprendimiento otorga al emprendimiento:", "o": ["Personalidad jurídica", "Un RIF", "Un crédito"], "a": 0}]}, "S2F": {"titulo": "Sesión 2 · Prueba final", "pc": "Sé cuánto debo cobrar por mi producto o servicio.", "qs": [{"q": "Tu costo por unidad es $30 y quieres ganar 40% SOBRE EL PRECIO DE VENTA. ¿Cuál es el precio correcto?", "o": ["$42", "$50", "$48"], "a": 1}, {"q": "Costos fijos: $240 al mes. Precio de venta: $5. Costo variable: $2 por unidad. ¿Cuántas unidades necesitas vender para no perder (punto de equilibrio)?", "o": ["120 unidades", "48 unidades", "80 unidades"], "a": 2}, {"q": "Precio $50 y costo $30. Si das 10% de descuento, ¿cuánto baja aproximadamente tu ganancia por unidad?", "o": ["40%", "10%", "25%"], "a": 2}, {"q": "Si tu margen es 40% sobre el precio, ¿cuál es el descuento máximo que puedes dar sin perder dinero?", "o": ["40%", "20%", "60%"], "a": 0}, {"q": "Según la Ley para el Fomento y Desarrollo de Nuevos Emprendimientos, al vencer la vigencia de la inscripción en el RNE, el emprendimiento debe:", "o": ["Renovar la inscripción sin límite", "Cerrar su actividad", "Inscribirse en el Registro Mercantil"], "a": 2}]}}, OBS = {"sueldo": "¿Cuánto me pago yo por hora de lo que trabajo en mi negocio? (en dólares; puede ser 0)", "critq": "Hoy decido el precio de lo que vendo principalmente por:", "crit": ["Lo que cobra otro", "Mi intuición", "Lo que me sobra después de gastar", "Mis cálculos"]};
+const L='abcd';
+function formaDe(sesion,momento){return 'S'+sesion+(momento==='Inicio'?'I':'F');}
+function puntaje(forma,resp){let s=0;QD[forma].qs.forEach((q,i)=>{if((resp[i]||'')===L[q.a])s++;});return s;}
+function limpia(s){return String(s||'').replace(/[|\n\r]/g,' ').trim();}
+function clave(r){return r.grupo+'|'+r.sesion+'|'+r.codigo;}
+function ultimo(rows){const m={};rows.forEach(r=>{m[clave(r)+'|'+r.momento]=r;});return Object.values(m);}
+function calcular(rows,grupo,sesion){
+  const por={};
+  ultimo(rows).filter(r=>String(r.grupo)===String(grupo)&&String(r.sesion)===String(sesion)).forEach(r=>{
+    const c=(por[r.codigo]=por[r.codigo]||{codigo:r.codigo,nombre:''});
+    if(r.nombre)c.nombre=r.nombre;
+    c[r.momento]=puntaje(r.forma,r.resp); c['sh_'+r.momento]=Number(r.sh); c['cr_'+r.momento]=r.cr; c['pc_'+r.momento]=Number(r.pc);
+  });
+  return Object.values(por).map(c=>{c.completo=(c.Inicio!==undefined&&c.Final!==undefined);if(c.completo)c.desp=c.Final-c.Inicio;return c;});
 }
-
-async function fetchScores(){
-  document.getElementById('status-txt').textContent='Actualizando...';
-  try{
-    const res=await fetch(SCRIPT_URL+'?action=get&grupo='+grupoActual);
-    const data=await res.json();
-    if(data.ok) renderAll(data.scores);
-    document.getElementById('status-txt').textContent='Última actualización: '+new Date().toLocaleTimeString('es-VE');
-  }catch(e){
-    document.getElementById('status-txt').textContent='Error de conexión — reintentando...';
-  }
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function nombreMostrar(c){return c.nombre?c.nombre+' (N.º '+c.codigo+')':'N.º '+c.codigo;}
+function renderPodio(rows,el,grupo,sesion){
+  const lista=calcular(rows,grupo,sesion);
+  const comp=lista.filter(c=>c.completo).sort((a,b)=>b.desp-a.desp||b.Final-a.Final);
+  const avg=(k)=>{const v=lista.filter(c=>c[k]!==undefined&&!isNaN(c[k]));return v.length?v.reduce((s,c)=>s+c[k],0)/v.length:null;};
+  const f=x=>x===null?'—':x.toFixed(1), f2=x=>x===null?'—':'$'+x.toFixed(2);
+  const pctCalc=(m)=>{const v=lista.filter(c=>c['cr_'+m]!==undefined);return v.length?Math.round(100*v.filter(c=>c['cr_'+m]==='d').length/v.length)+'%':'—';};
+  let h='<div class="msg"><b>Grupo '+grupo+' · Sesión '+sesion+'</b> · Participantes: '+lista.length+' · Con prueba de inicio y final: '+comp.length+
+   '<br>Aciertos promedio al inicio: <b>'+f(avg('Inicio'))+'</b>/5 · al final: <b>'+f(avg('Final'))+'</b>/5'+
+   (comp.length?' · Puntos ganados (promedio): <b>'+(comp.reduce((s,c)=>s+c.desp,0)/comp.length).toFixed(1)+'</b>':'')+
+   '<br>Lo que me pago por hora, promedio: inicio <b>'+f2(avg('sh_Inicio'))+'</b> → final <b>'+f2(avg('sh_Final'))+'</b>'+
+   '<br>Deciden el precio con “mis cálculos”: inicio <b>'+pctCalc('Inicio')+'</b> → final <b>'+pctCalc('Final')+'</b></div>';
+  if(comp.length){
+    const top=comp.slice(0,3),ord=[1,0,2],alt=[110,150,80];
+    h+='<div class="podium">'+ord.map(i=>top[i]?'<div class="pcol"><div class="pn">'+esc(nombreMostrar(top[i]))+'</div><div class="ps">'+(top[i].desp>0?'+':'')+top[i].desp+' puntos</div><div class="pblk" style="height:'+alt[i]+'px">'+(i+1)+'</div></div>':'').join('')+'</div>';
+    h+='<table><tr><th>#</th><th>Participante</th><th>Inicio</th><th>Final</th><th>Puntos ganados</th></tr>'+comp.map((c,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(nombreMostrar(c))+'</td><td>'+c.Inicio+'</td><td>'+c.Final+'</td><td>'+(c.desp>0?'+':'')+c.desp+'</td></tr>').join('')+'</table>'+
+     '<p class="small">Puntos ganados = aciertos del final − aciertos del inicio. Gana quien más subió; si empatan, quien tenga más aciertos en la prueba final.</p>';
+  } else h+='<p class="small">El podio aparece cuando haya participantes con prueba de inicio y prueba final de esta sesión.</p>';
+  el.innerHTML=h;
 }
+function aCSV(rows){const head=['grupo','sesion','codigo','nombre','momento','forma','aciertos','percepcion','sueldo_hora','criterio'];
+  return head.join(',')+'\n'+rows.map(r=>[r.grupo,r.sesion,r.codigo,'"'+(r.nombre||'').replace(/"/g,'""')+'"',r.momento,r.forma,puntaje(r.forma,r.resp),r.pc,r.sh,r.cr].join(',')).join('\n');}
+function aCadena(r){return ['R3',r.grupo,r.sesion,limpia(r.codigo),limpia(r.nombre),r.momento,r.resp.join(''),r.pc,r.sh,r.cr].join('|');}
+function deCadena(line){const p=line.trim().split('|');if(p[0]!=='R3'||p.length<10)return null;const resp=p[6].toLowerCase().split('').slice(0,5);if(resp.length<5)return null;
+  return {grupo:p[1],sesion:p[2],codigo:p[3],nombre:p[4],momento:p[5],forma:formaDe(p[2],p[5]),resp,pc:p[7],sh:p[8],cr:p[9].toLowerCase(),ts:Date.now()};}
 
-function renderAll(scores){
-  const total=scores.length;
-  const avg=total?Math.round((scores.reduce((a,b)=>a+Number(b.score),0)/total)*10)/10:0;
-  const perfect=scores.filter(s=>Number(s.score)===5).length;
-
-  document.getElementById('total-part').textContent=total;
-  document.getElementById('avg-score').textContent=avg;
-  document.getElementById('perfect-count').textContent=perfect;
-
-  renderPodium(scores);
-  renderList(scores);
-}
-
-function renderPodium(scores){
-  const top=scores.slice(0,3);
-  const blocks=[
-    {cls:'p2-block',medal:'🥈',idx:1},
-    {cls:'p1-block',medal:'🥇',idx:0},
-    {cls:'p3-block',medal:'🥉',idx:2}
-  ];
-  const p=document.getElementById('podium');
-  if(!scores.length){p.innerHTML='';return;}
-  p.innerHTML=blocks.map(b=>{
-    const s=top[b.idx];
-    if(!s) return '';
-    return `<div class="podium-col">
-      <div class="podium-name">${s.nombre} ${s.apellido}</div>
-      <div class="podium-score">${s.score}/5 aciertos</div>
-      <div class="podium-block ${b.cls}">${b.medal}</div>
-    </div>`;
-  }).join('');
-}
-
-function renderList(scores){
-  const body=document.getElementById('list-body');
-  if(!scores.length){body.innerHTML='<div class="empty">Esperando respuestas de la Ficha de Final...</div>';return;}
-  const max=Number(scores[0].score)||5;
-  const posClass=['top1','top2','top3'];
-  const posColor=['gold','silver','bronze'];
-  body.innerHTML=scores.map((s,i)=>`
-    <div class="list-row ${posClass[i]||''}">
-      <div class="pos ${posColor[i]||''}">${i+1}</div>
-      <div>
-        <div class="pname">${s.nombre} ${s.apellido}</div>
-        <div class="bar-wrap"><div class="bar" style="width:${Math.round(Number(s.score)/max*100)}%"></div></div>
-      </div>
-      <div class="pscore">${s.score}</div>
-    </div>`).join('');
-}
-
-fetchScores();
-setInterval(fetchScores,10000);
-</script>
-</body>
-</html>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxzKp3EZ-ON9T6leYd6Qgky1NZkke0-jZkO0lwUvN9LAIVjehN0N-08WpdaebEhWDAFiA/exec';
+async function cargar(){const g=document.getElementById('gsel').value,s=document.getElementById('ssel').value;
+  try{const res=await fetch(SCRIPT_URL+'?action=get&grupo='+g+'&sesion='+s);const d=await res.json();
+    const rows=(d.rows||[]).map(r=>({grupo:String(r.grupo),sesion:String(r.sesion),codigo:String(r.codigo),nombre:r.nombre,momento:r.momento,forma:r.forma,resp:String(r.resp).toLowerCase().split(''),pc:r.pc,sh:r.sh,cr:String(r.cr)}));
+    renderPodio(rows,document.getElementById('podioEl'),g,s);document.getElementById('st').textContent='Última actualización: '+new Date().toLocaleTimeString('es-VE');
+  }catch(e){document.getElementById('st').textContent='Sin conexión: reintentando…';}}
+cargar();setInterval(cargar,10000);
+</script></body></html>
