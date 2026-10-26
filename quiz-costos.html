@@ -74,12 +74,14 @@ function renderPodio(rows,el,grupo,sesion){
    (comp.length?' · Puntos ganados (promedio): <b>'+(comp.reduce((s,c)=>s+c.desp,0)/comp.length).toFixed(1)+'</b>':'')+
    '<br>Lo que me pago por hora, promedio: inicio <b>'+f2(avg('sh_Inicio'))+'</b> → final <b>'+f2(avg('sh_Final'))+'</b>'+
    '<br>Deciden el precio con “mis cálculos”: inicio <b>'+pctCalc('Inicio')+'</b> → final <b>'+pctCalc('Final')+'</b></div>';
+  const top=comp.slice(0,3),ord=[1,0,2],alt=[110,150,80];
+  h+='<div class="podium">'+ord.map(i=>'<div class="pcol"><div class="pn">'+(top[i]?esc(nombreMostrar(top[i])):'—')+'</div><div class="ps">'+(top[i]?((top[i].desp>0?'+':'')+top[i].desp+' puntos'):'&nbsp;')+'</div><div class="pblk" style="height:'+alt[i]+'px">'+(i+1)+'</div></div>').join('')+'</div>';
+  const pend=lista.filter(c=>!c.completo).map(c=>nombreMostrar(c)+(c.Inicio===undefined?' (falta inicio)':' (falta final)'));
   if(comp.length){
-    const top=comp.slice(0,3),ord=[1,0,2],alt=[110,150,80];
-    h+='<div class="podium">'+ord.map(i=>top[i]?'<div class="pcol"><div class="pn">'+esc(nombreMostrar(top[i]))+'</div><div class="ps">'+(top[i].desp>0?'+':'')+top[i].desp+' puntos</div><div class="pblk" style="height:'+alt[i]+'px">'+(i+1)+'</div></div>':'').join('')+'</div>';
     h+='<table><tr><th>#</th><th>Participante</th><th>Inicio</th><th>Final</th><th>Puntos ganados</th></tr>'+comp.map((c,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(nombreMostrar(c))+'</td><td>'+c.Inicio+'</td><td>'+c.Final+'</td><td>'+(c.desp>0?'+':'')+c.desp+'</td></tr>').join('')+'</table>'+
-     '<p class="small">Puntos ganados = aciertos del final − aciertos del inicio. Gana quien más subió; si empatan, quien tenga más aciertos en la prueba final.</p>';
-  } else h+='<p class="small">El podio aparece cuando haya participantes con prueba de inicio y prueba final de esta sesión.</p>';
+     '<p class="small">Puntos ganados = aciertos del final − aciertos del inicio. Gana quien más sube; si empatan, quien tenga más aciertos en la prueba final.</p>';
+  } else h+='<p class="small">El podio se llena cuando haya personas con prueba de inicio y prueba final de esta sesión.</p>';
+  if(pend.length) h+='<p class="small"><b>Pendientes:</b> '+pend.map(esc).join(' · ')+'</p>';
   el.innerHTML=h;
 }
 function aCSV(rows){const head=['grupo','sesion','codigo','nombre','momento','forma','aciertos','percepcion','sueldo_hora','criterio'];
