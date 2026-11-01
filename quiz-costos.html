@@ -27,7 +27,8 @@ th,td{border-bottom:1px solid #ddd;padding:7px 6px;text-align:left}th{background
 textarea{min-height:90px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem}
 .tabs{display:flex;gap:6px;margin-bottom:12px}
 
-.two{display:flex;gap:10px}.two>div{flex:1}input[type=number]{width:100%;padding:10px;border:1.5px solid #bbb;border-radius:8px;font-size:1rem}.brow{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:.92rem}.brow span{flex:0 0 42%}.brow .bar{flex:1;background:#eee;border-radius:6px;height:16px;overflow:hidden}.brow .bar i{display:block;height:100%;background:#333}.brow b{flex:0 0 70px;text-align:right}.ptit{font-weight:700;margin:14px 0 4px}.big{display:flex;gap:10px;margin:10px 0}.big div{flex:1;border:1.5px solid #333;border-radius:10px;padding:10px;text-align:center}.big b{display:block;font-size:2rem}</style></head><body>
+.two{display:flex;gap:10px}.two>div{flex:1}input[type=number]{width:100%;padding:10px;border:1.5px solid #bbb;border-radius:8px;font-size:1rem}.brow{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:.92rem}.brow span{flex:0 0 42%}.brow .bar{flex:1;background:#eee;border-radius:6px;height:16px;overflow:hidden}.brow .bar i{display:block;height:100%;background:#333}.brow b{flex:0 0 70px;text-align:right}.ptit{font-weight:700;margin:14px 0 4px}.big{display:flex;gap:10px;margin:10px 0}.big div{flex:1;border:1.5px solid #333;border-radius:10px;padding:10px;text-align:center}.big b{display:block;font-size:2rem}
+.qrgrid{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;margin:10px 0}.qrbox{text-align:center;width:min(300px,90%)}.qr svg{width:100%;height:auto;border:1px solid #ccc;border-radius:8px}.qrbox p{margin:6px 0}.big{font-size:1.15rem;font-weight:700;word-break:break-all}</style></head><body>
 <div class="wrap" id="app">
  <h1>Evaluación · Módulo 3: Estructura de Costos</h1>
  <p class="sub">Son 5 preguntas y unos datos sobre ti y tu negocio. Toma unos 10 minutos.</p>
@@ -157,22 +158,34 @@ function enviar(){
   if(CONF)r.ficha=Object.assign({},FI);
   guardar(r);
 }
-function pantallaFin(r,extra){
+function pantallaFin(r,extra,estado){
   const f=document.getElementById('fin');document.getElementById('prueba').classList.add('hide');f.classList.remove('hide');
-  let h='<div class="msg"><b>¡Gracias!</b> Tus respuestas quedaron registradas.</div>';
+  let h='<div class="msg">'+(estado||'<b>¡Gracias!</b> Tus respuestas quedaron registradas.')+'</div>';
   if(r.momento==='Final')h+='<div class="msg">Aciertos: <b>'+puntaje(r.forma,r.resp)+' de 5</b>.</div>';
   f.innerHTML=h+(extra||'')+'<button class="sec" onclick="location.reload()">Otra persona</button>';
 }
 
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxzKp3EZ-ON9T6leYd6Qgky1NZkke0-jZkO0lwUvN9LAIVjehN0N-08WpdaebEhWDAFiA/exec';
+const espera=ms=>new Promise(ok=>setTimeout(ok,ms));
 function leerCola(){try{return JSON.parse(localStorage.getItem('costos_cola_v3')||'[]');}catch(e){return [];}}
-async function enviarFila(r){const pack=r.nombre+'¦'+(r.emp||'')+'¦'+(r.ficha?FK.map(k=>r.ficha[k]||'-').join(''):'');
-  const body=new URLSearchParams({action:'submit',grupo:r.grupo,sesion:r.sesion,codigo:r.codigo,nombre:pack,emp:r.emp||'',momento:r.momento,forma:r.forma,resp:r.resp.join(''),pc:r.pc,sh:r.sh,cr:r.cr,rubro:(r.ficha||{}).rubro||'',sexo:(r.ficha||{}).sexo||'',edad:(r.ficha||{}).edad||'',tiempo:(r.ficha||{}).tiempo||'',rif:(r.ficha||{}).rif||'',anota:(r.ficha||{}).anota||'',equipo:(r.ficha||{}).equipo||''});
-  await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body});}
-async function guardar(r){const cola=leerCola();cola.push(r);localStorage.setItem('costos_cola_v3',JSON.stringify(cola));
-  try{await vaciar();}catch(e){}
-  const pend=leerCola().length;
-  pantallaFin(r,pend?'<div class="msg">No hay conexión estable: tus respuestas se guardaron en este teléfono y se enviarán cuando vuelva la señal. <button onclick="reintentar()">Reintentar ahora</button></div><p class="small">Respaldo para la facilitadora: '+esc(aCadena(r))+'</p>':'');}
-async function vaciar(){const cola=leerCola();const resto=[];for(const r of cola){try{await enviarFila(r);}catch(e){resto.push(r);}}localStorage.setItem('costos_cola_v3',JSON.stringify(resto));}
-async function reintentar(){try{await vaciar();}catch(e){}location.reload();}
+function guardarCola(c){localStorage.setItem('costos_cola_v3',JSON.stringify(c));}
+function paquete(r){const f=r.ficha||{};const pack=r.nombre+'¦'+(r.emp||'')+'¦'+(r.ficha?FK.map(k=>f[k]||'-').join(''):'');
+  return new URLSearchParams({action:'submit',grupo:r.grupo,sesion:r.sesion,codigo:r.codigo,nombre:pack,emp:r.emp||'',momento:r.momento,forma:r.forma,resp:r.resp.join(''),pc:r.pc,sh:r.sh,cr:r.cr,rubro:f.rubro||'',sexo:f.sexo||'',edad:f.edad||'',tiempo:f.tiempo||'',rif:f.rif||'',anota:f.anota||'',equipo:f.equipo||''});}
+async function enviarFila(r){await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:paquete(r)});}
+async function estaEnHoja(r){try{const res=await fetch(SCRIPT_URL+'?action=get&grupo='+r.grupo+'&sesion='+r.sesion+'&t='+Date.now());const d=await res.json();
+  return (d.rows||[]).some(x=>String(x.codigo)===String(r.codigo)&&String(x.momento)===r.momento&&String(x.nombre||'').split('¦')[0]===r.nombre&&String(x.resp)===r.resp.join(''));}catch(e){return false;}}
+let SINC=false;
+async function sincronizar(){if(SINC)return leerCola().length;SINC=true;const resto=[];
+  try{for(const r of leerCola()){let ok=await estaEnHoja(r);
+    if(!ok){try{await enviarFila(r);}catch(e){}for(let i=0;i<5&&!ok;i++){await espera(2000);ok=await estaEnHoja(r);}}
+    if(!ok)resto.push(r);}
+  guardarCola(resto);}finally{SINC=false;}return resto.length;}
+async function guardar(r){const cola=leerCola();cola.push(r);guardarCola(cola);
+  pantallaFin(r,'','<b>Enviando…</b> no cierres esta pantalla.');
+  const pend=await sincronizar();
+  if(!pend)pantallaFin(r,'','<b>¡Gracias!</b> Tus respuestas llegaron a la tabla ✔');
+  else pantallaFin(r,'<div class="msg">Todavía no se confirma el envío (señal débil). Tus respuestas están guardadas en este teléfono. <button onclick="reintentar()">Reintentar ahora</button></div><p class="small">Respaldo para la facilitadora: '+esc(aCadena(r))+'</p>','<b>Falta confirmar el envío.</b>');}
+async function reintentar(){await sincronizar();location.reload();}
+window.addEventListener('online',()=>{sincronizar();});
+if(leerCola().length)sincronizar();
 </script></body></html>
