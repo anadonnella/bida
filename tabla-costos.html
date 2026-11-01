@@ -105,9 +105,10 @@ function deCadena(line){const p=line.trim().split('|');
   return r;}
 
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxzKp3EZ-ON9T6leYd6Qgky1NZkke0-jZkO0lwUvN9LAIVjehN0N-08WpdaebEhWDAFiA/exec';
-async function cargar(){const g=document.getElementById('gsel').value,s=document.getElementById('ssel').value,v=document.getElementById('vsel').value;
-  try{const res=await fetch(SCRIPT_URL+'?action=get'+(v==='p'?'&grupo='+g+'&sesion='+s:''));const d=await res.json();
-    const rows=(d.rows||[]).map(r=>({grupo:String(r.grupo),sesion:String(r.sesion),codigo:String(r.codigo),nombre:r.nombre,emp:r.emp||'',momento:r.momento,forma:r.forma,resp:String(r.resp).toLowerCase().split(''),pc:r.pc,sh:r.sh,cr:String(r.cr),ficha:(r.sexo||r.rubro)?{rubro:String(r.rubro),sexo:String(r.sexo),edad:String(r.edad),tiempo:String(r.tiempo),rif:String(r.rif),anota:String(r.anota),equipo:String(r.equipo)}:null}));
+let SEQ=0;
+async function cargar(){const my=++SEQ;const g=document.getElementById('gsel').value,s=document.getElementById('ssel').value,v=document.getElementById('vsel').value;
+  try{const res=await fetch(SCRIPT_URL+'?action=get'+(v==='p'?'&grupo='+g+'&sesion='+s:''));const d=await res.json(); if(my!==SEQ)return;
+    const rows=(d.rows||[]).map(r=>{const pk=String(r.nombre||'').split('¦');const fp=(pk[2]||'');const fi=(fp.length===FK.length&&fp.replace(/-/g,'')!=='')?Object.fromEntries(FK.map((k,i)=>[k,fp[i]])):null;return {grupo:String(r.grupo),sesion:String(r.sesion),codigo:String(r.codigo),nombre:pk[0],emp:pk[1]||r.emp||'',momento:r.momento,forma:r.forma,resp:String(r.resp).toLowerCase().split(''),pc:r.pc,sh:r.sh,cr:String(r.cr),ficha:fi};});
     const el=document.getElementById('podioEl'); if(v==='f')renderPerfil(rows,el,g); else if(g==='0')el.innerHTML='<p class="small">Para el podio elige Grupo 1 o Grupo 2.</p>'; else renderPodio(rows,el,g,s);document.getElementById('st').textContent='Última actualización: '+new Date().toLocaleTimeString('es-VE');
   }catch(e){document.getElementById('st').textContent='Sin conexión: reintentando…';}}
 cargar();setInterval(cargar,10000);

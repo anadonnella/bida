@@ -166,7 +166,8 @@ function pantallaFin(r,extra){
 
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxzKp3EZ-ON9T6leYd6Qgky1NZkke0-jZkO0lwUvN9LAIVjehN0N-08WpdaebEhWDAFiA/exec';
 function leerCola(){try{return JSON.parse(localStorage.getItem('costos_cola_v3')||'[]');}catch(e){return [];}}
-async function enviarFila(r){const body=new URLSearchParams({action:'submit',grupo:r.grupo,sesion:r.sesion,codigo:r.codigo,nombre:r.nombre,emp:r.emp||'',momento:r.momento,forma:r.forma,resp:r.resp.join(''),pc:r.pc,sh:r.sh,cr:r.cr,rubro:(r.ficha||{}).rubro||'',sexo:(r.ficha||{}).sexo||'',edad:(r.ficha||{}).edad||'',tiempo:(r.ficha||{}).tiempo||'',rif:(r.ficha||{}).rif||'',anota:(r.ficha||{}).anota||'',equipo:(r.ficha||{}).equipo||''});
+async function enviarFila(r){const pack=r.nombre+'¦'+(r.emp||'')+'¦'+(r.ficha?FK.map(k=>r.ficha[k]||'-').join(''):'');
+  const body=new URLSearchParams({action:'submit',grupo:r.grupo,sesion:r.sesion,codigo:r.codigo,nombre:pack,emp:r.emp||'',momento:r.momento,forma:r.forma,resp:r.resp.join(''),pc:r.pc,sh:r.sh,cr:r.cr,rubro:(r.ficha||{}).rubro||'',sexo:(r.ficha||{}).sexo||'',edad:(r.ficha||{}).edad||'',tiempo:(r.ficha||{}).tiempo||'',rif:(r.ficha||{}).rif||'',anota:(r.ficha||{}).anota||'',equipo:(r.ficha||{}).equipo||''});
   await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body});}
 async function guardar(r){const cola=leerCola();cola.push(r);localStorage.setItem('costos_cola_v3',JSON.stringify(cola));
   try{await vaciar();}catch(e){}
