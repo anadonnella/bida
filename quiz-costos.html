@@ -27,16 +27,18 @@ th,td{border-bottom:1px solid #ddd;padding:7px 6px;text-align:left}th{background
 textarea{min-height:90px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem}
 .tabs{display:flex;gap:6px;margin-bottom:12px}
 
-.two{display:flex;gap:10px}.two>div{flex:1}input[type=number]{width:100%;padding:10px;border:1.5px solid #bbb;border-radius:8px;font-size:1rem}</style></head><body>
+.two{display:flex;gap:10px}.two>div{flex:1}input[type=number]{width:100%;padding:10px;border:1.5px solid #bbb;border-radius:8px;font-size:1rem}.brow{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:.92rem}.brow span{flex:0 0 42%}.brow .bar{flex:1;background:#eee;border-radius:6px;height:16px;overflow:hidden}.brow .bar i{display:block;height:100%;background:#333}.brow b{flex:0 0 70px;text-align:right}.ptit{font-weight:700;margin:14px 0 4px}.big{display:flex;gap:10px;margin:10px 0}.big div{flex:1;border:1.5px solid #333;border-radius:10px;padding:10px;text-align:center}.big b{display:block;font-size:2rem}</style></head><body>
 <div class="wrap" id="app">
  <h1>Evaluación · Módulo 3: Estructura de Costos</h1>
- <p class="sub">Son 5 preguntas y 3 datos sobre ti. Toma unos 8 minutos.</p>
+ <p class="sub">Son 5 preguntas y unos datos sobre ti y tu negocio. Toma unos 10 minutos.</p>
  <div id="datos">
   <label>Tu número (el de tu tarjeta)</label><input type="number" id="codigo" inputmode="numeric" min="1" placeholder="Ej.: 7">
   <label>Tu nombre</label><input type="text" id="nombre" autocomplete="off">
+  <label>De qué es tu emprendimiento (por ejemplo: empanadas, paseos en lancha, pesca)</label><input type="text" id="emp" autocomplete="off" placeholder="Si aún no tienes, escribe: aún no tengo">
   <div class="two"><div><label>Grupo</label><select id="grupo"><option value="1">Grupo 1</option><option value="2">Grupo 2</option></select></div>
   <div><label>Sesión</label><select id="sesion"><option value="1">Sesión 1</option><option value="2">Sesión 2</option></select></div></div>
   <label>Prueba</label><select id="momento"><option value="Inicio">Prueba de inicio</option><option value="Final">Prueba final</option></select>
+  <label class="opt"><input type="checkbox" id="nuevo"> <span>Es mi primera vez en el taller (llenar mi ficha)</span></label>
   <div class="err" id="err0"></div>
   <button onclick="empezar()">Comenzar</button>
   
@@ -47,22 +49,31 @@ textarea{min-height:90px;font-family:ui-monospace,Menlo,Consolas,monospace;font-
 <script>
 const QD = {"S1I": {"titulo": "Sesión 1 · Prueba de inicio", "pc": "Me siento con seguridad para calcular cuánto cuesta lo que vendo.", "qs": [{"q": "¿Cuál de estos es un costo FIJO?", "o": ["Harina por cada torta", "Alquiler del local", "Empaque por cada pedido"], "a": 1}, {"q": "¿Cuál de estos es un GASTO (sostiene el negocio pero no entra al producto)?", "o": ["Harina de la torta", "Publicidad del negocio", "Mano de obra de quien hace la torta"], "a": 1}, {"q": "Compraste el saco de harina a $10. Hoy, para volver a comprarlo, cuesta $12. ¿Qué costo debes usar para calcular tu precio?", "o": ["$10", "$11", "$12"], "a": 2}, {"q": "Te quedó una ganancia aparente de $40, pero trabajaste 6 horas sin pagarte. Si tu hora vale $2, ¿cuál es tu ganancia real?", "o": ["$40", "$28", "$34"], "a": 1}, {"q": "Vendiste $500. Los costos del producto fueron $300, los gastos $100 y tu tiempo propio vale $60. ¿Cuánto ganaste realmente?", "o": ["$200", "$100", "$40"], "a": 2}]}, "S1F": {"titulo": "Sesión 1 · Prueba final", "pc": "Me siento con seguridad para calcular cuánto cuesta lo que vendo.", "qs": [{"q": "¿Cuál de estos es un costo VARIABLE?", "o": ["Seguro mensual", "Tela que usas por cada falda", "Internet del local"], "a": 1}, {"q": "¿Cuál de estos es un GASTO (sostiene el negocio pero no entra al producto)?", "o": ["Tela de cada falda", "Hilo de cada prenda", "Internet y teléfono de la administración"], "a": 2}, {"q": "Vendes a $15 un producto que te costó $10. El proveedor sube y hoy repones a $13. Si no cambias el precio, ¿cuánto te queda por unidad al reponer?", "o": ["$5", "$2", "$3"], "a": 1}, {"q": "Te quedó una ganancia aparente de $50, pero trabajaste 10 horas sin pagarte. Si tu hora vale $2, ¿cuál es tu ganancia real?", "o": ["$30", "$50", "$40"], "a": 0}, {"q": "Vendiste $800. Los costos del producto fueron $500, los gastos $150 y tu tiempo propio vale $100. ¿Cuánto ganaste realmente?", "o": ["$150", "$300", "$50"], "a": 2}]}, "S2I": {"titulo": "Sesión 2 · Prueba de inicio", "pc": "Sé cuánto debo cobrar por mi producto o servicio.", "qs": [{"q": "Tu costo por unidad es $10 y quieres ganar 30% SOBRE EL PRECIO DE VENTA. ¿Cuál es el precio correcto?", "o": ["$13,00", "$15,00", "$14,29"], "a": 2}, {"q": "Costos fijos: $200 al mes. Precio de venta: $4. Costo variable: $2 por unidad. ¿Cuántas unidades necesitas vender para no perder (punto de equilibrio)?", "o": ["100 unidades", "50 unidades", "200 unidades"], "a": 0}, {"q": "Precio $14,29 y costo $10. Si das 10% de descuento, ¿cuánto baja aproximadamente tu ganancia por unidad?", "o": ["10%", "33%", "20%"], "a": 1}, {"q": "Si tu margen es 30% sobre el precio, ¿cuál es el descuento máximo que puedes dar sin perder dinero?", "o": ["15%", "50%", "30%"], "a": 2}, {"q": "Según la Ley para el Fomento y Desarrollo de Nuevos Emprendimientos, la inscripción en el Registro Nacional de Emprendimiento otorga al emprendimiento:", "o": ["Personalidad jurídica", "Un RIF", "Un crédito"], "a": 0}]}, "S2F": {"titulo": "Sesión 2 · Prueba final", "pc": "Sé cuánto debo cobrar por mi producto o servicio.", "qs": [{"q": "Tu costo por unidad es $30 y quieres ganar 40% SOBRE EL PRECIO DE VENTA. ¿Cuál es el precio correcto?", "o": ["$42", "$50", "$48"], "a": 1}, {"q": "Costos fijos: $240 al mes. Precio de venta: $5. Costo variable: $2 por unidad. ¿Cuántas unidades necesitas vender para no perder (punto de equilibrio)?", "o": ["120 unidades", "48 unidades", "80 unidades"], "a": 2}, {"q": "Precio $50 y costo $30. Si das 10% de descuento, ¿cuánto baja aproximadamente tu ganancia por unidad?", "o": ["40%", "10%", "25%"], "a": 2}, {"q": "Si tu margen es 40% sobre el precio, ¿cuál es el descuento máximo que puedes dar sin perder dinero?", "o": ["40%", "20%", "60%"], "a": 0}, {"q": "Según la Ley para el Fomento y Desarrollo de Nuevos Emprendimientos, al vencer la vigencia de la inscripción en el RNE, el emprendimiento debe:", "o": ["Renovar la inscripción sin límite", "Cerrar su actividad", "Inscribirse en el Registro Mercantil"], "a": 2}]}}, OBS = {"sueldo": "¿Cuánto me pago yo por hora de lo que trabajo en mi negocio? (en dólares; puede ser 0)", "critq": "Hoy decido el precio de lo que vendo principalmente por:", "crit": ["Lo que cobra otro", "Mi intuición", "Lo que me sobra después de gastar", "Mis cálculos"]};
 const L='abcd';
+const FICHA=[
+ {k:'sexo',t:'Soy',o:[['m','Mujer'],['h','Hombre'],['n','Prefiero no decir']]},
+ {k:'rubro',t:'Mi emprendimiento es de',o:[['a','Alimentos y bebidas'],['b','Pesca'],['c','Turismo y hospedaje'],['d','Comercio'],['e','Artesanía y confección'],['f','Servicios'],['g','Agrícola'],['h','Otro o aún no tengo']]},
+ {k:'edad',t:'Mi edad',o:[['a','Menos de 25'],['b','25 a 39'],['c','40 a 54'],['d','55 o más']]},
+ {k:'tiempo',t:'Llevo con mi negocio',o:[['a','Aún no empiezo'],['b','Menos de 1 año'],['c','1 a 3 años'],['d','Más de 3 años']]},
+ {k:'rif',t:'¿Tengo RIF?',o:[['a','Sí'],['b','En trámite'],['c','No']]},
+ {k:'anota',t:'¿Anoto mis ventas y gastos?',o:[['a','Nunca'],['b','A veces'],['c','Siempre']]},
+ {k:'equipo',t:'¿Cuántas personas trabajan en mi negocio?',o:[['a','Solo yo'],['b','2 o 3'],['c','4 o más']]}];
+const FK=['rubro','sexo','edad','tiempo','rif','anota','equipo'];
 function formaDe(sesion,momento){return 'S'+sesion+(momento==='Inicio'?'I':'F');}
-function puntaje(forma,resp){let s=0;QD[forma].qs.forEach((q,i)=>{if((resp[i]||'')===L[q.a])s++;});return s;}
+function puntaje(forma,resp){if(!QD[forma])return '';let s=0;QD[forma].qs.forEach((q,i)=>{if((resp[i]||'')===L[q.a])s++;});return s;}
 function limpia(s){return String(s||'').replace(/[|\n\r]/g,' ').trim();}
 function clave(r){return r.grupo+'|'+r.sesion+'|'+r.codigo;}
 function ultimo(rows){const m={};rows.forEach(r=>{m[clave(r)+'|'+r.momento]=r;});return Object.values(m);}
 function calcular(rows,grupo,sesion){
   const por={};
-  ultimo(rows).filter(r=>String(r.grupo)===String(grupo)&&String(r.sesion)===String(sesion)).forEach(r=>{
-    const c=(por[r.codigo]=por[r.codigo]||{codigo:r.codigo,nombre:''});
-    if(r.nombre)c.nombre=r.nombre;
+  ultimo(rows).filter(r=>r.momento!=='Ficha'&&String(r.grupo)===String(grupo)&&String(r.sesion)===String(sesion)).forEach(r=>{
+    const c=(por[r.codigo]=por[r.codigo]||{codigo:r.codigo,nombre:'',emp:''});
+    if(r.nombre)c.nombre=r.nombre; if(r.emp)c.emp=r.emp;
     c[r.momento]=puntaje(r.forma,r.resp); c['sh_'+r.momento]=Number(r.sh); c['cr_'+r.momento]=r.cr; c['pc_'+r.momento]=Number(r.pc);
   });
   return Object.values(por).map(c=>{c.completo=(c.Inicio!==undefined&&c.Final!==undefined);if(c.completo)c.desp=c.Final-c.Inicio;return c;});
 }
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function nombreMostrar(c){return c.nombre?c.nombre+' (N.º '+c.codigo+')':'N.º '+c.codigo;}
+function nombreMostrar(c){return c.nombre?c.nombre+(c.emp?' · '+c.emp:'')+' (N.º '+c.codigo+')':'N.º '+c.codigo;}
 function renderPodio(rows,el,grupo,sesion){
   const lista=calcular(rows,grupo,sesion);
   const comp=lista.filter(c=>c.completo).sort((a,b)=>b.desp-a.desp||b.Final-a.Final);
@@ -84,18 +95,42 @@ function renderPodio(rows,el,grupo,sesion){
   if(pend.length) h+='<p class="small"><b>Pendientes:</b> '+pend.map(esc).join(' · ')+'</p>';
   el.innerHTML=h;
 }
-function aCSV(rows){const head=['grupo','sesion','codigo','nombre','momento','forma','aciertos','percepcion','sueldo_hora','criterio'];
-  return head.join(',')+'\n'+rows.map(r=>[r.grupo,r.sesion,r.codigo,'"'+(r.nombre||'').replace(/"/g,'""')+'"',r.momento,r.forma,puntaje(r.forma,r.resp),r.pc,r.sh,r.cr].join(',')).join('\n');}
-function aCadena(r){return ['R3',r.grupo,r.sesion,limpia(r.codigo),limpia(r.nombre),r.momento,r.resp.join(''),r.pc,r.sh,r.cr].join('|');}
-function deCadena(line){const p=line.trim().split('|');if(p[0]!=='R3'||p.length<10)return null;const resp=p[6].toLowerCase().split('').slice(0,5);if(resp.length<5)return null;
-  return {grupo:p[1],sesion:p[2],codigo:p[3],nombre:p[4],momento:p[5],forma:formaDe(p[2],p[5]),resp,pc:p[7],sh:p[8],cr:p[9].toLowerCase(),ts:Date.now()};}
+function renderPerfil(rows,el,grupo){
+  const m={};rows.filter(r=>r.ficha&&(String(grupo)==='0'||String(r.grupo)===String(grupo))).forEach(r=>{m[r.grupo+'|'+r.codigo]=r;});
+  const fs=Object.values(m); const n=fs.length;
+  let h='<div class="msg"><b>Perfil del salón · '+(String(grupo)==='0'?'Ambos grupos':'Grupo '+grupo)+'</b> · Personas con ficha: <b>'+n+'</b></div>';
+  if(!n){h+='<p class="small">Aparece cuando haya fichas cargadas (se llenan junto con la prueba de inicio de la Sesión 1).</p>';el.innerHTML=h;return;}
+  const cont=(k,v)=>fs.filter(r=>r.ficha[k]===v).length;
+  h+='<div class="big">'+[['m','Mujeres'],['h','Hombres']].map(a=>'<div><b>'+cont('sexo',a[0])+'</b>'+a[1]+'</div>').join('')+'</div>';
+  FICHA.forEach(f=>{
+    if(f.k==='sexo')return;
+    h+='<div class="ptit">'+esc(f.t)+'</div>'+f.o.map(o=>{const c=cont(f.k,o[0]);const p=Math.round(100*c/n);return '<div class="brow"><span>'+esc(o[1])+'</span><div class="bar"><i style="width:'+p+'%"></i></div><b>'+c+' ('+p+'%)</b></div>';}).join('');
+  });
+  const ini=ultimo(rows).filter(r=>r.momento==='Inicio'&&r.sesion==='1'&&(String(grupo)==='0'||String(r.grupo)===String(grupo)));
+  if(ini.length){h+='<div class="ptit">Cómo deciden hoy el precio (prueba de inicio, Sesión 1)</div>'+OBS.crit.map((o,j)=>{const c=ini.filter(r=>r.cr===L[j]).length;const p=Math.round(100*c/ini.length);return '<div class="brow"><span>'+esc(o)+'</span><div class="bar"><i style="width:'+p+'%"></i></div><b>'+c+' ('+p+'%)</b></div>';}).join('');
+    const sh=ini.map(r=>Number(r.sh)).filter(x=>!isNaN(x));if(sh.length)h+='<p class="small">Lo que se pagan por hora, en promedio: <b>$'+(sh.reduce((a,b)=>a+b,0)/sh.length).toFixed(2)+'</b></p>';}
+  const emps=fs.map(r=>(r.emp||'').trim()).filter(x=>x);
+  if(emps.length)h+='<div class="ptit">Emprendimientos en el salón</div><p class="small">'+emps.map(esc).join(' · ')+'</p>';
+  el.innerHTML=h;
+}
+function aCSV(rows){const head=['grupo','sesion','codigo','nombre','emprendimiento','momento','forma','aciertos','percepcion','sueldo_hora','criterio'].concat(FK);
+  return head.join(',')+'\n'+rows.map(r=>[r.grupo,r.sesion,r.codigo,'"'+(r.nombre||'').replace(/"/g,'""')+'"','"'+(r.emp||'').replace(/"/g,'""')+'"',r.momento,r.forma,puntaje(r.forma,r.resp),r.pc,r.sh,r.cr].concat(FK.map(k=>r.ficha?(r.ficha[k]||''):'')).join(',')).join('\n');}
+function aCadena(r){return ['R4',r.grupo,r.sesion,limpia(r.codigo),limpia(r.nombre),limpia(r.emp),r.momento,r.resp.join(''),r.pc,r.sh,r.cr].concat(r.ficha?FK.map(k=>r.ficha[k]||''):[]).join('|');}
+function deCadena(line){const p=line.trim().split('|');
+  if(p[0]==='F'&&p.length>=12){const fi={};FK.forEach((k,i)=>fi[k]=(p[5+i]||'').toLowerCase());return {grupo:p[1],sesion:'1',codigo:p[2],nombre:p[3],emp:p[4],momento:'Ficha',forma:'F',resp:[],pc:0,sh:'',cr:'',ficha:fi,ts:Date.now()};}
+  if(p[0]!=='R4'||p.length<11)return null;const resp=p[7].toLowerCase().split('').slice(0,5);if(resp.length<5)return null;
+  const r={grupo:p[1],sesion:p[2],codigo:p[3],nombre:p[4],emp:p[5],momento:p[6],forma:formaDe(p[2],p[6]),resp,pc:p[8],sh:p[9],cr:p[10].toLowerCase(),ts:Date.now()};
+  if(p.length>=18){const fi={};FK.forEach((k,i)=>fi[k]=(p[11+i]||'').toLowerCase());r.ficha=fi;}
+  return r;}
 
-let forma='S1I',RESP=[],PC=0,SH='',CR='';
+let forma='S1I',RESP=[],PC=0,SH='',CR='',FI={},CONF=false;
 function empezar(){
   const c=limpia(document.getElementById('codigo').value);
   if(!c){document.getElementById('err0').textContent='Escribe el número de tu tarjeta.';return;}
+  if(!limpia(document.getElementById('nombre').value)){document.getElementById('err0').textContent='Escribe tu nombre.';return;}
+  if(!limpia(document.getElementById('emp').value)){document.getElementById('err0').textContent='Escribe de qué es tu emprendimiento.';return;}
   const s=document.getElementById('sesion').value,m=document.getElementById('momento').value;
-  forma=formaDe(s,m); RESP=new Array(5).fill(''); PC=0; SH=''; CR='';
+  forma=formaDe(s,m); RESP=new Array(5).fill(''); PC=0; SH=''; CR=''; FI={}; CONF=(forma==='S1I'||document.getElementById('nuevo').checked);
   document.getElementById('tit').textContent='Grupo '+document.getElementById('grupo').value+' · '+QD[forma].titulo;
   const box=document.getElementById('qs');box.innerHTML='';
   QD[forma].qs.forEach((q,i)=>{const d=document.createElement('div');d.className='q';
@@ -106,16 +141,20 @@ function empezar(){
   d.innerHTML='<p>7. '+esc(OBS.sueldo)+'</p><input type="number" id="sh" inputmode="decimal" min="0" step="0.01" placeholder="$ por hora" oninput="SH=this.value;progreso()">';box.appendChild(d);
   d=document.createElement('div');d.className='q';
   d.innerHTML='<p>8. '+esc(OBS.critq)+'</p>'+OBS.crit.map((o,j)=>'<label class="opt"><input type="radio" name="cr" value="'+L[j]+'" onchange="marcaC(this)"> <span>'+esc(o)+'</span></label>').join('');box.appendChild(d);
+  if(CONF){FICHA.forEach((f,i)=>{d=document.createElement('div');d.className='q';
+    d.innerHTML='<p>'+(9+i)+'. '+esc(f.t)+'</p>'+f.o.map(o=>'<label class="opt"><input type="radio" name="f_'+f.k+'" value="'+o[0]+'" onchange="marcaF(\''+f.k+'\',this)"> <span>'+esc(o[1])+'</span></label>').join('');box.appendChild(d);});}
   document.getElementById('datos').classList.add('hide');document.getElementById('prueba').classList.remove('hide');progreso();window.scrollTo(0,0);
 }
 function marca(i,el){RESP[i]=el.value;sel(el);progreso();}
 function marcaP(el){PC=Number(el.value);sel(el);progreso();}
 function marcaC(el){CR=el.value;sel(el);progreso();}
+function marcaF(k,el){FI[k]=el.value;sel(el);progreso();}
 function sel(el){document.querySelectorAll('input[name="'+el.name+'"]').forEach(x=>x.parentElement.classList.toggle('sel',x.checked));}
-function progreso(){const n=RESP.filter(x=>x).length+(PC?1:0)+(SH!==''?1:0)+(CR?1:0);document.getElementById('bar').style.width=(n/8*100)+'%';}
+function progreso(){const n=RESP.filter(x=>x).length+(PC?1:0)+(SH!==''?1:0)+(CR?1:0)+Object.keys(FI).length;document.getElementById('bar').style.width=(n/(8+(CONF?FK.length:0))*100)+'%';}
 function enviar(){
-  if(RESP.some(x=>!x)||!PC||SH===''||!CR){document.getElementById('err1').textContent='Faltan preguntas por responder.';return;}
-  const r={grupo:document.getElementById('grupo').value,sesion:document.getElementById('sesion').value,codigo:limpia(document.getElementById('codigo').value),nombre:limpia(document.getElementById('nombre').value),momento:document.getElementById('momento').value,forma,resp:RESP.slice(),pc:PC,sh:SH,cr:CR,ts:Date.now()};
+  if(RESP.some(x=>!x)||!PC||SH===''||!CR||(CONF&&FK.some(k=>!FI[k]))){document.getElementById('err1').textContent='Faltan preguntas por responder.';return;}
+  const r={grupo:document.getElementById('grupo').value,sesion:document.getElementById('sesion').value,codigo:limpia(document.getElementById('codigo').value),nombre:limpia(document.getElementById('nombre').value),emp:limpia(document.getElementById('emp').value),momento:document.getElementById('momento').value,forma,resp:RESP.slice(),pc:PC,sh:SH,cr:CR,ts:Date.now()};
+  if(CONF)r.ficha=Object.assign({},FI);
   guardar(r);
 }
 function pantallaFin(r,extra){
@@ -127,7 +166,7 @@ function pantallaFin(r,extra){
 
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxzKp3EZ-ON9T6leYd6Qgky1NZkke0-jZkO0lwUvN9LAIVjehN0N-08WpdaebEhWDAFiA/exec';
 function leerCola(){try{return JSON.parse(localStorage.getItem('costos_cola_v3')||'[]');}catch(e){return [];}}
-async function enviarFila(r){const body=new URLSearchParams({action:'submit',grupo:r.grupo,sesion:r.sesion,codigo:r.codigo,nombre:r.nombre,momento:r.momento,forma:r.forma,resp:r.resp.join(''),pc:r.pc,sh:r.sh,cr:r.cr});
+async function enviarFila(r){const body=new URLSearchParams({action:'submit',grupo:r.grupo,sesion:r.sesion,codigo:r.codigo,nombre:r.nombre,emp:r.emp||'',momento:r.momento,forma:r.forma,resp:r.resp.join(''),pc:r.pc,sh:r.sh,cr:r.cr,rubro:(r.ficha||{}).rubro||'',sexo:(r.ficha||{}).sexo||'',edad:(r.ficha||{}).edad||'',tiempo:(r.ficha||{}).tiempo||'',rif:(r.ficha||{}).rif||'',anota:(r.ficha||{}).anota||'',equipo:(r.ficha||{}).equipo||''});
   await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body});}
 async function guardar(r){const cola=leerCola();cola.push(r);localStorage.setItem('costos_cola_v3',JSON.stringify(cola));
   try{await vaciar();}catch(e){}
