@@ -17,6 +17,6 @@ async function finish(){const dims={};let sc=0;Q.forEach((q,k)=>{const ok=ans[k]
   else{const a=JSON.parse(localStorage.getItem('bida_quiz')||'[]');a.push(rec);localStorage.setItem('bida_quiz',JSON.stringify(a))}}catch(e){saved=false}
  app.innerHTML=`<div class="card"><h2 style="margin-top:0">${esc(name)}, tu puntaje: ${sc} de ${Q.length}</h2><p class="note">${saved?'Resultado enviado al podio.':'No se pudo guardar: avisa a la facilitadora.'}</p>
  <table><tr><th>Dimensión</th><th>Aciertos</th></tr>${Object.entries(dims).map(([k,v])=>`<tr><td>${k}</td><td>${v[0]} de ${v[1]}</td></tr>`).join('')}</table>
- <p class="note">Con 2 preguntas por dimensión, la lectura por dimensión es orientativa.</p></div>`}
+ <div class="card" style="background:${sc>=12?'#ECFDF5':'#FFF7E6'};border-left:6px solid ${sc>=12?'#10B981':'#F0A500'}"><h3 style="margin-top:0">${sc>=12?'¡Felicitaciones, '+esc(name)+'! Excelente resultado':'¡Buen comienzo, '+esc(name)+'! Aquí empieza tu crecimiento'}</h3><p>${sc>=12?'Dominas lo esencial. Cada concepto que ya manejas es una ventaja para aplicar Claude con criterio en tu trabajo diario. Sigue practicando y comparte lo que sabes con tus compañeros: enseñar es la mejor forma de afianzar.':'Este resultado no es una nota: es tu punto de partida. Repasa las dimensiones donde tuviste menos aciertos, practica cada día con una tarea real de tu trabajo y recuerda: quien se atreve a aprender hoy, lidera mañana. Con práctica, tu avance se va a notar.'}</p></div></div>`}
 start();
 </script></body></html>
