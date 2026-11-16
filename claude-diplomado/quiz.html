@@ -1,6 +1,6 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quiz Diplomado Claude IA</title><link rel="stylesheet" href="common.css"></head><body>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quiz Diplomado Claude IA</title><link rel="stylesheet" href="common.css?v=20261116b"></head><body>
 <header><b>BIDA GLOBAL</b><h1 id="ttl">Quiz · Diplomado Claude IA</h1></header><main id="app"></main>
-<script src="config.js"></script><script src="questions.js"></script><script>
+<script src="config.js?v=20261116b"></script><script src="questions.js?v=20261116b"></script><script>
 const $=s=>document.querySelector(s),app=$('#app'),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const V=((new URLSearchParams(location.search).get('v')||'A').toUpperCase()==='B')?'B':'A';
 const Q=window.QUIZ[V];let name='',i=0,ans=[],t0=0;
