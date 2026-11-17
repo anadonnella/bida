@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autodiagnóstico de preparación · Facturación digital en Venezuela · BIDA</title>
+<link rel="icon" type="image/png" href="img/logo-bida-azul.png">
+<meta name="description" content="Descubre en 5 minutos qué tan preparada está tu empresa para la Providencia SNAT/2026/00093 y descarga tu plan de acción en PDF.">
+<style>
+:root{--navy:#10283F;--blue:#1E6FD9;--ink:#1B2430;--bg:#EEF3F6;--line:#D5DEE5;--green:#2E8B57;--amber:#E0951F;--red:#C8553D;--mut:#6B7A8C}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45}
+header{background:var(--navy);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:14px}
+header .logo{height:34px;width:auto;display:block}
+header .sub{font-size:13px;opacity:.85}
+main{max-width:760px;margin:0 auto;padding:18px 16px 60px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:16px}
+h1{font-family:Cambria,Georgia,serif;font-size:26px;margin:0 0 8px;color:var(--navy)}
+h2{font-family:Cambria,Georgia,serif;font-size:20px;margin:0 0 6px;color:var(--navy)}
+p{margin:6px 0}
+.mut{color:var(--mut);font-size:14px}
+.btn{display:inline-block;background:var(--blue);color:#fff;border:0;border-radius:8px;padding:12px 22px;font-size:16px;font-weight:600;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.sec{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.progress{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin:0 0 6px}
+.progress i{display:block;height:100%;background:var(--blue);width:0;transition:width .3s}
+.q{border-top:1px solid var(--line);padding:16px 0}
+.q:first-of-type{border-top:0}
+.q .t{font-weight:600;margin-bottom:4px}
+.q .ref{font-size:12px;color:var(--mut);margin-bottom:8px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opts label{border:2px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:15px;user-select:none}
+.opts input{display:none}
+.opts label.on{border-color:var(--blue);background:#E6F0FF;color:var(--navy);font-weight:600}
+select,input[type=text],input[type=email],input[type=tel]{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:15px;margin-top:4px;font-family:inherit}
+.field{margin:12px 0}
+.field label{font-weight:600;font-size:14px}
+.hp{position:absolute;left:-9999px}
+.score{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.dot{width:92px;height:92px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:700;font-family:Cambria,Georgia,serif}
+.bar{margin:10px 0}
+.bar .l{display:flex;justify-content:space-between;font-size:14px;margin-bottom:3px}
+.bar .b{height:12px;border-radius:8px;background:var(--line);overflow:hidden}
+.bar .b i{display:block;height:100%}
+.plan{border-left:5px solid var(--line);background:#F8FAFB;border-radius:8px;padding:12px 14px;margin:10px 0}
+.plan.alta{border-color:var(--red)}.plan.media{border-color:var(--amber)}
+.tag{display:inline-block;font-size:11px;font-weight:700;color:#fff;border-radius:6px;padding:2px 7px;margin-right:6px}
+.tag.alta{background:var(--red)}.tag.media{background:var(--amber)}
+.plan .base{font-size:12px;color:var(--mut);margin-top:4px}
+.note{font-size:12.5px;color:var(--mut);margin-top:14px}
+.hidden{display:none}
+.check{display:flex;gap:10px;align-items:flex-start;margin:10px 0;font-size:14.5px}
+.check input{margin-top:4px;width:18px;height:18px}
+footer{text-align:center;color:var(--mut);font-size:12px;padding:0 16px 30px}
+</style>
+</head>
+<body>
+<header>
+  <img src="img/logo-bida-blanco.png" alt="BIDA" class="logo">
+  <div><div style="font-weight:600">Autodiagnóstico de preparación</div><div class="sub">Facturación digital en Venezuela · Providencia SNAT/2026/00093</div></div>
+</header>
+<main>
+
+<section id="s-intro" class="card">
+  <h1>¿Está tu empresa lista para la nueva norma de facturación?</h1>
+  <p>La Providencia SNAT/2026/00093 (Gaceta Oficial N° 43.484 del 21/10/2026) permite elegir libremente cómo facturar y entra en vigencia a los 180 días continuos de su publicación: <b>19/04/2027</b>.</p>
+  <p>Responde <b>17 preguntas en unos 5 minutos</b> y obtén un semáforo de preparación y un plan de acción con el artículo de la norma que respalda cada recomendación.</p>
+  <div class="plan" style="border-color:var(--blue)">
+    <b>Es anónimo.</b> No necesitas dar ningún dato para responder ni para ver tu resultado. Guardamos las respuestas sin identificarte, solo para estadísticas. Tu correo se pide <u>únicamente al final</u>, si quieres descargar tu plan en PDF.
+  </div>
+  <div class="row"><button class="btn" id="btn-start">Comenzar</button></div>
+  <p class="note">Herramienta de orientación elaborada por BIDA con base en el texto de la providencia. Las recomendaciones son buenas prácticas y no sustituyen la asesoría tributaria profesional.</p>
+</section>
+
+<section id="s-ctx" class="card hidden">
+  <h2>Cuéntanos un poco (opcional)</h2>
+  <p class="mut">Sin nombres ni datos que te identifiquen. Puedes saltar este paso.</p>
+  <div class="field"><label for="c-sector">Sector</label>
+    <select id="c-sector"><option value="">Prefiero no indicar</option><option>Comercio</option><option>Servicios</option><option>Industria / manufactura</option><option>Tecnología</option><option>Alimentos y restaurantes</option><option>Salud</option><option>Construcción</option><option>Transporte y logística</option><option>Otro</option></select></div>
+  <div class="field"><label for="c-size">Tamaño de la empresa</label>
+    <select id="c-size"><option value="">Prefiero no indicar</option><option>Emprendimiento / persona natural</option><option>Pequeña (hasta 20 personas)</option><option>Mediana (21 a 100 personas)</option><option>Grande (más de 100 personas)</option></select></div>
+  <div class="field"><label for="c-medio">¿Cómo facturas hoy?</label>
+    <select id="c-medio"><option value="">Prefiero no indicar</option><option>Máquina fiscal</option><option>Talonarios o formas libres</option><option>Facturación digital</option><option>Combino varios medios</option></select></div>
+  <div class="row"><button class="btn" id="btn-ctx">Continuar</button></div>
+</section>
+
+<section id="s-q" class="card hidden">
+  <div class="progress"><i id="prog"></i></div>
+  <p class="mut" id="qstep"></p>
+  <h2 id="qtitle"></h2>
+  <p class="mut" id="qdesc"></p>
+  <div id="qlist"></div>
+  <div class="row"><button class="btn sec" id="btn-back">Atrás</button><button class="btn" id="btn-next" disabled>Siguiente</button></div>
+</section>
+
+<section id="s-res" class="hidden">
+  <div class="card">
+    <h1>Tu resultado</h1>
+    <div class="score"><div class="dot" id="r-dot"></div><div><div style="font-size:18px;font-weight:600" id="r-label"></div><div class="mut" id="r-sub"></div></div></div>
+    <div id="r-bars" style="margin-top:14px"></div>
+  </div>
+  <div class="card">
+    <h2>Tu plan de acción</h2>
+    <p class="mut">Ordenado por urgencia. Cada recomendación cita el artículo de la providencia.</p>
+    <div id="r-plan"></div>
+  </div>
+  <div class="card" id="s-pdf">
+    <h2>Descarga tu plan en PDF</h2>
+    <p>Ingresa tu correo para descargar el PDF con tu semáforo y tus recomendaciones.</p>
+    <div class="field"><label for="p-email">Correo electrónico *</label><input type="email" id="p-email" placeholder="tucorreo@empresa.com" autocomplete="email"></div>
+    <label class="check"><input type="checkbox" id="p-contact"><span>Quiero que el equipo especialista de BIDA me contacte para orientarme en mi adecuación.</span></label>
+    <div id="p-extra" class="hidden">
+      <div class="field"><label for="p-name">Nombre (opcional)</label><input type="text" id="p-name" autocomplete="name"></div>
+      <div class="field"><label for="p-tel">Teléfono o WhatsApp (opcional)</label><input type="tel" id="p-tel" autocomplete="tel"></div>
+    </div>
+    <input type="text" class="hp" id="p-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p class="note">Usaremos tu correo solo para este fin y, si lo autorizas, para contactarte. Tus respuestas siguen guardándose de forma anónima.</p>
+    <div class="row"><button class="btn" id="btn-pdf">Descargar PDF</button><button class="btn sec" id="btn-restart">Hacer de nuevo</button></div>
+    <p id="p-msg" class="note"></p>
+  </div>
+</section>
+
+</main>
+<footer>© BIDA Global 21, C.A. · Orientación basada en la Providencia SNAT/2026/00093, G.O. 43.484 del 21/10/2026.</footer>
+
+<script src="vendor/jspdf.umd.min.js"></script>
+<script>
+/* ============ CONFIGURACIÓN ============ */
+// URL de la aplicación web de Apps Script (termina en /exec). Vacía = modo demostración (no guarda).
+var ENDPOINT = "";
+var FECHA_VIGENCIA = "19/04/2027";
+var LOGO_BLANCO = "data:image/png;base64,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";
+
+/* ============ CONTENIDO ============ */
+var BLOCKS = [
+  {id:"medio", name:"Medio de emisión", desc:"Qué medio usarás para facturar cuando la norma entre en vigencia."},
+  {id:"conting", name:"Contingencia", desc:"Qué harás cuando falle la luz, el internet o el equipo."},
+  {id:"datos", name:"Datos maestros", desc:"Los 12 datos de la factura salen de tus clientes, proveedores y productos."},
+  {id:"gob", name:"Sistema y gobierno", desc:"Quién responde y con qué sistema llegas a la fecha de vigencia."}
+];
+var OP = {si:"Sí", par:"Parcialmente", no:"No", ns:"No sé", na:"No aplica"};
+var Q = [
+ {h:"Defina su medio de emisión", b:"medio", p:"alta", t:"Ya sé qué medio de emisión usaré cuando la norma entre en vigencia (digital o máquina fiscal).", base:"Arts. 4 y 5",
+  r:"Defina su medio de emisión antes del "+FECHA_VIGENCIA+". La norma deja la elección libre entre medios digitales y máquina fiscal. Compare costo, volumen de facturas, conectividad y capacidad de su sistema actual."},
+ {h:"Evalúe los canales digitales disponibles", b:"medio", p:"media", t:"Conozco las opciones digitales: portal web y app del SENIAT, o imprenta digital / proveedor tecnológico autorizado.", base:"Art. 4.1; Disp. Final 4ª",
+  r:"Evalúe los canales digitales: el portal web y la app del SENIAT (gratuitos) o una imprenta digital o proveedor autorizado. Si elige proveedor, confirme que figure en la lista de autorizados que el SENIAT publicará en sus medios electrónicos."},
+ {h:"Aclare el uso combinado de máquina fiscal y digital", b:"medio", p:"alta", na:1, t:"Si pienso usar máquina fiscal y facturación digital a la vez, tengo claro cómo lo haré.", base:"Arts. 4, 5 y 12; Disp. Final 6ª",
+  r:"La providencia no regula expresamente el uso simultáneo de máquina fiscal y facturación digital. Es viable por la libre elección del medio (Art. 5), pero no está expresamente autorizado: solicite criterio escrito al SENIAT, lleve un registro separado por medio (buena práctica) y emita las notas de crédito y débito por el mismo medio de la factura original (Art. 12)."},
+ {h:"Prepare el aviso de cambio de medio", b:"medio", p:"media", t:"Sé que debo informar a mi Gerencia Regional o Sector de Tributos Internos si cambio de medio de emisión.", base:"Disp. Transitoria 2ª",
+  r:"Si cambia de medio de emisión al entrar en vigencia, infórmelo a la Gerencia Regional o Sector de Tributos Internos de su domicilio fiscal y cumpla las obligaciones que correspondan a su nuevo medio."},
+
+ {h:"Tenga talonarios de contingencia autorizados en cada establecimiento", b:"conting", p:"alta", t:"Tengo talonarios de contingencia autorizados en mi establecimiento.", base:"Art. 6 y Parágrafo Único; Art. 11",
+  r:"Todos los sujetos pasivos deben mantener de forma permanente, en el establecimiento, formatos de contingencia debidamente autorizados. Los talonarios quedan reservados solo para contingencia."},
+ {h:"Documente un protocolo de contingencia", b:"conting", p:"alta", t:"Tengo un protocolo escrito para fallas de luz, internet, avería del equipo o mantenimiento crítico del sistema.", base:"Art. 6 (numerales 1 a 4)",
+  r:"Documente un protocolo para fallas prolongadas de energía, interrupción severa de internet, avería comprobada del medio de facturación y mantenimiento crítico no programado, y capacite al personal de caja para pasar a contingencia."},
+ {h:"Defina el procedimiento de regularización con PDF", b:"conting", p:"media", na:1, t:"Sé cómo registrar lo emitido en contingencia y enviar el PDF al día siguiente (si facturo en digital).", base:"Art. 7",
+  r:"Al cesar la contingencia, registre todos los documentos emitidos en físico y envíe la información en PDF al día siguiente a la imprenta digital autorizada o a la API del SENIAT, según su medio de emisión principal."},
+ {h:"Resuelva el inventario de talonarios y formas libres", b:"conting", p:"media", t:"Sé qué hacer con los talonarios y formas libres que tengo en existencia.", base:"Disp. Transitoria 1ª; Arts. 11 y 24",
+  r:"Los formatos y formas libres en existencia pueden usarse hasta agotarlos o hasta la entrada en vigencia. Los talonarios restantes se anulan y desincorporan por el procedimiento legal, conservando solo los formatos de contingencia del Art. 11. La destrucción requiere autorización de la Gerencia Regional (Art. 24)."},
+
+ {h:"Depure el maestro de clientes", b:"datos", p:"alta", t:"Mi maestro de clientes tiene RIF válido (o cédula/pasaporte en personas naturales) y nombre o razón social completos.", base:"Art. 8.6",
+  r:"Depure su maestro de clientes: RIF válido y nombre o razón social. En personas naturales que no requieran la factura a efectos tributarios basta la cédula o el pasaporte. Con máquina fiscal, la factura debe imprimir el nombre o razón social del adquirente para dar derecho a crédito fiscal (Art. 10.4)."},
+ {h:"Codifique productos y servicios", b:"datos", p:"alta", t:"Cada producto o servicio tiene un código único ligado a mi inventario.", base:"Art. 9.2",
+  r:"Asigne a cada bien o servicio un código único relacionado con la codificación de su inventario. En facturación digital, la factura debe incluir el código de la operación."},
+ {h:"Defina alícuota o exención por producto", b:"datos", p:"alta", t:"Cada producto o servicio tiene definida su alícuota de IVA o su condición de exento, exonerado o no gravado.", base:"Art. 8 (numerales 7, 9 y 10)",
+  r:"Defina por producto la alícuota o la condición exenta, exonerada o no gravada, para discriminar base imponible e IVA por alícuota y marcar (E) donde corresponda."},
+ {h:"Cree la tabla de tipos de cambio", b:"datos", p:"media", na:1, t:"Tengo una tabla de tipos de cambio por fecha para mis ventas en moneda extranjera.", base:"Art. 8.12",
+  r:"Mantenga una tabla de tipos de cambio por fecha: en operaciones gravadas cuya contraprestación esté en moneda extranjera, la factura debe mostrar ambos montos y el tipo de cambio aplicable."},
+ {h:"Complete el maestro de proveedores", b:"datos", p:"media", na:1, t:"Mi maestro de proveedores tiene razón social, RIF, domicilio fiscal y correo electrónico completos (si soy agente de retención).", base:"Art. 18",
+  r:"Complete el maestro de proveedores: razón social, RIF, domicilio fiscal y correo electrónico, datos exigidos en el comprobante de retención de IVA e ISLR, cuya numeración es de 14 caracteres (AAAAMMSSSSSSSS)."},
+ {h:"Vincule notas y guías a la factura de origen", b:"datos", p:"media", t:"Mis notas de crédito, notas de débito y guías de despacho hacen referencia a la factura de origen.", base:"Arts. 12 a 14",
+  r:"Toda nota de débito o crédito debe indicar fecha, número, número de control y monto de la factura original y emitirse por el mismo medio de esa factura. Las guías de despacho amparan traslados que no son ventas; si amparan ventas, la factura se emite dentro del mismo período haciendo referencia a la guía."},
+
+ {h:"Use series por punto de emisión", b:"gob", p:"media", na:1, t:"Si facturo en varios puntos o sucursales sin sistema centralizado, uso series diferenciadas.", base:"Art. 20",
+  r:"Si emite en distintas áreas, establecimientos o fuera de sus instalaciones sin un sistema centralizado, use numeración consecutiva y única precedida de la palabra \"serie\", con caracteres que identifiquen cada punto de emisión."},
+ {h:"Verifique que su sistema cubra los 12 datos", b:"gob", p:"alta", t:"Mi sistema o proveedor cubre los 12 datos mínimos de la factura (incluida fecha DDMMAAAA y hora HH.MM.SS).", base:"Arts. 8 y 9",
+  r:"Verifique que su sistema o proveedor cubre los 12 datos mínimos del Art. 8 (incluida la fecha DDMMAAAA y la hora HH.MM.SS) y, si es digital, los del Art. 9 (número de control y código de la operación)."},
+ {h:"Asigne responsable y cronograma", b:"gob", p:"alta", t:"Tengo un responsable y un cronograma para estar listo antes de la entrada en vigencia.", base:"Disp. Final 8ª",
+  r:"Asigne un responsable y un cronograma con hitos hasta el "+FECHA_VIGENCIA+" (180 días continuos desde la publicación del 21/10/2026). Empiece por el medio, la contingencia y la depuración de los maestros."}
+];
+var N = Q.length;
+
+/* ============ ESTADO ============ */
+var ans = new Array(N).fill(null);
+var ctx = {sector:"", size:"", medio:""};
+var step = 0; // bloque actual
+var rid = "AD-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,7);
+var result = null;
+
+function $(id){return document.getElementById(id);}
+function show(id){["s-intro","s-ctx","s-q","s-res"].forEach(function(s){$(s).classList.toggle("hidden", s!==id);}); window.scrollTo(0,0);}
+
+/* ============ PREGUNTAS ============ */
+function renderBlock(){
+  var b = BLOCKS[step];
+  $("prog").style.width = (step/BLOCKS.length*100)+"%";
+  $("qstep").textContent = "Bloque "+(step+1)+" de "+BLOCKS.length;
+  $("qtitle").textContent = b.name; $("qdesc").textContent = b.desc;
+  var html = "";
+  Q.forEach(function(q,i){ if(q.b!==b.id) return;
+    var ops = ["si","par","no","ns"]; if(q.na) ops.push("na");
+    html += '<div class="q"><div class="t">'+q.t+'</div><div class="ref">'+q.base+'</div><div class="opts">';
+    ops.forEach(function(o){ html += '<label class="'+(ans[i]===o?'on':'')+'"><input type="radio" name="q'+i+'" value="'+o+'" '+(ans[i]===o?'checked':'')+' data-i="'+i+'">'+OP[o]+'</label>'; });
+    html += '</div></div>';
+  });
+  $("qlist").innerHTML = html;
+  $("btn-next").textContent = step===BLOCKS.length-1 ? "Ver mi resultado" : "Siguiente";
+  checkNext();
+}
+function checkNext(){
+  var b = BLOCKS[step].id, ok = true;
+  Q.forEach(function(q,i){ if(q.b===b && ans[i]===null) ok=false; });
+  $("btn-next").disabled = !ok;
+}
+$("qlist").addEventListener("change", function(e){
+  var i = e.target.getAttribute("data-i"); if(i===null) return;
+  ans[+i] = e.target.value;
+  Array.prototype.forEach.call(e.target.closest(".opts").children, function(l){l.classList.remove("on");});
+  e.target.parentNode.classList.add("on"); checkNext();
+});
+
+/* ============ PUNTAJE ============ */
+function pts(a){ return a==="si"?2 : a==="par"?1 : 0; }
+function score(){
+  var blocks = BLOCKS.map(function(b){
+    var got=0,max=0; Q.forEach(function(q,i){ if(q.b!==b.id) return; if(ans[i]==="na") return; got+=pts(ans[i]); max+=2; });
+    return {id:b.id,name:b.name,pct: max? Math.round(got/max*100) : 100};
+  });
+  var g=0,m=0; Q.forEach(function(q,i){ if(ans[i]==="na") return; g+=pts(ans[i]); m+=2; });
+  var total = m? Math.round(g/m*100):100;
+  return {blocks:blocks,total:total,light:light(total)};
+}
+function light(p){ return p>=75?"verde" : p>=40?"amarillo" : "rojo"; }
+var LCOL = {verde:"#2E8B57",amarillo:"#E0951F",rojo:"#C8553D"};
+var LTXT = {
+  verde:["Vas bien encaminado","Tu empresa tiene la mayor parte resuelta. Cierra los puntos pendientes antes de "+FECHA_VIGENCIA+"."],
+  amarillo:["Preparación parcial","Tienes avances, pero hay brechas importantes. Prioriza las acciones marcadas como urgentes."],
+  rojo:["Preparación baja","Hay bastante por resolver. Empieza ya: tienes hasta "+FECHA_VIGENCIA+" para ordenar medio, contingencia y datos."]
+};
+function plan(){
+  var items = [];
+  Q.forEach(function(q,i){ var a=ans[i]; if(a==="si"||a==="na") return;
+    items.push({i:i,q:q,a:a,rank:(a==="par"?1:0)*10 + (q.p==="alta"?0:5) + i/100});
+  });
+  items.sort(function(x,y){return x.rank-y.rank;});
+  return items;
+}
+
+/* ============ RESULTADO ============ */
+function renderResult(){
+  result = score();
+  var l = result.light;
+  $("r-dot").style.background = LCOL[l]; $("r-dot").textContent = result.total+"%";
+  $("r-label").textContent = LTXT[l][0]; $("r-sub").textContent = LTXT[l][1];
+  $("r-bars").innerHTML = result.blocks.map(function(b){
+    return '<div class="bar"><div class="l"><span>'+b.name+'</span><b>'+b.pct+'%</b></div><div class="b"><i style="width:'+b.pct+'%;background:'+LCOL[light(b.pct)]+'"></i></div></div>';
+  }).join("");
+  var items = plan();
+  $("r-plan").innerHTML = items.length ? items.map(function(it,k){
+    var u = it.q.p==="alta" ? "alta":"media";
+    return '<div class="plan '+u+'"><span class="tag '+u+'">'+(u==="alta"?"URGENTE":"IMPORTANTE")+'</span><b>'+(k+1)+'. '+it.q.t.replace(/^(Tengo|Sé|Mi|Cada|Ya sé|Conozco|Si )/,function(m){return m;})+'</b><p>'+it.q.r+'</p><div class="base">Base: Providencia SNAT/2026/00093, '+it.q.base+'</div></div>';
+  }).join("") : '<p><b>Excelente:</b> no quedan acciones pendientes según tus respuestas. Revisa periódicamente los lineamientos que publique el SENIAT (Disp. Final 6ª).</p>';
+  show("s-res"); send({action:"submit"});
+}
+
+/* ============ ENVÍO (Apps Script) ============ */
+function send(extra){
+  var payload = Object.assign({
+    id:rid, ts:new Date().toISOString(), sector:ctx.sector, size:ctx.size, medio:ctx.medio,
+    answers:ans.map(function(a){return OP[a]||"";}), blocks:result?result.blocks.map(function(b){return b.pct;}):[],
+    total:result?result.total:"", light:result?result.light:"", hp:$("p-hp").value
+  }, extra);
+  if(!ENDPOINT){ console.log("[modo demostración] no se envía:", payload); return Promise.resolve(); }
+  return fetch(ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)}).catch(function(){});
+}
+
+/* ============ PDF ============ */
+function makePDF(){
+  var jsPDF = window.jspdf.jsPDF, d = new jsPDF({unit:"mm",format:"a4"});
+  var W=210, M=16, y=0, navy=[16,40,63], blue=[30,111,217];
+  function foot(){ d.setFontSize(8); d.setTextColor(107,122,140);
+    d.text("BIDA Global 21, C.A. - Orientación basada en la Providencia SNAT/2026/00093 (G.O. 43.484 del 21/10/2026). No sustituye asesoría profesional.", M, 289); }
+  function hdr(){ d.setFillColor.apply(d,navy); d.rect(0,0,W,24,"F"); d.addImage(LOGO_BLANCO,"PNG",M,7.5,31.2,7.2);
+    d.setFont("helvetica","normal"); d.setFontSize(10); d.setTextColor(255,255,255); d.text("Autodiagnóstico de preparación - Facturación digital en Venezuela",M+38,13); y=34; foot(); }
+  function ensure(h){ if(y+h>280){ d.addPage(); hdr(); } }
+  hdr();
+  d.setTextColor.apply(d,navy); d.setFont("times","bold"); d.setFontSize(18); d.text("Tu plan de preparación",M,y); y+=7;
+  d.setFont("helvetica","normal"); d.setFontSize(10); d.setTextColor(107,122,140);
+  d.text("Fecha: "+new Date().toLocaleDateString("es-VE")+"   |   Código: "+rid, M, y); y+=9;
+  var c = LCOL[result.light].match(/\w\w/g).map(function(h){return parseInt(h,16);});
+  d.setFillColor.apply(d,c); d.circle(M+12,y+10,12,"F"); d.setTextColor(255,255,255); d.setFont("times","bold"); d.setFontSize(15); d.text(result.total+"%",M+12,y+11.5,{align:"center"});
+  d.setTextColor.apply(d,navy); d.setFontSize(14); d.text(strip(LTXT[result.light][0]),M+30,y+7);
+  d.setFont("helvetica","normal"); d.setFontSize(10); d.setTextColor(60,70,85);
+  d.text(d.splitTextToSize(strip(LTXT[result.light][1]),W-M*2-30),M+30,y+13); y+=30;
+  result.blocks.forEach(function(b){ ensure(10);
+    d.setTextColor(30,36,48); d.setFontSize(10); d.text(strip(b.name),M,y); d.text(b.pct+"%",W-M,y,{align:"right"});
+    d.setFillColor(213,222,229); d.rect(M,y+2,W-M*2,3.2,"F");
+    var cc = LCOL[light(b.pct)].match(/\w\w/g).map(function(h){return parseInt(h,16);}); d.setFillColor.apply(d,cc);
+    if(b.pct>0) d.rect(M,y+2,(W-M*2)*b.pct/100,3.2,"F"); y+=11; });
+  y+=4; ensure(14); d.setTextColor.apply(d,navy); d.setFont("times","bold"); d.setFontSize(15); d.text("Plan de acción (por urgencia)",M,y); y+=8;
+  var items = plan();
+  if(!items.length){ d.setFont("helvetica","normal"); d.setFontSize(10); d.setTextColor(30,36,48); d.text("No quedan acciones pendientes según tus respuestas.",M,y); y+=8; }
+  items.forEach(function(it,k){
+    var title = (k+1)+". "+strip(it.q.h), body = strip(it.q.r), tw = W-M*2-6;
+    d.setFont("helvetica","bold"); d.setFontSize(10.5); var tl = d.splitTextToSize(title,tw);
+    d.setFont("helvetica","normal"); d.setFontSize(9.5); var bl = d.splitTextToSize(body,tw);
+    var h = tl.length*5 + 5 + bl.length*4.4 + 10; ensure(h);
+    var col = it.q.p==="alta"?[200,85,61]:[224,149,31];
+    d.setFillColor.apply(d,col); d.rect(M,y-3.5,1.6,h-2,"F");
+    d.setFont("helvetica","bold"); d.setFontSize(8); d.setTextColor.apply(d,col); d.text(it.q.p==="alta"?"URGENTE":"IMPORTANTE",M+4,y);
+    d.setTextColor(30,36,48); d.setFontSize(10.5); d.text(tl,M+4,y+5);
+    d.setFont("helvetica","normal"); d.setFontSize(8.5); d.setTextColor(107,122,140); d.text("Tu respuesta: "+OP[it.a],M+4,y+5+tl.length*5);
+    d.setFontSize(9.5); d.setTextColor(60,70,85); d.text(bl,M+4,y+5+tl.length*5+4.5);
+    d.setFontSize(8); d.setTextColor(107,122,140); d.text("Base: SNAT/2026/00093, "+strip(it.q.base),M+4,y+5+tl.length*5+4.5+bl.length*4.4+2.5);
+    y+=h+3;
+  });
+  ensure(30); y+=2; d.setDrawColor(213,222,229); d.line(M,y,W-M,y); y+=6;
+  d.setFont("helvetica","normal"); d.setFontSize(9); d.setTextColor(60,70,85);
+  var nota = "Notas: (1) Las recomendaciones son buenas prácticas basadas en el texto de la providencia y no sustituyen la asesoría tributaria profesional. (2) La providencia no regula expresamente el uso simultáneo de máquina fiscal y facturación digital; la lectura de BIDA es que es viable por la libre elección del medio, pero conviene solicitar criterio escrito al SENIAT. (3) Entrada en vigencia: 180 días continuos desde el 21/10/2026, es decir, el "+FECHA_VIGENCIA+".";
+  d.setFontSize(9); d.text(d.splitTextToSize(nota,W-M*2),M,y);
+  d.save("Plan_Preparacion_Facturacion_Digital_BIDA.pdf");
+}
+function strip(s){ // jsPDF (fuentes estandar) maneja Latin-1; se evitan simbolos fuera de ese rango
+  return String(s).replace(/[–—]/g,"-").replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/≥/g,">=").replace(/→/g,"->");
+}
+
+/* ============ EVENTOS ============ */
+$("btn-start").onclick = function(){ show("s-ctx"); };
+$("btn-ctx").onclick = function(){ ctx.sector=$("c-sector").value; ctx.size=$("c-size").value; ctx.medio=$("c-medio").value; step=0; show("s-q"); renderBlock(); };
+$("btn-back").onclick = function(){ if(step===0){ show("s-ctx"); } else { step--; renderBlock(); window.scrollTo(0,0);} };
+$("btn-next").onclick = function(){ if(step<BLOCKS.length-1){ step++; renderBlock(); window.scrollTo(0,0);} else { $("prog").style.width="100%"; renderResult(); } };
+$("p-contact").onchange = function(){ $("p-extra").classList.toggle("hidden", !this.checked); };
+$("btn-pdf").onclick = function(){
+  var em = $("p-email").value.trim(), msg=$("p-msg");
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ msg.textContent="Escribe un correo válido para descargar el PDF."; msg.style.color="#C8553D"; $("p-email").focus(); return; }
+  msg.style.color=""; msg.textContent="Generando tu PDF…";
+  send({action:"lead",email:em,contact:$("p-contact").checked?"Sí":"No",nombre:$("p-name").value.trim(),tel:$("p-tel").value.trim()}).then(function(){
+    try{ makePDF(); msg.textContent="Listo: tu PDF se descargó."; }catch(e){ msg.textContent="No se pudo generar el PDF. Intenta de nuevo."; console.error(e); }
+  });
+};
+$("btn-restart").onclick = function(){ location.reload(); };
+</script>
+</body>
+</html>
