@@ -11,7 +11,7 @@ function show(){const q=Q[i];app.innerHTML=`<div class="bar"><i style="width:${i
  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ans[i]=+b.dataset.j;show()});
  $('#pv').onclick=()=>{i--;show()};$('#nx').onclick=()=>{if(i==Q.length-1)finish();else{i++;show()}}}
 async function finish(){const dims={};let sc=0;Q.forEach((q,k)=>{const ok=ans[k]===q.k;if(ok)sc++;(dims[q.dim]=dims[q.dim]||[0,0])[1]++;if(ok)dims[q.dim][0]++});
- const rec={ts:new Date().toISOString(),version:V,nombre:name,puntaje:sc,total:Q.length,seg:Math.round((Date.now()-t0)/1000),dims};
+ const rec={ts:new Date().toISOString(),version:V,nombre:name,puntaje:sc,total:Q.length,seg:Math.round((Date.now()-t0)/1000),dims,resp:ans.map(j=>'ABCDE'[j]),ok:Q.map((q,k)=>ans[k]===q.k?1:0)};
  app.innerHTML='<p>Guardando…</p>';let saved=true;
  try{if(CFG.API_URL){await fetch(CFG.API_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(rec)})}
   else{const a=JSON.parse(localStorage.getItem('bida_quiz')||'[]');a.push(rec);localStorage.setItem('bida_quiz',JSON.stringify(a))}}catch(e){saved=false}

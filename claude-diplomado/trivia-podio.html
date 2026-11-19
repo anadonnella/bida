@@ -6,7 +6,7 @@
 <script src="config.js?v=20261116b"></script><script>
 const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const qs=new URLSearchParams(location.search);let mode='T1',rows=[];const KEY='bida_podio_reset_'+mode;const cutoff=()=>{try{return localStorage.getItem(KEY)||''}catch(e){return ''}};
 const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
-async function load(){try{if(CFG.API_URL){const r=await fetch(CFG.API_URL);rows=await r.json()}else rows=JSON.parse(localStorage.getItem('bida_quiz')||'[]');rows=rows.filter(r=>!r.prueba&&String(r.ts)>=cutoff());$('#upd').textContent='Actualizado '+new Date().toLocaleTimeString()+(CFG.API_URL?'':' · modo local')}catch(e){$('#upd').textContent='Sin conexión'}render()}
+async function load(){try{if(CFG.API_URL){const r=await fetch(CFG.API_URL+'?v='+mode);rows=await r.json()}else rows=JSON.parse(localStorage.getItem('bida_quiz')||'[]');rows=rows.filter(r=>!r.prueba&&String(r.ts)>=cutoff());$('#upd').textContent='Actualizado '+new Date().toLocaleTimeString()+(CFG.API_URL?'':' · modo local')}catch(e){$('#upd').textContent='Sin conexión'}render()}
 function best(v){const m={};rows.filter(r=>r.version===v).forEach(r=>{const k=norm(r.nombre);m[k]=r});return Object.values(m)}
 function podium(l,f){const t=l.slice(0,3);const cls=['g2','g1','g3'],ord=[1,0,2];return `<div class="pod">${ord.filter(k=>t[k]).map(k=>`<div class="${cls[ord.indexOf(k)]}"><div class="n">${k+1}. ${esc(t[k].nombre)}</div><div class="s">${f(t[k])}</div></div>`).join('')}</div>`}
 function render(){const el=$('#v');
