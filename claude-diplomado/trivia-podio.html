@@ -1,0 +1,18 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Podio Trivia · Diplomado Claude IA</title><link rel="stylesheet" href="common.css?v=20261116b">
+<style>.pod{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:16px 0;min-height:190px}.pod div{flex:1;max-width:200px;text-align:center;color:#fff;border-radius:6px 6px 0 0;padding:8px 4px}.pod .n{font-weight:700;font-size:15px;word-break:break-word}.pod .s{font-size:26px;font-weight:700}
+.g1{background:var(--do);height:170px;color:var(--az)!important}.g2{background:var(--am);height:130px}.g3{background:var(--gr);height:100px}.tabs button{margin-right:6px}main{max-width:900px}</style></head><body>
+<header><b>BIDA GLOBAL</b><h1 id="ttl">Podio · Trivia de repaso (Sesión 1)</h1></header><main>
+<p class="note" id="upd"></p><p><button class="sec" id="rst">Reiniciar podio</button> <button class="sec" id="all">Ver todos los resultados</button></p><div id="v"></div></main>
+<script src="config.js?v=20261116b"></script><script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const qs=new URLSearchParams(location.search);let mode='T1',rows=[];const KEY='bida_podio_reset_'+mode;const cutoff=()=>{try{return localStorage.getItem(KEY)||''}catch(e){return ''}};
+const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+async function load(){try{if(CFG.API_URL){const r=await fetch(CFG.API_URL);rows=await r.json()}else rows=JSON.parse(localStorage.getItem('bida_quiz')||'[]');rows=rows.filter(r=>!r.prueba&&String(r.ts)>=cutoff());$('#upd').textContent='Actualizado '+new Date().toLocaleTimeString()+(CFG.API_URL?'':' · modo local')}catch(e){$('#upd').textContent='Sin conexión'}render()}
+function best(v){const m={};rows.filter(r=>r.version===v).forEach(r=>{const k=norm(r.nombre);m[k]=r});return Object.values(m)}
+function podium(l,f){const t=l.slice(0,3);const cls=['g2','g1','g3'],ord=[1,0,2];return `<div class="pod">${ord.filter(k=>t[k]).map(k=>`<div class="${cls[ord.indexOf(k)]}"><div class="n">${k+1}. ${esc(t[k].nombre)}</div><div class="s">${f(t[k])}</div></div>`).join('')}</div>`}
+function render(){const el=$('#v');
+ const l=best(mode).sort((x,y)=>y.puntaje-x.puntaje||x.seg-y.seg);
+ if(!l.length){el.innerHTML='<p class="card">Aún no hay resultados.</p>';return}
+ el.innerHTML=podium(l,x=>x.puntaje)+`<table><tr><th>#</th><th>Participante</th><th>Puntaje (de ${l[0].total})</th><th>Tiempo</th></tr>${l.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.nombre)}</td><td><b>${x.puntaje}</b></td><td>${Math.floor(x.seg/60)}:${String(x.seg%60).padStart(2,'0')}</td></tr>`).join('')}</table><p class="note">Desempate: menor tiempo.</p>`}
+{$('#rst').onclick=()=>{if(confirm('¿Reiniciar el podio? Los resultados siguen guardados en la hoja; solo se vacía esta pantalla.')){try{localStorage.setItem(KEY,new Date().toISOString())}catch(e){}load()}};$('#all').onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}load()};
+load();setInterval(load,5000)}
+</script></body></html>

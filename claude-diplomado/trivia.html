@@ -1,0 +1,20 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trivia Sesión 1 · Diplomado Claude IA</title><link rel="stylesheet" href="common.css?v=20261116b"></head><body>
+<header><b>BIDA GLOBAL</b><h1 id="ttl">Trivia de repaso · Sesión 1</h1></header><main id="app"></main>
+<script src="config.js?v=20261116b"></script><script src="trivia-questions.js?v=20261119a"></script><script>
+const $=s=>document.querySelector(s),app=$('#app'),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const V='T1';
+const Q=window.TRIVIA;let name='',i=0,ans=[],t0=0;
+function start(){app.innerHTML=`<div class="card"><p>${Q.length} preguntas rápidas de selección múltiple para repasar la sesión 1. Cuenta el acierto y también el tiempo. Al terminar verás en qué te equivocaste y cuál era la respuesta correcta.</p><p>Escribe tu <b>nombre real</b> para aparecer en el podio.</p><input type="text" id="nm" placeholder="Nombre y apellido" autocomplete="name"><p></p><button id="go">Comenzar</button></div>${CFG.API_URL?'':'<p class="warn">Modo local de prueba: los resultados solo se guardan en este navegador.</p>'}`;
+ $('#go').onclick=()=>{name=$('#nm').value.trim();if(name.length<3){$('#nm').focus();return}t0=Date.now();show()}}
+function show(){const q=Q[i];app.innerHTML=`<div class="bar"><i style="width:${i/Q.length*100}%"></i></div><p class="note">Pregunta ${i+1} de ${Q.length}</p><h2 style="font-size:19px">${q.q}</h2>${q.o.concat(['No sé / Prefiero no responder']).map((t,j)=>`<button class="opt${ans[i]===j?' sel':''}" data-j="${j}">${'ABCDE'[j]}) ${t}</button>`).join('')}<p><button class="sec" id="pv" ${i?'':'disabled'}>Anterior</button> <button id="nx" ${ans[i]==null?'disabled':''}>${i==Q.length-1?'Terminar':'Siguiente'}</button></p>`;
+ document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ans[i]=+b.dataset.j;show()});
+ $('#pv').onclick=()=>{i--;show()};$('#nx').onclick=()=>{if(i==Q.length-1)finish();else{i++;show()}}}
+async function finish(){const dims={};let sc=0;Q.forEach((q,k)=>{const ok=ans[k]===q.k;if(ok)sc++;});
+ const rec={ts:new Date().toISOString(),version:V,nombre:name,puntaje:sc,total:Q.length,seg:Math.round((Date.now()-t0)/1000),dims};
+ app.innerHTML='<p>Guardando…</p>';let saved=true;
+ try{if(CFG.API_URL){await fetch(CFG.API_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(rec)})}
+  else{const a=JSON.parse(localStorage.getItem('bida_quiz')||'[]');a.push(rec);localStorage.setItem('bida_quiz',JSON.stringify(a))}}catch(e){saved=false}
+ app.innerHTML=`<div class="card"><h2 style="margin-top:0">${esc(name)}, tu puntaje: ${sc} de ${Q.length}</h2><p class="note">${saved?'Resultado enviado al podio.':'No se pudo guardar: avisa a la facilitadora.'}</p>
+ <div class="card" style="background:${sc>=4?'#ECFDF5':'#FFF7E6'};border-left:6px solid ${sc>=4?'#10B981':'#F0A500'}"><h3 style="margin-top:0">${sc>=4?'¡Felicitaciones, '+esc(name)+'! Excelente repaso':'¡Buen repaso, '+esc(name)+'! Así se aprende'}</h3><p>${sc>=4?'Lo esencial de la sesión 1 ya es tuyo. Cada concepto que dominas es una ventaja para aplicar Claude con criterio en tu trabajo diario. Comparte lo que sabes con tus compañeros: enseñar es la mejor forma de afianzar.':'Este resultado no es una nota: es una pista de qué repasar. Mira abajo las respuestas correctas, practica con una tarea real de tu trabajo y recuerda: quien se atreve a aprender hoy, lidera mañana.'}</p></div>${(()=>{const w=Q.map((q,k)=>[q,k]).filter(([q,k])=>ans[k]!==q.k);return w.length?`<h3>Revisa tus respuestas (${w.length} para repasar)</h3>${w.map(([q,k])=>`<div class="card" style="border-left:6px solid #F0A500"><p><b>${k+1}. ${q.q}</b></p><p style="color:#B91C1C">Tu respuesta: ${'ABCDE'[ans[k]]}) ${q.o.concat(['No sé / Prefiero no responder'])[ans[k]]}</p><p style="color:#047857"><b>Respuesta correcta: ${'ABCD'[q.k]}) ${q.o[q.k]}</b></p><p class="note">${q.e||''}</p></div>`).join('')}`:'<p><b>¡No fallaste ninguna pregunta!</b></p>'})()}</div>`}
+start();
+</script></body></html>
